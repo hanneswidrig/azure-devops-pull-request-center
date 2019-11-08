@@ -1,10 +1,10 @@
 import React from "react";
 
-import { ReactComponent as Approved } from "../images/svg/approved.svg";
-import { ReactComponent as ApprovedWithSuggestions } from "../images/svg/approvedWithSuggestions.svg";
-import { ReactComponent as NoVote } from "../images/svg/noVote.svg";
-import { ReactComponent as WaitingForAuthor } from "../images/svg/waitingForAuthor.svg";
-import { ReactComponent as Rejected } from "../images/svg/rejected.svg";
+import { ReactComponent as Approved } from "../images/approved.svg";
+import { ReactComponent as ApprovedWithSuggestions } from "../images/approvedWithSuggestions.svg";
+import { ReactComponent as NoVote } from "../images/noVote.svg";
+import { ReactComponent as WaitingForAuthor } from "../images/waitingForAuthor.svg";
+import { ReactComponent as Rejected } from "../images/rejected.svg";
 import "./StatusIcon.scss";
 
 export const getReviewerVoteIconStatus = (vote: string | number): JSX.Element => {
