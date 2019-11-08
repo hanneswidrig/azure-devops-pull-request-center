@@ -13,7 +13,7 @@ export const ApprovalStatusItem = (
   tableItem: IListBoxItem<{}>
 ) => {
   return (
-    <div className="bolt-list-box-text bolt-list-box-text-multi-select asi-container">
+    <div key={rowIndex} className="bolt-list-box-text bolt-list-box-text-multi-select asi-container">
       {getReviewerVoteIconStatus(tableItem.id)}
       <span className="margin-left-8">{tableItem.text}</span>
     </div>
