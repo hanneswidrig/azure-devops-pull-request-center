@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "pull-request-center",
-  "publisher": "HannesWidrig",
+  "publisher": "hannes-widrig",
   "version": "0.0.1",
   "name": "Pull Request Center",
   "description": "Manage your team's pull requests across all repositories.",
