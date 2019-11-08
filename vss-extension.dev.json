@@ -1,0 +1,6 @@
+{
+  "baseUri": "https://localhost:3000",
+  "id": "azure-devops-pull-request-center-develop",
+  "public": false,
+  "name": "Pull Requests Center - DEVELOPMENT"
+}

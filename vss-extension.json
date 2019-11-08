@@ -1,0 +1,56 @@
+{
+  "manifestVersion": 1,
+  "id": "pull-request-center",
+  "publisher": "HannesWidrig",
+  "version": "0.0.1",
+  "name": "Pull Request Center",
+  "description": "Manage your team's pull requests across all repositories.",
+  "public": true,
+  "categories": ["Azure Repos"],
+  "demands": ["api-version/5.1"],
+  "scopes": ["vso.code", "vso.work"],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hanneswidrig/azure-devops-pull-request-center"
+  },
+  "content": {
+    "details": {
+      "path": "marketplace/marketplace.md"
+    },
+    "license": {
+      "path": "marketplace/marketplace.md"
+    }
+  },
+  "tags": [],
+  "screenshots": [],
+  "contributions": [
+    {
+      "id": "view",
+      "type": "ms.vss-web.hub",
+      "targets": ["ms.vss-code-web.code-hub-group"],
+      "properties": {
+        "name": "Pull Requests Center",
+        "uri": "build/index.html",
+        "icon": {
+          "light": "marketplace/package-variant-light.svg",
+          "dark": "marketplace/package-variant-dark.svg"
+        }
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "build",
+      "addressable": true
+    },
+    {
+      "path": "marketplace",
+      "addressable": true
+    }
+  ]
+}

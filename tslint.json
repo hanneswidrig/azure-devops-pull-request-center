@@ -1,0 +1,16 @@
+{
+  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "rules": {
+    "quotemark": {
+      "options": ["single", "jsx-single"]
+    },
+    "member-access": false,
+    "object-literal-sort-keys": false,
+    "array-type": false,
+    "no-shadowed-variable": false,
+    "max-classes-per-file": false
+  },
+  "linterOptions": {
+    "exclude": ["config/**/*.js", "node_modules/**/*.ts"]
+  }
+}

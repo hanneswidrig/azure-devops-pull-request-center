@@ -1,0 +1,35 @@
+@import "azure-devops-ui/Core/_platformCommon.scss";
+
+.work-button > span:last-child {
+  font-size: 12px;
+  line-height: 20px;
+}
+
+td.bolt-table-cell-content.no-padding.bolt-table-cell.bolt-list-cell > div {
+  justify-content: center;
+}
+
+.invisible {
+  opacity: 0;
+  position: absolute;
+}
+
+.tooltip-overflow-parent {
+  background-color: $backgroundColor;
+  color: $backgroundColor;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.tooltip-overflow-child + .tooltip-overflow-child {
+  margin-top: 8px;
+}
+
+.tooltip-overflow .bolt-tooltip-content {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+  box-shadow: 0 1.6px 3.6px 0 var(--callout-shadow-color, rgba(0, 0, 0, 0.132)),
+    0 0.3px 0.9px 0 var(--callout-shadow-secondary-color, rgba(0, 0, 0, 0.108));
+}

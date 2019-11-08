@@ -1,0 +1,33 @@
+.vote-status-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 22px;
+  height: 22px;
+}
+
+.vote-status {
+  margin: 2px;
+  width: 20px;
+  height: 20px;
+}
+
+.approved {
+  fill: rgb(36, 161, 72);
+}
+
+.approved-with-suggestions {
+  fill: rgb(36, 161, 72);
+}
+
+.no-vote {
+  fill: rgb(0, 120, 212);
+}
+
+.waiting {
+  fill: rgb(235, 121, 8);
+}
+
+.rejected {
+  fill: rgb(218, 30, 40);
+}
