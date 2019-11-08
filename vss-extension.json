@@ -37,8 +37,8 @@
         "name": "Pull Requests Center",
         "uri": "build/index.html",
         "icon": {
-          "light": "marketplace/package-variant-light.png",
-          "dark": "marketplace/package-variant-dark.png"
+          "light": "marketplace/package-variant-light.svg",
+          "dark": "marketplace/package-variant-dark.svg"
         }
       }
     }
