@@ -2,16 +2,16 @@
   "manifestVersion": 1,
   "id": "pull-request-center",
   "publisher": "hannes-widrig",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "name": "Pull Request Center",
   "description": "Manage your team's pull requests across all repositories.",
   "public": true,
   "categories": ["Azure Repos"],
-  "demands": ["api-version/5.1"],
+  "demands": ["api-version/3.0"],
   "scopes": ["vso.code", "vso.work"],
   "targets": [
     {
-      "id": "Microsoft.VisualStudio.Services"
+      "id": "Microsoft.VisualStudio.Services.Cloud"
     }
   ],
   "repository": {
@@ -34,8 +34,12 @@
       "type": "ms.vss-web.hub",
       "targets": ["ms.vss-code-web.code-hub-group"],
       "properties": {
-        "name": "Pull requests center",
-        "uri": "build/index.html"
+        "name": "Pull Requests Center",
+        "uri": "build/index.html",
+        "icon": {
+          "light": "marketplace/icon-light.png",
+          "dark": "marketplace/icon-dark.png"
+        }
       }
     }
   ],
