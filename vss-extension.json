@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "pull-request-center",
   "publisher": "hannes-widrig",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "name": "Pull Request Center",
   "description": "Manage your team's pull requests across all repositories.",
   "public": true,
@@ -30,16 +30,12 @@
   "screenshots": [],
   "contributions": [
     {
-      "id": "view",
+      "id": "pull-request-center",
       "type": "ms.vss-web.hub",
       "targets": ["ms.vss-code-web.code-hub-group"],
       "properties": {
-        "name": "Pull Requests Center",
-        "uri": "build/index.html",
-        "icon": {
-          "light": "marketplace/package-variant-light.png",
-          "dark": "marketplace/package-variant-dark.png"
-        }
+        "name": "Pull requests center",
+        "uri": "build/index.html"
       }
     }
   ],
