@@ -29,8 +29,7 @@ export const filterByReviewers: FilterFunc = (pullRequest, filterValue) =>
 export const filterByApprovalStatus: FilterFunc = (pullRequest, filterValue) =>
   pullRequest.myApprovalStatus.toString() === filterValue[0].toString();
 
-export const filterByDraftStatus: FilterFunc = (pullRequest, filterValue) =>
-  filterValue.some(v => pullRequest.isDraft === (v === "1"));
+export const filterByDraftStatus: FilterFunc = (pullRequest, filterValue) => pullRequest.isDraft === false;
 
 export const andFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>>) => {
   const { searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus } = fv;
@@ -69,6 +68,11 @@ export const andFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>>)
       func: filterByApprovalStatus,
       val: myApprovalStatus || [],
       isActive: myApprovalStatus !== undefined && myApprovalStatus.length > 0
+    },
+    {
+      func: filterByDraftStatus,
+      val: [],
+      isActive: true
     }
   ];
   const appliedFilters = filterSetup.filter(fs => fs.isActive);

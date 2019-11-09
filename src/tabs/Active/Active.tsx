@@ -2,6 +2,7 @@ import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Card } from "azure-devops-ui/Card";
+import { Spinner } from "office-ui-fabric-react";
 import { FilterBar } from "azure-devops-ui/FilterBar";
 import { DropdownFilterBarItem } from "azure-devops-ui/Dropdown";
 import { ObservableArray } from "azure-devops-ui/Core/Observable";
@@ -11,7 +12,6 @@ import { KeywordFilterBarItem } from "azure-devops-ui/TextFilterBarItem";
 import { ConditionalChildren } from "azure-devops-ui/ConditionalChildren";
 import { DropdownMultiSelection } from "azure-devops-ui/Utilities/DropdownSelection";
 
-import { Spinner } from "office-ui-fabric-react";
 import "./Active.scss";
 
 import {
@@ -97,7 +97,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
   }, [filter, data.pullRequests]);
 
   return (
-    <div className={"flex-column"}>
+    <div className="flex-column">
       <ConditionalChildren renderChildren={ui.isFilterVisible}>
         <div className={"margin-bottom-16"}>
           <FilterBar filter={filter} onDismissClicked={() => dispatch({ type: ActionTypes.TOGGLE_FILTER_BAR })}>
