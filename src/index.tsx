@@ -14,7 +14,8 @@ import { IHostPageLayoutService } from "azure-devops-extension-api";
 import { IHeaderCommandBarItem } from "azure-devops-ui/HeaderCommandBar";
 
 import "./index.scss";
-import { Active } from "./tabs/Active";
+import { Draft } from "./tabs/Draft/Draft";
+import { Active } from "./tabs/Active/Active";
 import { reducer } from "./state/store";
 import { PrHubState } from "./state/types";
 import { showRootComponent } from "./common";
@@ -73,7 +74,7 @@ export class App extends React.Component<{}, IHubContentState> {
             />
             <TabBar
               selectedTabId={selectedTabId}
-              onSelectedTabChanged={this.onSelectedTabChanged}
+              onSelectedTabChanged={(newTabId: string) => this.setState({ selectedTabId: newTabId })}
               tabSize={"tall" as any}
               renderAdditionalContent={() => (
                 <TabBarFilterIcon
@@ -84,6 +85,7 @@ export class App extends React.Component<{}, IHubContentState> {
               )}
             >
               <Tab name="Active" id="active" />
+              <Tab name="Draft" id="draft" />
             </TabBar>
             <div className="page-content-left page-content-right page-content-top page-content-bottom">
               {this.getPageContent()}
@@ -94,19 +96,15 @@ export class App extends React.Component<{}, IHubContentState> {
     );
   }
 
-  private onSelectedTabChanged = (newTabId: string) => {
-    this.setState({
-      selectedTabId: newTabId
-    });
-  };
-
   private getPageContent() {
-    const { selectedTabId } = this.state;
-    if (selectedTabId === "active") {
-      return <Active filter={this.filter} />;
+    switch (this.state.selectedTabId) {
+      case "active":
+        return <Active filter={this.filter} />;
+      case "draft":
+        return <Draft filter={this.filter} />;
+      default:
+        return null;
     }
-
-    return null;
   }
 
   private getCommandBarItems(): IHeaderCommandBarItem[] {

@@ -27,14 +27,14 @@ import {
   FilterDictionary,
   FilterItemsDictionary
 } from "./Active.types";
-import { andFilter } from "../lib/filters";
-import { ActionTypes, PrHubState, PR } from "../state/types";
-import { fromPRToFilterItems } from "../state/transformData";
-import { ApprovalStatusItem } from "../components/ApprovalStatusItem";
-import { renderTitleColumn, renderReviewersColumn } from "../components/Columns";
+import { andFilter } from "../../lib/filters";
+import { ActionTypes, PrHubState, PR } from "../../state/types";
+import { fromPRToFilterItems } from "../../state/transformData";
+import { ApprovalStatusItem } from "../../components/ApprovalStatusItem";
+import { renderTitleColumn, renderReviewersColumn } from "../../components/Columns";
 
 const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
-export const Active: React.FC<IActive> = (props: IActive) => {
+export const Active: React.FC<IActive> = ({ filter }) => {
   const { data, ui } = useSelector((store: PrHubState) => store);
   const dispatch = useDispatch();
   const [filterItems, setFilterItems] = React.useState<FilterItemsDictionary>({
@@ -79,37 +79,37 @@ export const Active: React.FC<IActive> = (props: IActive) => {
     pullRequestItemProvider$.push(...data.pullRequests);
     setFilterItems(fromPRToFilterItems(data.pullRequests));
 
-    props.filter.subscribe(() => {
+    filter.subscribe(() => {
       const filterValues: FilterDictionary = {
-        searchString: props.filter.getFilterItemValue<string>(SEARCH_STRING),
-        repositories: props.filter.getFilterItemValue<string[]>(REPOSITORIES),
-        sourceBranch: props.filter.getFilterItemValue<string[]>(SOURCE_BRANCH),
-        targetBranch: props.filter.getFilterItemValue<string[]>(TARGET_BRANCH),
-        author: props.filter.getFilterItemValue<string[]>(AUTHOR),
-        reviewer: props.filter.getFilterItemValue<string[]>(REVIEWER),
-        myApprovalStatus: props.filter.getFilterItemValue<string[]>(MY_APPROVAL_STATUS)
+        searchString: filter.getFilterItemValue<string>(SEARCH_STRING),
+        repositories: filter.getFilterItemValue<string[]>(REPOSITORIES),
+        sourceBranch: filter.getFilterItemValue<string[]>(SOURCE_BRANCH),
+        targetBranch: filter.getFilterItemValue<string[]>(TARGET_BRANCH),
+        author: filter.getFilterItemValue<string[]>(AUTHOR),
+        reviewer: filter.getFilterItemValue<string[]>(REVIEWER),
+        myApprovalStatus: filter.getFilterItemValue<string[]>(MY_APPROVAL_STATUS)
       };
       const filteredResult = andFilter(data.pullRequests, filterValues);
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(...filteredResult);
     }, FILTER_CHANGE_EVENT);
-    return () => props.filter.unsubscribe(() => {}, FILTER_CHANGE_EVENT);
-  }, [props.filter, data.pullRequests]);
+    return () => filter.unsubscribe(() => {}, FILTER_CHANGE_EVENT);
+  }, [filter, data.pullRequests]);
 
   return (
     <div className={"flex-column"}>
       <ConditionalChildren renderChildren={ui.isFilterVisible}>
         <div className={"margin-bottom-16"}>
-          <FilterBar filter={props.filter} onDismissClicked={() => dispatch({ type: ActionTypes.TOGGLE_FILTER_BAR })}>
+          <FilterBar filter={filter} onDismissClicked={() => dispatch({ type: ActionTypes.TOGGLE_FILTER_BAR })}>
             <KeywordFilterBarItem
               filterItemKey={SEARCH_STRING}
               placeholder={"Search Across Pull Requests"}
-              filter={props.filter}
+              filter={filter}
             />
             <DropdownFilterBarItem
               filterItemKey={REPOSITORIES}
               placeholder={"Repositories"}
-              filter={props.filter}
+              filter={filter}
               selection={new DropdownMultiSelection()}
               showFilterBox={true}
               items={filterItems.repositories}
@@ -117,7 +117,7 @@ export const Active: React.FC<IActive> = (props: IActive) => {
             <DropdownFilterBarItem
               filterItemKey={SOURCE_BRANCH}
               placeholder={"Source Branch"}
-              filter={props.filter}
+              filter={filter}
               selection={new DropdownMultiSelection()}
               showFilterBox={true}
               items={filterItems.sourceBranch}
@@ -125,7 +125,7 @@ export const Active: React.FC<IActive> = (props: IActive) => {
             <DropdownFilterBarItem
               filterItemKey={TARGET_BRANCH}
               placeholder={"Target Branch"}
-              filter={props.filter}
+              filter={filter}
               selection={new DropdownMultiSelection()}
               showFilterBox={true}
               items={filterItems.targetBranch}
@@ -133,7 +133,7 @@ export const Active: React.FC<IActive> = (props: IActive) => {
             <DropdownFilterBarItem
               filterItemKey={AUTHOR}
               placeholder={"Author"}
-              filter={props.filter}
+              filter={filter}
               selection={new DropdownMultiSelection()}
               showFilterBox={true}
               items={filterItems.author}
@@ -141,7 +141,7 @@ export const Active: React.FC<IActive> = (props: IActive) => {
             <DropdownFilterBarItem
               filterItemKey={REVIEWER}
               placeholder={"Reviewer"}
-              filter={props.filter}
+              filter={filter}
               selection={new DropdownMultiSelection()}
               showFilterBox={true}
               items={filterItems.reviewer}
@@ -149,7 +149,7 @@ export const Active: React.FC<IActive> = (props: IActive) => {
             <DropdownFilterBarItem
               filterItemKey={MY_APPROVAL_STATUS}
               placeholder={"My Approval Status"}
-              filter={props.filter}
+              filter={filter}
               selection={new DropdownMultiSelection()}
               renderItem={ApprovalStatusItem}
               showFilterBox={true}

@@ -4,7 +4,7 @@ import { GitPullRequest, IdentityRefWithVote } from "azure-devops-extension-api/
 
 import { PR } from "./types";
 import { ReviewerVoteOption } from "../lib/enums";
-import { FilterItemsDictionary } from "../tabs/Active.types";
+import { FilterItemsDictionary } from "../tabs/Active/Active.types";
 
 type fromPullRequestToPRType = { pr: GitPullRequest; workItems: WorkItem[]; userContext: DevOps.IUserContext };
 export const fromPullRequestToPR = ({ pr, workItems, userContext }: fromPullRequestToPRType) => {

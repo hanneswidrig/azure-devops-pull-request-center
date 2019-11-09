@@ -1,7 +1,7 @@
 import { Filter } from "azure-devops-ui/Utilities/Filter";
 import { IReadonlyObservableValue } from "azure-devops-ui/Core/Observable";
 
-import { PR } from "../state/types";
+import { PR } from "../../state/types";
 import { IListBoxItem } from "azure-devops-ui/ListBox";
 
 export const SEARCH_STRING = "searchString";
