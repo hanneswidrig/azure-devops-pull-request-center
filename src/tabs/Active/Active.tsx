@@ -14,27 +14,16 @@ import { DropdownMultiSelection } from 'azure-devops-ui/Utilities/DropdownSelect
 
 import './Active.scss';
 
-import {
-  IActive,
-  SEARCH_STRING,
-  REPOSITORIES,
-  SOURCE_BRANCH,
-  TARGET_BRANCH,
-  AUTHOR,
-  REVIEWER,
-  MY_APPROVAL_STATUS,
-  ActiveItemProvider,
-  FilterDictionary,
-  FilterItemsDictionary
-} from './Active.types';
-import { andFilter } from '../../lib/filters';
+import { applyFilter } from '../../lib/filters';
+import { ITab, ActiveItemProvider } from '../tabs.types';
 import { ActionTypes, PrHubState, PR } from '../../state/types';
 import { fromPRToFilterItems } from '../../state/transformData';
 import { ApprovalStatusItem } from '../../components/ApprovalStatusItem';
 import { renderTitleColumn, renderReviewersColumn } from '../../components/Columns';
+import { FilterOptions, FilterDictionary, FilterItemsDictionary } from './Active.types';
 
 const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
-export const Active: React.FC<IActive> = ({ filter }) => {
+export const Active: React.FC<ITab> = ({ filter }) => {
   const { data, ui } = useSelector((store: PrHubState) => store);
   const dispatch = useDispatch();
   const [filterItems, setFilterItems] = React.useState<FilterItemsDictionary>({
@@ -75,23 +64,20 @@ export const Active: React.FC<IActive> = ({ filter }) => {
   ];
 
   React.useEffect(() => {
-    pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-    pullRequestItemProvider$.push(...data.pullRequests);
+    pullRequestItemProvider$.change(0, ...applyFilter(data.pullRequests, {}, 'active'));
     setFilterItems(fromPRToFilterItems(data.pullRequests));
 
     filter.subscribe(() => {
       const filterValues: FilterDictionary = {
-        searchString: filter.getFilterItemValue<string>(SEARCH_STRING),
-        repositories: filter.getFilterItemValue<string[]>(REPOSITORIES),
-        sourceBranch: filter.getFilterItemValue<string[]>(SOURCE_BRANCH),
-        targetBranch: filter.getFilterItemValue<string[]>(TARGET_BRANCH),
-        author: filter.getFilterItemValue<string[]>(AUTHOR),
-        reviewer: filter.getFilterItemValue<string[]>(REVIEWER),
-        myApprovalStatus: filter.getFilterItemValue<string[]>(MY_APPROVAL_STATUS)
+        searchString: filter.getFilterItemValue<string>(FilterOptions.searchString),
+        repositories: filter.getFilterItemValue<string[]>(FilterOptions.repositories),
+        sourceBranch: filter.getFilterItemValue<string[]>(FilterOptions.sourceBranch),
+        targetBranch: filter.getFilterItemValue<string[]>(FilterOptions.targetBranch),
+        author: filter.getFilterItemValue<string[]>(FilterOptions.author),
+        reviewer: filter.getFilterItemValue<string[]>(FilterOptions.reviewer),
+        myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus)
       };
-      const filteredResult = andFilter(data.pullRequests, filterValues);
-      pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-      pullRequestItemProvider$.push(...filteredResult);
+      pullRequestItemProvider$.change(0, ...applyFilter(data.pullRequests, filterValues, 'active'));
     }, FILTER_CHANGE_EVENT);
     return () => filter.unsubscribe(() => {}, FILTER_CHANGE_EVENT);
   }, [filter, data.pullRequests]);
@@ -102,12 +88,12 @@ export const Active: React.FC<IActive> = ({ filter }) => {
         <div className={'margin-bottom-16'}>
           <FilterBar filter={filter} onDismissClicked={() => dispatch({ type: ActionTypes.TOGGLE_FILTER_BAR })}>
             <KeywordFilterBarItem
-              filterItemKey={SEARCH_STRING}
+              filterItemKey={FilterOptions.searchString}
               placeholder={'Search Across Pull Requests'}
               filter={filter}
             />
             <DropdownFilterBarItem
-              filterItemKey={REPOSITORIES}
+              filterItemKey={FilterOptions.repositories}
               placeholder={'Repositories'}
               filter={filter}
               selection={new DropdownMultiSelection()}
@@ -115,7 +101,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
               items={filterItems.repositories}
             />
             <DropdownFilterBarItem
-              filterItemKey={SOURCE_BRANCH}
+              filterItemKey={FilterOptions.sourceBranch}
               placeholder={'Source Branch'}
               filter={filter}
               selection={new DropdownMultiSelection()}
@@ -123,7 +109,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
               items={filterItems.sourceBranch}
             />
             <DropdownFilterBarItem
-              filterItemKey={TARGET_BRANCH}
+              filterItemKey={FilterOptions.targetBranch}
               placeholder={'Target Branch'}
               filter={filter}
               selection={new DropdownMultiSelection()}
@@ -131,7 +117,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
               items={filterItems.targetBranch}
             />
             <DropdownFilterBarItem
-              filterItemKey={AUTHOR}
+              filterItemKey={FilterOptions.author}
               placeholder={'Author'}
               filter={filter}
               selection={new DropdownMultiSelection()}
@@ -139,7 +125,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
               items={filterItems.author}
             />
             <DropdownFilterBarItem
-              filterItemKey={REVIEWER}
+              filterItemKey={FilterOptions.reviewer}
               placeholder={'Reviewer'}
               filter={filter}
               selection={new DropdownMultiSelection()}
@@ -147,7 +133,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
               items={filterItems.reviewer}
             />
             <DropdownFilterBarItem
-              filterItemKey={MY_APPROVAL_STATUS}
+              filterItemKey={FilterOptions.myApprovalStatus}
               placeholder={'My Approval Status'}
               filter={filter}
               selection={new DropdownMultiSelection()}

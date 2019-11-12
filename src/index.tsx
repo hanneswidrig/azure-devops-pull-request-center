@@ -19,21 +19,15 @@ import { Active } from './tabs/Active/Active';
 import { reducer } from './state/store';
 import { PrHubState } from './state/types';
 import { showRootComponent } from './common';
+import { TabOptionsType, TabOptions } from './tabs/tabs.types';
 import { TabBarFilterIcon } from './components/TabBarFilterIcon';
 import { setCurrentUser, setRepositories, setPullRequests } from './state/actions';
-
-interface IHubContentState {
-  selectedTabId: string;
-  headerDescription?: string;
-  useLargeTitle?: boolean;
-  useCompactPivots?: boolean;
-}
 
 addPolyFills();
 
 const store = createStore(reducer, applyMiddleware(thunk));
 
-export class App extends React.Component<{}, IHubContentState> {
+export class App extends React.Component<{}, { selectedTabId: TabOptionsType }> {
   private filter: Filter;
   private dispatch: Dispatch<any>;
   private reduxStore: PrHubState;
@@ -74,7 +68,7 @@ export class App extends React.Component<{}, IHubContentState> {
             />
             <TabBar
               selectedTabId={selectedTabId}
-              onSelectedTabChanged={(newTabId: string) => this.setState({ selectedTabId: newTabId })}
+              onSelectedTabChanged={(newTabId: string) => this.setState({ selectedTabId: newTabId as TabOptionsType })}
               tabSize={'tall' as any}
               renderAdditionalContent={() => (
                 <TabBarFilterIcon
@@ -98,9 +92,9 @@ export class App extends React.Component<{}, IHubContentState> {
 
   private getPageContent() {
     switch (this.state.selectedTabId) {
-      case 'active':
+      case TabOptions.active:
         return <Active filter={this.filter} />;
-      case 'draft':
+      case TabOptions.draft:
         return <Draft filter={this.filter} />;
       default:
         return null;
