@@ -1,34 +1,34 @@
-import { IColor } from "azure-devops-extension-api";
+import { IColor } from 'azure-devops-extension-api';
 
 /**
  * My color system
  */
-type TColors = Record<"green" | "blue" | "orange" | "red", Record<"primary" | "light", string>>;
+type TColors = Record<'green' | 'blue' | 'orange' | 'red', Record<'primary' | 'light', string>>;
 export const Colors: TColors = {
-  green: { primary: "rgb(36, 161, 72)", light: "rgb(231, 242, 231)" },
-  blue: { primary: "rgb(0, 120, 212)", light: "rgb(218, 227, 243)" },
-  orange: { primary: "rgb(235, 121, 8)", light: "rgb(255, 249, 230)" },
-  red: { primary: "rgb(218, 30, 40)", light: "rgb(250, 235, 235)" }
+  green: { primary: 'rgb(36, 161, 72)', light: 'rgb(231, 242, 231)' },
+  blue: { primary: 'rgb(0, 120, 212)', light: 'rgb(218, 227, 243)' },
+  orange: { primary: 'rgb(235, 121, 8)', light: 'rgb(255, 249, 230)' },
+  red: { primary: 'rgb(218, 30, 40)', light: 'rgb(250, 235, 235)' }
 };
 
 export const reviewerVoteToColorsPrimary = (vote: number | string) => {
   const colorMap: Record<string, string> = {
-    "10": Colors.green.primary,
-    "5": Colors.green.primary,
-    "0": Colors.blue.primary,
-    "-5": Colors.orange.primary,
-    "-10": Colors.red.primary
+    '10': Colors.green.primary,
+    '5': Colors.green.primary,
+    '0': Colors.blue.primary,
+    '-5': Colors.orange.primary,
+    '-10': Colors.red.primary
   };
   return colorMap[vote];
 };
 
 export const reviewerVoteToColorsLight = (vote: number | string) => {
   const colorMap: Record<string, string> = {
-    "10": Colors.green.light,
-    "5": Colors.green.light,
-    "0": Colors.blue.light,
-    "-5": Colors.orange.light,
-    "-10": Colors.red.light
+    '10': Colors.green.light,
+    '5': Colors.green.light,
+    '0': Colors.blue.light,
+    '-5': Colors.orange.light,
+    '-10': Colors.red.light
   };
   return colorMap[vote];
 };
@@ -68,11 +68,11 @@ export const rejectedLightColor: IColor = {
 
 export const reviewerVoteToIColorLight = (vote: number | string) => {
   const colorMap: Record<string, IColor> = {
-    "10": approvedLightColor,
-    "5": approvedWithSuggestionsLightColor,
-    "0": noVoteLightColor,
-    "-5": waitingAuthorLightColor,
-    "-10": rejectedLightColor
+    '10': approvedLightColor,
+    '5': approvedWithSuggestionsLightColor,
+    '0': noVoteLightColor,
+    '-5': waitingAuthorLightColor,
+    '-10': rejectedLightColor
   };
   return colorMap[vote];
 };

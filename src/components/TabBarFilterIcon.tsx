@@ -1,7 +1,7 @@
-import React from "react";
-import { IFilter } from "azure-devops-ui/Utilities/Filter";
-import { ObservableValue } from "azure-devops-ui/Core/Observable";
-import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from "azure-devops-ui/HeaderCommandBar";
+import React from 'react';
+import { IFilter } from 'azure-devops-ui/Utilities/Filter';
+import { ObservableValue } from 'azure-devops-ui/Core/Observable';
+import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
 
 export interface TabBarFilterIconProps {
   filter: IFilter;

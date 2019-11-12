@@ -1,6 +1,9 @@
 // https://dev.to/ascorbic/creating-a-typed-compose-function-in-typescript-3-351i
 export const pipeWithSameReturnType = <T extends any[], R>(fn1: (...args: T) => R, ...fns: Array<(a: R) => R>) => {
-  const piped = fns.reduce((prevFn, nextFn) => (value: R) => nextFn(prevFn(value)), value => value);
+  const piped = fns.reduce(
+    (prevFn, nextFn) => (value: R) => nextFn(prevFn(value)),
+    value => value
+  );
   return (...args: T) => piped(fn1(...args));
 };
 
@@ -11,70 +14,70 @@ type PrependTuple<A, T extends Array<any>> = ((a: A, ...b: T) => void) extends (
 
 // We need these
 type SNumbers = [
-  "0",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "11",
-  "12",
-  "13",
-  "14",
-  "15",
-  "16",
-  "17",
-  "18",
-  "19",
-  "20",
-  "21",
-  "22",
-  "23",
-  "24",
-  "25",
-  "26",
-  "27",
-  "28",
-  "29",
-  "30",
-  "31",
-  "32",
-  "33",
-  "34",
-  "35",
-  "36",
-  "37",
-  "38",
-  "39",
-  "40",
-  "41",
-  "42",
-  "43",
-  "44",
-  "45",
-  "46",
-  "47",
-  "48",
-  "49",
-  "50",
-  "51",
-  "52",
-  "53",
-  "54",
-  "55",
-  "56",
-  "57",
-  "58",
-  "59",
-  "60",
-  "61",
-  "62",
-  "63"
+  '0',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '13',
+  '14',
+  '15',
+  '16',
+  '17',
+  '18',
+  '19',
+  '20',
+  '21',
+  '22',
+  '23',
+  '24',
+  '25',
+  '26',
+  '27',
+  '28',
+  '29',
+  '30',
+  '31',
+  '32',
+  '33',
+  '34',
+  '35',
+  '36',
+  '37',
+  '38',
+  '39',
+  '40',
+  '41',
+  '42',
+  '43',
+  '44',
+  '45',
+  '46',
+  '47',
+  '48',
+  '49',
+  '50',
+  '51',
+  '52',
+  '53',
+  '54',
+  '55',
+  '56',
+  '57',
+  '58',
+  '59',
+  '60',
+  '61',
+  '62',
+  '63'
 ];
 
 type Numbers = [
@@ -156,7 +159,7 @@ type S_N<S extends SNumbers[number]> = {
 type Unary = (i: any) => any;
 
 // Get the (single) argument of a given unary function
-type ParameterUnary<F extends Unary> = Parameters<F>["0"];
+type ParameterUnary<F extends Unary> = Parameters<F>['0'];
 
 // Iterate through the unaries
 // For each previous/current pair, the previous return values should be applicable to the current parameter value
@@ -164,7 +167,7 @@ type ParameterUnary<F extends Unary> = Parameters<F>["0"];
 // When we try to apply the actual type we get a mismatch which is easier to diagnose
 type UnariesToPiped<F extends Unary[]> = {
   [K in keyof F]: K extends SNumbers[number]
-    ? K extends "0"
+    ? K extends '0'
       ? F[K]
       : (i: ReturnType<F[PrevN<S_N<K>>]>) => ReturnType<F[S_N<K>]>
     : F[K];
@@ -172,7 +175,7 @@ type UnariesToPiped<F extends Unary[]> = {
 
 type UnariesToComposed<F extends Unary[]> = {
   [K in keyof F]: K extends SNumbers[number]
-    ? K extends "0"
+    ? K extends '0'
       ? F[K]
       : (i: ParameterUnary<F[S_N<K>]>) => ParameterUnary<F[PrevN<S_N<K>>]>
     : F[K];
@@ -187,7 +190,7 @@ type Composable<F extends Unary[]> = UnariesToComposed<F> extends F ? F : never;
  */
 export type Pipe = <F extends Unary[]>(
   ...funcs: UnariesToPiped<F>
-) => (i: ParameterUnary<F[0]>) => ReturnType<F[PrevN<F["length"]>]>;
+) => (i: ParameterUnary<F[0]>) => ReturnType<F[PrevN<F['length']>]>;
 
 /**
  * The type for the compose function
@@ -195,7 +198,7 @@ export type Pipe = <F extends Unary[]>(
  */
 export type Compose = <F extends Unary[]>(
   ...funcs: UnariesToComposed<F>
-) => (i: ParameterUnary<F[PrevN<F["length"]>]>) => ReturnType<F[0]>;
+) => (i: ParameterUnary<F[PrevN<F['length']>]>) => ReturnType<F[0]>;
 
 /**
  * @summary Performs left-to-right function composition.

@@ -1,16 +1,16 @@
-import { Filter } from "azure-devops-ui/Utilities/Filter";
-import { IReadonlyObservableValue } from "azure-devops-ui/Core/Observable";
+import { Filter } from 'azure-devops-ui/Utilities/Filter';
+import { IReadonlyObservableValue } from 'azure-devops-ui/Core/Observable';
 
-import { PR } from "../../state/types";
-import { IListBoxItem } from "azure-devops-ui/ListBox";
+import { PR } from '../../state/types';
+import { IListBoxItem } from 'azure-devops-ui/ListBox';
 
-export const SEARCH_STRING = "searchString";
-export const REPOSITORIES = "repositories";
-export const SOURCE_BRANCH = "sourceBranch";
-export const TARGET_BRANCH = "targetBranch";
-export const AUTHOR = "author";
-export const REVIEWER = "reviewer";
-export const MY_APPROVAL_STATUS = "myApprovalStatus";
+export const SEARCH_STRING = 'searchString';
+export const REPOSITORIES = 'repositories';
+export const SOURCE_BRANCH = 'sourceBranch';
+export const TARGET_BRANCH = 'targetBranch';
+export const AUTHOR = 'author';
+export const REVIEWER = 'reviewer';
+export const MY_APPROVAL_STATUS = 'myApprovalStatus';
 
 const allFilters = [
   SEARCH_STRING,

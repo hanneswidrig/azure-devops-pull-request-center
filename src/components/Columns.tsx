@@ -1,18 +1,18 @@
-import React from "react";
-import { Pill } from "azure-devops-ui/Pill";
-import { Tooltip } from "azure-devops-ui/TooltipEx";
-import { PillGroup } from "azure-devops-ui/PillGroup";
-import { VssPersona } from "azure-devops-ui/VssPersona";
-import { SimpleTableCell, ITableColumn } from "azure-devops-ui/Table";
-import { IdentityRefWithVote } from "azure-devops-extension-api/Git/Git";
+import React from 'react';
+import { Pill } from 'azure-devops-ui/Pill';
+import { Tooltip } from 'azure-devops-ui/TooltipEx';
+import { PillGroup } from 'azure-devops-ui/PillGroup';
+import { VssPersona } from 'azure-devops-ui/VssPersona';
+import { SimpleTableCell, ITableColumn } from 'azure-devops-ui/Table';
+import { IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
-import "./Columns.scss";
-import { PR } from "../state/types";
-import { ReviewerVoteOption } from "../lib/enums";
-import { sortByDisplayName } from "../lib/utilities";
-import { PullRequestCellUI } from "./PullRequestCellUI";
-import { getReviewerVoteIconStatus } from "./StatusIcon";
-import { reviewerVoteToIColorLight } from "../lib/colors";
+import './Columns.scss';
+import { PR } from '../state/types';
+import { ReviewerVoteOption } from '../lib/enums';
+import { sortByDisplayName } from '../lib/utilities';
+import { PullRequestCellUI } from './PullRequestCellUI';
+import { getReviewerVoteIconStatus } from './StatusIcon';
+import { reviewerVoteToIColorLight } from '../lib/colors';
 
 export const renderTitleColumn = (
   rowIndex: number,
@@ -21,8 +21,8 @@ export const renderTitleColumn = (
   tableItem: PR
 ): JSX.Element => (
   <SimpleTableCell
-    className="padding-8"
-    key={"col-" + columnIndex}
+    className='padding-8'
+    key={'col-' + columnIndex}
     columnIndex={columnIndex}
     tableColumn={tableColumn}
     children={<PullRequestCellUI tableItem={tableItem} />}
@@ -38,8 +38,8 @@ export const renderReviewersColumn = (
   const reviewers = tableItem.reviewers.sort(sortByDisplayName);
   return (
     <SimpleTableCell
-      className="bolt-table-cell-content-with-inline-link no-v-padding"
-      key={"col-" + columnIndex}
+      className='bolt-table-cell-content-with-inline-link no-v-padding'
+      key={'col-' + columnIndex}
       columnIndex={columnIndex}
       tableColumn={tableColumn}
       children={<ReviewersCell reviewers={reviewers} />}
@@ -99,11 +99,11 @@ const ReviewersCell: React.FC<ReviewersCellProps> = ({ reviewers }: ReviewersCel
         {displayPills.map(p => p.element)}
         {width > BREAKPOINT_WIDTH && (
           <Tooltip
-            className="tooltip-overflow"
+            className='tooltip-overflow'
             renderContent={() => (
-              <div className="tooltip-overflow-parent">
+              <div className='tooltip-overflow-parent'>
                 {overflowPills.map(p => (
-                  <div key={p.id} className="tooltip-overflow-child">
+                  <div key={p.id} className='tooltip-overflow-child'>
                     {p.element}
                   </div>
                 ))}
@@ -111,7 +111,7 @@ const ReviewersCell: React.FC<ReviewersCellProps> = ({ reviewers }: ReviewersCel
             )}
           >
             <Pill key={`overflow-pill`} variant={2} size={1}>
-              <span style={{ fontWeight: "bold" }}>+{overflowPills.length}</span>
+              <span style={{ fontWeight: 'bold' }}>+{overflowPills.length}</span>
             </Pill>
           </Tooltip>
         )}
@@ -151,7 +151,7 @@ const CalculatePillWidth: React.FC<CalculatePillWidthProps> = ({
   }, [reviewerRef]);
 
   return (
-    <div className="flex-row invisible" ref={reviewerRef}>
+    <div className='flex-row invisible' ref={reviewerRef}>
       {defaultReviewerPill(reviewer, index)}
     </div>
   );
@@ -161,27 +161,27 @@ const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
   <Tooltip
     key={i}
     renderContent={() => (
-      <div className="flex-row rhythm-horizontal-4">
-        <div className="flex-column">
-          <div className="flex-row flex-center justify-center">
+      <div className='flex-row rhythm-horizontal-4'>
+        <div className='flex-column'>
+          <div className='flex-row flex-center justify-center'>
             <VssPersona
-              className="icon-margin"
-              imageUrl={reviewer._links["avatar"].href}
-              size={"small"}
+              className='icon-margin'
+              imageUrl={reviewer._links['avatar'].href}
+              size={'small'}
               displayName={reviewer.displayName}
             />
             <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
           </div>
-          <div className="flex-row flex-center justify-start margin-top-8">
+          <div className='flex-row flex-center justify-start margin-top-8'>
             {getReviewerVoteIconStatus(reviewer.vote)}
-            <span className="font-weight-semibold margin-left-4">{getReviewerVoteStatus(reviewer)}</span>
+            <span className='font-weight-semibold margin-left-4'>{getReviewerVoteStatus(reviewer)}</span>
           </div>
         </div>
       </div>
     )}
   >
     <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
-      <div className="flex-row rhythm-horizontal-8">
+      <div className='flex-row rhythm-horizontal-8'>
         {getReviewerVoteIconStatus(reviewer.vote)}
         <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
       </div>
@@ -191,11 +191,11 @@ const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
 
 function getReviewerVoteStatus(reviewer: IdentityRefWithVote): string {
   const colorMap: Record<string, string> = {
-    Approved: "Approved",
-    ApprovedWithSuggestions: "Approved With Suggestions",
-    NoVote: "Assigned",
-    WaitingForAuthor: "Waiting For Author",
-    Rejected: "Rejected"
+    Approved: 'Approved',
+    ApprovedWithSuggestions: 'Approved With Suggestions',
+    NoVote: 'Assigned',
+    WaitingForAuthor: 'Waiting For Author',
+    Rejected: 'Rejected'
   };
   return colorMap[ReviewerVoteOption[reviewer.vote]];
 }

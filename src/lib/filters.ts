@@ -1,5 +1,5 @@
-import { PR } from "../state/types";
-import { FilterTypes } from "../tabs/Active/Active.types";
+import { PR } from '../state/types';
+import { FilterTypes } from '../tabs/Active/Active.types';
 
 export type FilterFunc = (pullRequest: PR, filterValue: string[]) => boolean;
 export interface IFilterSetup {
@@ -36,7 +36,7 @@ export const andFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>>)
   const filterSetup: IFilterSetup[] = [
     {
       func: filterByTitle,
-      val: [searchString || ""],
+      val: [searchString || ''],
       isActive: searchString !== undefined && searchString.length > 0 && searchString[0].length > 0
     },
     {

@@ -1,14 +1,14 @@
-import { Reducer } from "redux";
-import { ObservableValue } from "azure-devops-ui/Core/Observable";
+import { Reducer } from 'redux';
+import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 
-import { FetchAction } from "./actions";
-import { ActionTypes, PrHubState } from "./types";
+import { FetchAction } from './actions';
+import { ActionTypes, PrHubState } from './types';
 
 const initialState: PrHubState = {
   data: {
     repositories: [],
     pullRequests: [],
-    currentUser: { id: "", name: "", displayName: "", descriptor: "", imageUrl: "" },
+    currentUser: { id: '', name: '', displayName: '', descriptor: '', imageUrl: '' },
     isFullScreenMode: false,
     asyncTaskCount: 0
   },

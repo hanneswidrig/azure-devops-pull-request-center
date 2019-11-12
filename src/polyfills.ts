@@ -1,6 +1,6 @@
 /*eslint no-extend-native: 0 */
 
-import "core-js";
+import 'core-js';
 
 export function addPolyFills() {
   if (!Array.prototype.flat) {
@@ -27,17 +27,17 @@ export function addPolyFills() {
 
   // Get a handle on the global object
   let globalObject: any;
-  if (typeof window !== "undefined" && window.document) {
+  if (typeof window !== 'undefined' && window.document) {
     globalObject = window;
   }
 
   // check if the implementation is available
-  if (typeof Promise.prototype["finally"] === "function") {
+  if (typeof Promise.prototype['finally'] === 'function') {
     return;
   }
 
   // implementation
-  globalObject!.Promise.prototype["finally"] = function(callback: Function) {
+  globalObject!.Promise.prototype['finally'] = function(callback: Function) {
     const constructor = this.constructor;
 
     return this.then(

@@ -1,18 +1,18 @@
-import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Card } from "azure-devops-ui/Card";
-import { Spinner } from "office-ui-fabric-react";
-import { FilterBar } from "azure-devops-ui/FilterBar";
-import { DropdownFilterBarItem } from "azure-devops-ui/Dropdown";
-import { ObservableArray } from "azure-devops-ui/Core/Observable";
-import { FILTER_CHANGE_EVENT } from "azure-devops-ui/Utilities/Filter";
-import { Table, ITableColumn, ColumnMore } from "azure-devops-ui/Table";
-import { KeywordFilterBarItem } from "azure-devops-ui/TextFilterBarItem";
-import { ConditionalChildren } from "azure-devops-ui/ConditionalChildren";
-import { DropdownMultiSelection } from "azure-devops-ui/Utilities/DropdownSelection";
+import { Card } from 'azure-devops-ui/Card';
+import { Spinner } from 'office-ui-fabric-react';
+import { FilterBar } from 'azure-devops-ui/FilterBar';
+import { DropdownFilterBarItem } from 'azure-devops-ui/Dropdown';
+import { ObservableArray } from 'azure-devops-ui/Core/Observable';
+import { FILTER_CHANGE_EVENT } from 'azure-devops-ui/Utilities/Filter';
+import { Table, ITableColumn, ColumnMore } from 'azure-devops-ui/Table';
+import { KeywordFilterBarItem } from 'azure-devops-ui/TextFilterBarItem';
+import { ConditionalChildren } from 'azure-devops-ui/ConditionalChildren';
+import { DropdownMultiSelection } from 'azure-devops-ui/Utilities/DropdownSelection';
 
-import "./Active.scss";
+import './Active.scss';
 
 import {
   IActive,
@@ -26,12 +26,12 @@ import {
   ActiveItemProvider,
   FilterDictionary,
   FilterItemsDictionary
-} from "./Active.types";
-import { andFilter } from "../../lib/filters";
-import { ActionTypes, PrHubState, PR } from "../../state/types";
-import { fromPRToFilterItems } from "../../state/transformData";
-import { ApprovalStatusItem } from "../../components/ApprovalStatusItem";
-import { renderTitleColumn, renderReviewersColumn } from "../../components/Columns";
+} from './Active.types';
+import { andFilter } from '../../lib/filters';
+import { ActionTypes, PrHubState, PR } from '../../state/types';
+import { fromPRToFilterItems } from '../../state/transformData';
+import { ApprovalStatusItem } from '../../components/ApprovalStatusItem';
+import { renderTitleColumn, renderReviewersColumn } from '../../components/Columns';
 
 const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
 export const Active: React.FC<IActive> = ({ filter }) => {
@@ -48,25 +48,25 @@ export const Active: React.FC<IActive> = ({ filter }) => {
 
   const columns: ITableColumn<PR>[] = [
     {
-      id: "title",
-      name: "Pull Request",
+      id: 'title',
+      name: 'Pull Request',
       renderCell: renderTitleColumn,
       width: -100
     },
     {
-      id: "reviewers",
-      name: "Reviewers",
+      id: 'reviewers',
+      name: 'Reviewers',
       renderCell: renderReviewersColumn,
       width: 416
     },
     new ColumnMore(data => {
       return {
-        id: "sub-menu",
+        id: 'sub-menu',
         items: [
           {
-            id: "submenu-one",
-            text: "Show Work Items",
-            iconProps: { iconName: "WorkItem" },
+            id: 'submenu-one',
+            text: 'Show Work Items',
+            iconProps: { iconName: 'WorkItem' },
             onActivate: () => {}
           }
         ]
@@ -97,18 +97,18 @@ export const Active: React.FC<IActive> = ({ filter }) => {
   }, [filter, data.pullRequests]);
 
   return (
-    <div className="flex-column">
+    <div className='flex-column'>
       <ConditionalChildren renderChildren={ui.isFilterVisible}>
-        <div className={"margin-bottom-16"}>
+        <div className={'margin-bottom-16'}>
           <FilterBar filter={filter} onDismissClicked={() => dispatch({ type: ActionTypes.TOGGLE_FILTER_BAR })}>
             <KeywordFilterBarItem
               filterItemKey={SEARCH_STRING}
-              placeholder={"Search Across Pull Requests"}
+              placeholder={'Search Across Pull Requests'}
               filter={filter}
             />
             <DropdownFilterBarItem
               filterItemKey={REPOSITORIES}
-              placeholder={"Repositories"}
+              placeholder={'Repositories'}
               filter={filter}
               selection={new DropdownMultiSelection()}
               showFilterBox={true}
@@ -116,7 +116,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
             />
             <DropdownFilterBarItem
               filterItemKey={SOURCE_BRANCH}
-              placeholder={"Source Branch"}
+              placeholder={'Source Branch'}
               filter={filter}
               selection={new DropdownMultiSelection()}
               showFilterBox={true}
@@ -124,7 +124,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
             />
             <DropdownFilterBarItem
               filterItemKey={TARGET_BRANCH}
-              placeholder={"Target Branch"}
+              placeholder={'Target Branch'}
               filter={filter}
               selection={new DropdownMultiSelection()}
               showFilterBox={true}
@@ -132,7 +132,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
             />
             <DropdownFilterBarItem
               filterItemKey={AUTHOR}
-              placeholder={"Author"}
+              placeholder={'Author'}
               filter={filter}
               selection={new DropdownMultiSelection()}
               showFilterBox={true}
@@ -140,7 +140,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
             />
             <DropdownFilterBarItem
               filterItemKey={REVIEWER}
-              placeholder={"Reviewer"}
+              placeholder={'Reviewer'}
               filter={filter}
               selection={new DropdownMultiSelection()}
               showFilterBox={true}
@@ -148,7 +148,7 @@ export const Active: React.FC<IActive> = ({ filter }) => {
             />
             <DropdownFilterBarItem
               filterItemKey={MY_APPROVAL_STATUS}
-              placeholder={"My Approval Status"}
+              placeholder={'My Approval Status'}
               filter={filter}
               selection={new DropdownMultiSelection()}
               renderItem={ApprovalStatusItem}
@@ -159,11 +159,11 @@ export const Active: React.FC<IActive> = ({ filter }) => {
         </div>
       </ConditionalChildren>
       {data.asyncTaskCount === 0 ? (
-        <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: false }}>
-          <Table<PR> columns={columns} itemProvider={pullRequestItemProvider$} showLines={true} role="table" />
+        <Card className='flex-grow bolt-table-card' contentProps={{ contentPadding: false }}>
+          <Table<PR> columns={columns} itemProvider={pullRequestItemProvider$} showLines={true} role='table' />
         </Card>
       ) : (
-        <Spinner label="fetching pull requests..." size={3} className="center-spinner" />
+        <Spinner label='fetching pull requests...' size={3} className='center-spinner' />
       )}
     </div>
   );

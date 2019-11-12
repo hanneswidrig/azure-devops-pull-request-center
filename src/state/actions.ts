@@ -1,18 +1,18 @@
-import { Action, Dispatch } from "redux";
+import { Action, Dispatch } from 'redux';
 
 // azure-devops-extension-sdk
-import * as DevOps from "azure-devops-extension-sdk";
+import * as DevOps from 'azure-devops-extension-sdk';
 
 // azure-devops-extension-api
-import { ResourceRef } from "azure-devops-extension-api/WebApi/WebApi";
-import { GitRestClient } from "azure-devops-extension-api/Git/GitClient";
-import { getClient, IProjectPageService } from "azure-devops-extension-api";
-import { WorkItemTrackingRestClient } from "azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient";
+import { ResourceRef } from 'azure-devops-extension-api/WebApi/WebApi';
+import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
+import { getClient, IProjectPageService } from 'azure-devops-extension-api';
+import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
-import { ActionTypes } from "./types";
-import { fromPullRequestToPR } from "./transformData";
-import { sortByRepositoryName } from "../lib/utilities";
-import { GitPullRequest, GitPullRequestSearchCriteria, PullRequestStatus } from "azure-devops-extension-api/Git/Git";
+import { ActionTypes } from './types';
+import { fromPullRequestToPR } from './transformData';
+import { sortByRepositoryName } from '../lib/utilities';
+import { GitPullRequest, GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 
 // action interfaces
 export interface FetchAction extends Action {
@@ -21,14 +21,14 @@ export interface FetchAction extends Action {
 
 // criteria setup
 export const pullRequestCriteria: GitPullRequestSearchCriteria = {
-  repositoryId: "",
-  creatorId: "",
+  repositoryId: '',
+  creatorId: '',
   includeLinks: true,
-  reviewerId: "",
-  sourceRefName: "",
-  sourceRepositoryId: "",
+  reviewerId: '',
+  sourceRefName: '',
+  sourceRepositoryId: '',
   status: PullRequestStatus.Active,
-  targetRefName: ""
+  targetRefName: ''
 };
 
 // VSTS REST Clients
@@ -96,7 +96,7 @@ export const setRepositories = () => {
 };
 
 const getRepositories = async () => {
-  const projectService = await DevOps.getService<IProjectPageService>("ms.vss-tfs-web.tfs-page-data-service");
+  const projectService = await DevOps.getService<IProjectPageService>('ms.vss-tfs-web.tfs-page-data-service');
   const currentProject = await projectService.getProject();
   return (await gitClient.getRepositories(currentProject!.name, true)).sort(sortByRepositoryName);
 };

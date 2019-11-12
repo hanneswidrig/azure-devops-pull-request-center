@@ -1,26 +1,26 @@
-import * as React from "react";
-import thunk from "redux-thunk";
-import { Provider } from "react-redux";
-import { addPolyFills } from "./polyfills";
-import { createStore, applyMiddleware, Dispatch } from "redux";
+import * as React from 'react';
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
+import { addPolyFills } from './polyfills';
+import { createStore, applyMiddleware, Dispatch } from 'redux';
 
-import { Page } from "azure-devops-ui/Page";
-import { Header } from "azure-devops-ui/Header";
-import { Surface } from "azure-devops-ui/Surface";
-import { Tab, TabBar } from "azure-devops-ui/Tabs";
-import * as DevOps from "azure-devops-extension-sdk";
-import { Filter } from "azure-devops-ui/Utilities/Filter";
-import { IHostPageLayoutService } from "azure-devops-extension-api";
-import { IHeaderCommandBarItem } from "azure-devops-ui/HeaderCommandBar";
+import { Page } from 'azure-devops-ui/Page';
+import { Header } from 'azure-devops-ui/Header';
+import { Surface } from 'azure-devops-ui/Surface';
+import { Tab, TabBar } from 'azure-devops-ui/Tabs';
+import * as DevOps from 'azure-devops-extension-sdk';
+import { Filter } from 'azure-devops-ui/Utilities/Filter';
+import { IHostPageLayoutService } from 'azure-devops-extension-api';
+import { IHeaderCommandBarItem } from 'azure-devops-ui/HeaderCommandBar';
 
-import "./index.scss";
-import { Draft } from "./tabs/Draft/Draft";
-import { Active } from "./tabs/Active/Active";
-import { reducer } from "./state/store";
-import { PrHubState } from "./state/types";
-import { showRootComponent } from "./common";
-import { TabBarFilterIcon } from "./components/TabBarFilterIcon";
-import { setCurrentUser, setRepositories, setPullRequests } from "./state/actions";
+import './index.scss';
+import { Draft } from './tabs/Draft/Draft';
+import { Active } from './tabs/Active/Active';
+import { reducer } from './state/store';
+import { PrHubState } from './state/types';
+import { showRootComponent } from './common';
+import { TabBarFilterIcon } from './components/TabBarFilterIcon';
+import { setCurrentUser, setRepositories, setPullRequests } from './state/actions';
 
 interface IHubContentState {
   selectedTabId: string;
@@ -42,7 +42,7 @@ export class App extends React.Component<{}, IHubContentState> {
     super(props);
 
     this.state = {
-      selectedTabId: "active"
+      selectedTabId: 'active'
     };
 
     this.filter = new Filter();
@@ -65,17 +65,17 @@ export class App extends React.Component<{}, IHubContentState> {
     return (
       <Provider store={store}>
         <Surface background={1}>
-          <Page className="azure-pull-request-hub flex-grow">
+          <Page className='azure-pull-request-hub flex-grow'>
             <Header
-              title={"Pull Requests Center"}
+              title={'Pull Requests Center'}
               titleSize={1}
-              description={""}
+              description={''}
               commandBarItems={this.getCommandBarItems()}
             />
             <TabBar
               selectedTabId={selectedTabId}
               onSelectedTabChanged={(newTabId: string) => this.setState({ selectedTabId: newTabId })}
-              tabSize={"tall" as any}
+              tabSize={'tall' as any}
               renderAdditionalContent={() => (
                 <TabBarFilterIcon
                   filter={this.filter}
@@ -84,10 +84,10 @@ export class App extends React.Component<{}, IHubContentState> {
                 />
               )}
             >
-              <Tab name="Active" id="active" />
-              <Tab name="Draft" id="draft" />
+              <Tab name='Active' id='active' />
+              <Tab name='Draft' id='draft' />
             </TabBar>
-            <div className="page-content-left page-content-right page-content-top page-content-bottom">
+            <div className='page-content-left page-content-right page-content-top page-content-bottom'>
               {this.getPageContent()}
             </div>
           </Page>
@@ -98,9 +98,9 @@ export class App extends React.Component<{}, IHubContentState> {
 
   private getPageContent() {
     switch (this.state.selectedTabId) {
-      case "active":
+      case 'active':
         return <Active filter={this.filter} />;
-      case "draft":
+      case 'draft':
         return <Draft filter={this.filter} />;
       default:
         return null;
@@ -110,33 +110,33 @@ export class App extends React.Component<{}, IHubContentState> {
   private getCommandBarItems(): IHeaderCommandBarItem[] {
     return [
       {
-        id: "refresh",
-        text: "Refresh",
+        id: 'refresh',
+        text: 'Refresh',
         isPrimary: true,
         important: true,
         onActivate: () => {
           this.dispatch(setPullRequests());
         },
         iconProps: {
-          iconName: "fabric-icon ms-Icon--Refresh"
+          iconName: 'fabric-icon ms-Icon--Refresh'
         }
       },
       {
-        id: "full-screen",
-        text: "Full Screen Mode",
+        id: 'full-screen',
+        text: 'Full Screen Mode',
         important: false,
         onActivate: () => {
           this.toggleFullScreenMode();
         },
         iconProps: {
-          iconName: "fabric-icon ms-Icon--FullScreen"
+          iconName: 'fabric-icon ms-Icon--FullScreen'
         }
       }
     ];
   }
 
   private async toggleFullScreenMode(): Promise<void> {
-    const layoutService = await DevOps.getService<IHostPageLayoutService>("ms.vss-features.host-page-layout-service");
+    const layoutService = await DevOps.getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
     const fullScreenMode = await layoutService.getFullScreenMode();
     layoutService.setFullScreenMode(!fullScreenMode);
   }

@@ -1,10 +1,10 @@
-import * as DevOps from "azure-devops-extension-sdk";
-import { WorkItem } from "azure-devops-extension-api/WorkItemTracking/WorkItemTracking";
-import { GitPullRequest, IdentityRefWithVote } from "azure-devops-extension-api/Git/Git";
+import * as DevOps from 'azure-devops-extension-sdk';
+import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
+import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
-import { PR } from "./types";
-import { ReviewerVoteOption } from "../lib/enums";
-import { FilterItemsDictionary } from "../tabs/Active/Active.types";
+import { PR } from './types';
+import { ReviewerVoteOption } from '../lib/enums';
+import { FilterItemsDictionary } from '../tabs/Active/Active.types';
 
 type fromPullRequestToPRType = { pr: GitPullRequest; workItems: WorkItem[]; userContext: DevOps.IUserContext };
 export const fromPullRequestToPR = ({ pr, workItems, userContext }: fromPullRequestToPRType) => {
@@ -20,12 +20,12 @@ export const fromPullRequestToPR = ({ pr, workItems, userContext }: fromPullRequ
     creationDate: pr.creationDate,
     secondaryTitle: `#${pr.pullRequestId} created by ${pr.createdBy.displayName}`,
     sourceBranch: {
-      name: pr.sourceRefName.replace("refs/heads/", ""),
-      href: `${pr.repository.webUrl}?version=GB${pr.sourceRefName.replace("refs/heads/", "")}`
+      name: pr.sourceRefName.replace('refs/heads/', ''),
+      href: `${pr.repository.webUrl}?version=GB${pr.sourceRefName.replace('refs/heads/', '')}`
     },
     targetBranch: {
-      name: pr.targetRefName.replace("refs/heads/", ""),
-      href: `${pr.repository.webUrl}?version=GB${pr.targetRefName.replace("refs/heads/", "")}`
+      name: pr.targetRefName.replace('refs/heads/', ''),
+      href: `${pr.repository.webUrl}?version=GB${pr.targetRefName.replace('refs/heads/', '')}`
     },
     repository: {
       href: pr.repository.webUrl,
@@ -48,23 +48,23 @@ export const fromPRToFilterItems = (pullRequests: PR[]): FilterItemsDictionary =
     myApprovalStatus: [
       {
         id: ReviewerVoteOption.Approved.toString(),
-        text: "Approved"
+        text: 'Approved'
       },
       {
         id: ReviewerVoteOption.ApprovedWithSuggestions.toString(),
-        text: "Approved with suggestions"
+        text: 'Approved with suggestions'
       },
       {
         id: ReviewerVoteOption.NoVote.toString(),
-        text: "Assigned to me"
+        text: 'Assigned to me'
       },
       {
         id: ReviewerVoteOption.WaitingForAuthor.toString(),
-        text: "Waiting for author"
+        text: 'Waiting for author'
       },
       {
         id: ReviewerVoteOption.Rejected.toString(),
-        text: "Rejected"
+        text: 'Rejected'
       }
     ]
   };
