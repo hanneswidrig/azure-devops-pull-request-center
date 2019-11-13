@@ -15,7 +15,7 @@ import { DropdownMultiSelection } from 'azure-devops-ui/Utilities/DropdownSelect
 import './Active.scss';
 
 import { applyFilter } from '../../lib/filters';
-import { ITab, ActiveItemProvider } from '../tabs.types';
+import { ITab, ActiveItemProvider } from '../Tabs.types';
 import { ActionTypes, PrHubState, PR } from '../../state/types';
 import { fromPRToFilterItems } from '../../state/transformData';
 import { ApprovalStatusItem } from '../../components/ApprovalStatusItem';
@@ -64,7 +64,8 @@ export const Active: React.FC<ITab> = ({ filter }) => {
   ];
 
   React.useEffect(() => {
-    pullRequestItemProvider$.change(0, ...applyFilter(data.pullRequests, {}, 'active'));
+    pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
+    pullRequestItemProvider$.push(...applyFilter(data.pullRequests, {}, 'active'));
     setFilterItems(fromPRToFilterItems(data.pullRequests));
 
     filter.subscribe(() => {
@@ -77,7 +78,8 @@ export const Active: React.FC<ITab> = ({ filter }) => {
         reviewer: filter.getFilterItemValue<string[]>(FilterOptions.reviewer),
         myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus)
       };
-      pullRequestItemProvider$.change(0, ...applyFilter(data.pullRequests, filterValues, 'active'));
+      pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
+      pullRequestItemProvider$.push(...applyFilter(data.pullRequests, filterValues, 'active'));
     }, FILTER_CHANGE_EVENT);
     return () => filter.unsubscribe(() => {}, FILTER_CHANGE_EVENT);
   }, [filter, data.pullRequests]);

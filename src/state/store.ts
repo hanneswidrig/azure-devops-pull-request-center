@@ -9,15 +9,17 @@ const initialState: PrHubState = {
     repositories: [],
     pullRequests: [],
     currentUser: { id: '', name: '', displayName: '', descriptor: '', imageUrl: '' },
-    isFullScreenMode: false,
     asyncTaskCount: 0
   },
   ui: {
-    isFilterVisible: new ObservableValue(false)
+    isFilterVisible: new ObservableValue(false),
+    isFullScreenMode: false,
+    selectedTab: 'active'
   }
 };
 
 export const reducer: Reducer<PrHubState, FetchAction> = (state: PrHubState = initialState, action: FetchAction) => {
+  console.log(action);
   switch (action.type) {
     case ActionTypes.SET_REPOSITORIES:
       return {
@@ -43,12 +45,29 @@ export const reducer: Reducer<PrHubState, FetchAction> = (state: PrHubState = in
           currentUser: action.payload
         }
       };
+    case ActionTypes.SET_SELECTED_TAB:
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          selectedTab: action.payload
+        }
+      };
     case ActionTypes.TOGGLE_FILTER_BAR:
       state.ui.isFilterVisible.value = !state.ui.isFilterVisible.value;
       return {
         ...state,
         ui: {
+          ...state.ui,
           isFilterVisible: state.ui.isFilterVisible
+        }
+      };
+    case ActionTypes.TOGGLE_FULL_SCREEN_MODE:
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          isFullScreenMode: action.payload
         }
       };
     case ActionTypes.ADD_ASYNC_TASK:

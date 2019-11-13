@@ -6,7 +6,7 @@ import * as DevOps from 'azure-devops-extension-sdk';
 // azure-devops-extension-api
 import { ResourceRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
-import { getClient, IProjectPageService } from 'azure-devops-extension-api';
+import { getClient, IProjectPageService, IHostPageLayoutService } from 'azure-devops-extension-api';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
 import { ActionTypes } from './types';
@@ -41,6 +41,10 @@ export const workItemClient: WorkItemTrackingRestClient = getClient(WorkItemTrac
 export const setCurrentUser = () => {
   return (dispatch: Dispatch<FetchAction>) =>
     dispatch({ type: ActionTypes.SET_CURRENT_USER, payload: DevOps.getUser() });
+};
+
+export const setSelectedTab = (newSelectedTab: string) => {
+  return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
 };
 
 /**
@@ -80,7 +84,7 @@ export const setPullRequests = () => {
 };
 
 /**
- * @summary set repositories in redux store
+ * @summary Set repositories in redux store
  */
 export const setRepositories = () => {
   return async (dispatch: Dispatch<FetchAction>) => {
@@ -89,6 +93,20 @@ export const setRepositories = () => {
       const repositories = await getRepositories();
       dispatch({ type: ActionTypes.SET_REPOSITORIES, payload: repositories });
       dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
+    } catch (error) {
+      throw error;
+    }
+  };
+};
+
+/**
+ * @summary Toggle full screen mode for extension
+ */
+export const toggleFullScreenMode = () => {
+  return async (dispatch: Dispatch<FetchAction>) => {
+    try {
+      const newFullScreenModeState = await setFullScreenMode();
+      dispatch({ type: ActionTypes.TOGGLE_FULL_SCREEN_MODE, payload: newFullScreenModeState });
     } catch (error) {
       throw error;
     }
@@ -105,4 +123,11 @@ const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
   const workItemRefs = await gitClient.getPullRequestWorkItemRefs(pullRequest.repository.id, pullRequest.pullRequestId);
   const workItemIds = workItemRefs.flatMap((ref: ResourceRef) => Number(ref.id));
   return workItemIds.length > 0 ? await workItemClient.getWorkItems(workItemIds) : [];
+};
+
+const setFullScreenMode = async (): Promise<boolean> => {
+  const layoutService = await DevOps.getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
+  const fullScreenMode = await layoutService.getFullScreenMode();
+  layoutService.setFullScreenMode(!fullScreenMode);
+  return !fullScreenMode;
 };
