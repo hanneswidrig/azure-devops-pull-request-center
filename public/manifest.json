@@ -1,6 +1,6 @@
 {
-  "short_name": "Azure Pull Request Hub",
-  "name": "Azure Pull Request Hub",
+  "short_name": "Pull Requests Center",
+  "name": "Pull Requests Center for Azure DevOps",
   "icons": [
     {
       "src": "favicon.ico",

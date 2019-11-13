@@ -1,6 +1,5 @@
 import { PR } from '../state/types';
-import { TabOptionsType } from '../tabs/Tabs.types';
-import { FilterTypes } from '../tabs/Active/Active.types';
+import { TabOptionsType, FilterTypes } from '../tabs/Tabs.types';
 
 export type FilterFunc = (pullRequest: PR, filterValue: string[]) => boolean;
 export interface IFilterSetup {
