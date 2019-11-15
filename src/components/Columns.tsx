@@ -8,11 +8,10 @@ import { IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
 import './Columns.scss';
 import { PR } from '../state/types';
-import { ReviewerVoteOption } from '../lib/enums';
-import { sortByDisplayName } from '../lib/utilities';
 import { PullRequestCellUI } from './PullRequestCellUI';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 import { reviewerVoteToIColorLight } from '../lib/colors';
+import { sortByDisplayName, getVoteDescription } from '../lib/utilities';
 
 export const renderTitleColumn = (
   rowIndex: number,
@@ -174,7 +173,7 @@ const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
           </div>
           <div className='flex-row flex-center justify-start margin-top-8'>
             {getReviewerVoteIconStatus(reviewer.vote)}
-            <span className='font-weight-semibold margin-left-4'>{getReviewerVoteStatus(reviewer)}</span>
+            <span className='font-weight-semibold margin-left-4'>{getVoteDescription(reviewer.vote)}</span>
           </div>
         </div>
       </div>
@@ -188,14 +187,3 @@ const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
     </Pill>
   </Tooltip>
 );
-
-function getReviewerVoteStatus(reviewer: IdentityRefWithVote): string {
-  const colorMap: Record<string, string> = {
-    Approved: 'Approved',
-    ApprovedWithSuggestions: 'Approved With Suggestions',
-    NoVote: 'Assigned',
-    WaitingForAuthor: 'Waiting For Author',
-    Rejected: 'Rejected'
-  };
-  return colorMap[ReviewerVoteOption[reviewer.vote]];
-}

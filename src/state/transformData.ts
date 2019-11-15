@@ -3,7 +3,7 @@ import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTr
 import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
 import { PR } from './types';
-import { ReviewerVoteOption } from '../lib/enums';
+import { ReviewerVoteLabel } from '../lib/enums';
 import { FilterItemsDictionary } from '../tabs/Tabs.types';
 
 type fromPullRequestToPRType = { pr: GitPullRequest; workItems: WorkItem[]; userContext: DevOps.IUserContext };
@@ -47,23 +47,23 @@ export const fromPRToFilterItems = (pullRequests: PR[]): FilterItemsDictionary =
     reviewer: [],
     myApprovalStatus: [
       {
-        id: ReviewerVoteOption.Approved.toString(),
+        id: ReviewerVoteLabel.Approved,
         text: 'Approved'
       },
       {
-        id: ReviewerVoteOption.ApprovedWithSuggestions.toString(),
+        id: ReviewerVoteLabel.ApprovedWithSuggestions,
         text: 'Approved with suggestions'
       },
       {
-        id: ReviewerVoteOption.NoVote.toString(),
+        id: ReviewerVoteLabel.NoVote,
         text: 'Assigned to me'
       },
       {
-        id: ReviewerVoteOption.WaitingForAuthor.toString(),
+        id: ReviewerVoteLabel.WaitingForAuthor,
         text: 'Waiting for author'
       },
       {
-        id: ReviewerVoteOption.Rejected.toString(),
+        id: ReviewerVoteLabel.Rejected,
         text: 'Rejected'
       }
     ]
@@ -104,12 +104,12 @@ export const fromPRToFilterItems = (pullRequests: PR[]): FilterItemsDictionary =
 };
 
 const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext: DevOps.IUserContext) => {
-  let voteResult = ReviewerVoteOption.NoVote;
+  let voteResult: ReviewerVoteLabel = ReviewerVoteLabel.NoVote;
   if (reviewers && reviewers.length > 0) {
     const currentUserReviewer = reviewers.filter(r => r.id === userContext.id);
 
     if (currentUserReviewer.length > 0) {
-      voteResult = currentUserReviewer[0].vote as ReviewerVoteOption;
+      voteResult = currentUserReviewer[0].vote.toString() as ReviewerVoteLabel;
     }
   }
 

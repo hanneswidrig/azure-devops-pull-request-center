@@ -4,13 +4,7 @@ import { IReadonlyObservableValue } from 'azure-devops-ui/Core/Observable';
 import { PR } from '../state/types';
 import { IListBoxItem } from 'azure-devops-ui/ListBox';
 
-export interface ITabProvider {
-  filter: Filter;
-}
-
-export interface ITab extends ITabProvider {
-  filterItems: FilterItemsDictionary;
-}
+export type ITab = { filter: Filter; filterItems: FilterItemsDictionary };
 
 const active = 'active';
 const draft = 'draft';

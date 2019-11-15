@@ -14,22 +14,23 @@ import { fromPRToFilterItems } from '../state/transformData';
 import { ITableColumn, ColumnMore } from 'azure-devops-ui/Table';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import { TabBarFilterIcon } from '../components/TabBarFilterIcon';
-import { FILTER_CHANGE_EVENT } from 'azure-devops-ui/Utilities/Filter';
 import { IHeaderCommandBarItem } from 'azure-devops-ui/HeaderCommandBar';
+import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
 import { renderTitleColumn, renderReviewersColumn } from '../components/Columns';
 import { setSelectedTab, setPullRequests, toggleFullScreenMode } from '../state/actions';
 import {
   ITab,
   TabOptionsType,
   ActiveItemProvider,
-  ITabProvider,
   FilterItemsDictionary,
   FilterDictionary,
   FilterOptions
 } from './Tabs.types';
 
+type Props = { filter: Filter };
+
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
-export const TabsProvider: React.FC<ITabProvider> = ({ filter }) => {
+export const TabsProvider: React.FC<Props> = ({ filter }) => {
   const { data, ui } = useSelector((store: PrHubState) => store);
   const dispatch = useDispatch();
 

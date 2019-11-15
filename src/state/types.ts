@@ -4,7 +4,7 @@ import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
 import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
 
-import { ReviewerVoteOption } from '../lib/enums';
+import { ReviewerVoteLabel } from '../lib/enums';
 import { TabOptionsType } from '../tabs/Tabs.types';
 
 const SET_REPOSITORIES = 'setRepositories';
@@ -48,7 +48,7 @@ export interface PR {
   targetBranch: PRRef;
   repository: PRRef;
 
-  myApprovalStatus: ReviewerVoteOption;
+  myApprovalStatus: ReviewerVoteLabel;
 
   workItems: WorkItem[];
   reviewers: IdentityRefWithVote[];
