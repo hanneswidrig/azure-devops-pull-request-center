@@ -34,7 +34,7 @@ export const FilterOptions = {
   author,
   reviewer,
   myApprovalStatus
-};
+} as const;
 export type FilterTypes = typeof allFilterOptions[number];
 export type FilterDictionary = Record<FilterTypes, string | string[] | undefined>;
 export type FilterItemsDictionary = Record<Exclude<FilterTypes, typeof searchString>, IListBoxItem[]>;
