@@ -4,8 +4,8 @@ import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
 import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
 
+import { TabOptions } from '../tabs/Tabs.types';
 import { ReviewerVoteLabel } from '../lib/enums';
-import { TabOptionsType } from '../tabs/Tabs.types';
 
 const SET_REPOSITORIES = 'setRepositories';
 const SET_PULL_REQUESTS = 'setPullRequests';
@@ -66,7 +66,7 @@ export interface Data {
 export interface UI {
   isFilterVisible: ObservableValue<boolean>;
   isFullScreenMode: boolean;
-  selectedTab: TabOptionsType;
+  selectedTab: TabOptions;
 }
 
 export interface PrHubState {

@@ -1,5 +1,5 @@
 import { PR } from '../state/types';
-import { TabOptionsType, FilterTypes } from '../tabs/Tabs.types';
+import { TabOptions, FilterTypes } from '../tabs/Tabs.types';
 
 export type FilterFunc = (pullRequest: PR, filterValue: string[]) => boolean;
 export interface IFilterSetup {
@@ -32,7 +32,7 @@ export const filterByApprovalStatus: FilterFunc = (pullRequest, filterValue) =>
 export const filterByDraftStatus: FilterFunc = (pullRequest, filterValue) =>
   pullRequest.isDraft === (filterValue[0] === 'true');
 
-export const applyFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>>, tab: TabOptionsType) => {
+export const applyFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>>, tab: TabOptions) => {
   const appliedFilters = setupFilters(fv, tab);
 
   if (appliedFilters.length > 0) {
@@ -51,9 +51,9 @@ export const applyFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>
   return valArray;
 };
 
-export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, tab: TabOptionsType) => {
+export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, tab: TabOptions) => {
   const { searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus } = filterValues;
-  const opts: Record<TabOptionsType, IFilterSetup[]> = {
+  const opts: Record<TabOptions, IFilterSetup[]> = {
     active: [
       {
         func: filterByTitle,

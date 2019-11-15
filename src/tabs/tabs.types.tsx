@@ -6,12 +6,7 @@ import { IListBoxItem } from 'azure-devops-ui/ListBox';
 
 export type ITab = { filter: Filter; filterItems: FilterItemsDictionary };
 
-const active = 'active';
-const draft = 'draft';
-const tabOptions = [active, draft] as const;
-
-export const TabOptions = { active: active, draft: draft } as const;
-export type TabOptionsType = typeof tabOptions[number];
+export type TabOptions = 'active' | 'draft';
 export type ActiveItemProvider = PR | IReadonlyObservableValue<PR | undefined>;
 
 const searchString = 'searchString';

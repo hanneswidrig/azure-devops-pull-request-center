@@ -20,7 +20,7 @@ import { renderTitleColumn, renderReviewersColumn } from '../components/Columns'
 import { setSelectedTab, setPullRequests, toggleFullScreenMode } from '../state/actions';
 import {
   ITab,
-  TabOptionsType,
+  TabOptions,
   ActiveItemProvider,
   FilterItemsDictionary,
   FilterDictionary,
@@ -87,8 +87,8 @@ export const TabsProvider: React.FC<Props> = ({ filter }) => {
   );
 };
 
-const getPageContent = ({ newSelectedTab, filter, filterItems }: { newSelectedTab: TabOptionsType } & ITab) => {
-  const tabs: Record<TabOptionsType, JSX.Element> = {
+const getPageContent = ({ newSelectedTab, filter, filterItems }: { newSelectedTab: TabOptions } & ITab) => {
+  const tabs: Record<TabOptions, JSX.Element> = {
     active: <Active filter={filter} filterItems={filterItems} />,
     draft: <Draft filter={filter} filterItems={filterItems} />
   };
