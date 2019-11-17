@@ -6,6 +6,19 @@ import { PR } from './types';
 import { ReviewerVoteLabel } from '../lib/enums';
 import { FilterItemsDictionary } from '../tabs/TabTypes';
 
+const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext: DevOps.IUserContext) => {
+  let voteResult: ReviewerVoteLabel = ReviewerVoteLabel.NoVote;
+  if (reviewers && reviewers.length > 0) {
+    const currentUserReviewer = reviewers.filter(r => r.id === userContext.id);
+
+    if (currentUserReviewer.length > 0) {
+      voteResult = currentUserReviewer[0].vote.toString() as ReviewerVoteLabel;
+    }
+  }
+
+  return voteResult;
+};
+
 type fromPullRequestToPRType = { pr: GitPullRequest; workItems: WorkItem[]; userContext: DevOps.IUserContext };
 export const fromPullRequestToPR = ({ pr, workItems, userContext }: fromPullRequestToPRType) => {
   const pullRequest: PR = {
@@ -101,17 +114,4 @@ export const fromPRToFilterItems = (pullRequests: PR[]): FilterItemsDictionary =
   });
 
   return filterItems;
-};
-
-const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext: DevOps.IUserContext) => {
-  let voteResult: ReviewerVoteLabel = ReviewerVoteLabel.NoVote;
-  if (reviewers && reviewers.length > 0) {
-    const currentUserReviewer = reviewers.filter(r => r.id === userContext.id);
-
-    if (currentUserReviewer.length > 0) {
-      voteResult = currentUserReviewer[0].vote.toString() as ReviewerVoteLabel;
-    }
-  }
-
-  return voteResult;
 };

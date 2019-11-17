@@ -2,11 +2,12 @@ import { PR } from '../state/types';
 import { TabOptions, FilterTypes } from '../tabs/TabTypes';
 
 export type FilterFunc = (pullRequest: PR, filterValue: string[]) => boolean;
-export interface IFilterSetup {
+
+type IFilterSetup = {
   func: FilterFunc;
   val: string[];
   isActive: boolean;
-}
+};
 
 export const filterByTitle: FilterFunc = (pullRequest, filterValue) =>
   pullRequest.title.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1;
@@ -31,25 +32,6 @@ export const filterByApprovalStatus: FilterFunc = (pullRequest, filterValue) =>
 
 export const filterByDraftStatus: FilterFunc = (pullRequest, filterValue) =>
   pullRequest.isDraft === (filterValue[0] === 'true');
-
-export const applyFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>>, tab: TabOptions) => {
-  const appliedFilters = setupFilters(fv, tab);
-
-  if (appliedFilters.length > 0) {
-    return valArray.filter(val => {
-      let found = false;
-      for (const iterator of appliedFilters) {
-        found = iterator.func(val, iterator.val);
-        if (!found) {
-          break;
-        }
-      }
-      return found;
-    });
-  }
-
-  return valArray;
-};
 
 export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, tab: TabOptions) => {
   const { searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus } = filterValues;
@@ -140,4 +122,23 @@ export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, ta
     ],
   };
   return opts[tab].filter(fs => fs.isActive);
+};
+
+export const applyFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>>, tab: TabOptions) => {
+  const appliedFilters = setupFilters(fv, tab);
+
+  if (appliedFilters.length > 0) {
+    return valArray.filter(val => {
+      let found = false;
+      for (const iterator of appliedFilters) {
+        found = iterator.func(val, iterator.val);
+        if (!found) {
+          break;
+        }
+      }
+      return found;
+    });
+  }
+
+  return valArray;
 };

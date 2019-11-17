@@ -36,7 +36,7 @@ export const PRTableCellTitle: React.FC<{ tableItem: PR }> = ({ tableItem }: { t
               {`•`}
               <Ago className="margin-left-4 margin-right-4" date={tableItem.creationDate} />
               {`•`}
-              <Duration className="margin-left-4" startDate={tableItem.creationDate!} endDate={new Date(Date.now())} />
+              <Duration className="margin-left-4" startDate={tableItem.creationDate} endDate={new Date(Date.now())} />
             </span>
           </div>
         </div>

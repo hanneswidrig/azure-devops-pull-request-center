@@ -14,10 +14,10 @@ export const sortByRepositoryName = (a: GitRepository, b: GitRepository) => {
 };
 
 export const sortByDisplayName = (a: IdentityRef, b: IdentityRef) => {
-  if (a.displayName! < b.displayName!) {
+  if (a.displayName < b.displayName) {
     return -1;
   }
-  if (a.displayName! > b.displayName!) {
+  if (a.displayName > b.displayName) {
     return 1;
   }
   return 0;

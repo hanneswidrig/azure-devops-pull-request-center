@@ -35,6 +35,25 @@ export const pullRequestCriteria: GitPullRequestSearchCriteria = {
 export const gitClient: GitRestClient = getClient(GitRestClient);
 export const workItemClient: WorkItemTrackingRestClient = getClient(WorkItemTrackingRestClient);
 
+const getRepositories = async () => {
+  const projectService = await DevOps.getService<IProjectPageService>('ms.vss-tfs-web.tfs-page-data-service');
+  const currentProject = await projectService.getProject();
+  return (await gitClient.getRepositories(currentProject?.name, true)).sort(sortByRepositoryName);
+};
+
+const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
+  const workItemRefs = await gitClient.getPullRequestWorkItemRefs(pullRequest.repository.id, pullRequest.pullRequestId);
+  const workItemIds = workItemRefs.flatMap((ref: ResourceRef) => Number(ref.id));
+  return workItemIds.length > 0 ? await workItemClient.getWorkItems(workItemIds) : [];
+};
+
+const setFullScreenMode = async (): Promise<boolean> => {
+  const layoutService = await DevOps.getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
+  const fullScreenMode = await layoutService.getFullScreenMode();
+  layoutService.setFullScreenMode(!fullScreenMode);
+  return !fullScreenMode;
+};
+
 /**
  * @summary Synchronously sets current user in redux store
  */
@@ -53,81 +72,44 @@ export const setSelectedTab = (newSelectedTab: string) => {
  * - Work Items associated with the respective PR
  * - Auto Complete status
  */
-export const setPullRequests = () => {
-  return async (dispatch: Dispatch<FetchAction>) => {
-    try {
-      dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
-      const repositories = await getRepositories();
-      const getAllRepositoryPullRequests = repositories.map(
-        async repo => await gitClient.getPullRequests(repo.id, pullRequestCriteria),
-      );
-      const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
-      const getCompletePullRequests = allRepositoryPullRequests.flatMap(prsForSingleRepo =>
-        prsForSingleRepo.map(async pr => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId)),
-      );
-      const allPullRequests = await Promise.all(getCompletePullRequests);
-      const transformedPopulatedPullRequests = await Promise.all(
-        allPullRequests.map(async pullRequest =>
-          fromPullRequestToPR({
-            pr: pullRequest,
-            workItems: await getWorkItemsForPr(pullRequest),
-            userContext: DevOps.getUser(),
-          }),
-        ),
-      );
-      dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload: transformedPopulatedPullRequests });
-      dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
-    } catch (error) {
-      throw error;
-    }
-  };
+export const setPullRequests = () => async (dispatch: Dispatch<FetchAction>) => {
+  dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
+  const repositories = await getRepositories();
+  const getAllRepositoryPullRequests = repositories.map(
+    async repo => await gitClient.getPullRequests(repo.id, pullRequestCriteria),
+  );
+  const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
+  const getCompletePullRequests = allRepositoryPullRequests.flatMap(prsForSingleRepo =>
+    prsForSingleRepo.map(async pr => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId)),
+  );
+  const allPullRequests = await Promise.all(getCompletePullRequests);
+  const transformedPopulatedPullRequests = await Promise.all(
+    allPullRequests.map(async pullRequest =>
+      fromPullRequestToPR({
+        pr: pullRequest,
+        workItems: await getWorkItemsForPr(pullRequest),
+        userContext: DevOps.getUser(),
+      }),
+    ),
+  );
+  dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload: transformedPopulatedPullRequests });
+  dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
 };
 
 /**
  * @summary Set repositories in redux store
  */
-export const setRepositories = () => {
-  return async (dispatch: Dispatch<FetchAction>) => {
-    try {
-      dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
-      const repositories = await getRepositories();
-      dispatch({ type: ActionTypes.SET_REPOSITORIES, payload: repositories });
-      dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
-    } catch (error) {
-      throw error;
-    }
-  };
+export const setRepositories = () => async (dispatch: Dispatch<FetchAction>) => {
+  dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
+  const repositories = await getRepositories();
+  dispatch({ type: ActionTypes.SET_REPOSITORIES, payload: repositories });
+  dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
 };
 
 /**
  * @summary Toggle full screen mode for extension
  */
-export const toggleFullScreenMode = () => {
-  return async (dispatch: Dispatch<FetchAction>) => {
-    try {
-      const newFullScreenModeState = await setFullScreenMode();
-      dispatch({ type: ActionTypes.TOGGLE_FULL_SCREEN_MODE, payload: newFullScreenModeState });
-    } catch (error) {
-      throw error;
-    }
-  };
-};
-
-const getRepositories = async () => {
-  const projectService = await DevOps.getService<IProjectPageService>('ms.vss-tfs-web.tfs-page-data-service');
-  const currentProject = await projectService.getProject();
-  return (await gitClient.getRepositories(currentProject!.name, true)).sort(sortByRepositoryName);
-};
-
-const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
-  const workItemRefs = await gitClient.getPullRequestWorkItemRefs(pullRequest.repository.id, pullRequest.pullRequestId);
-  const workItemIds = workItemRefs.flatMap((ref: ResourceRef) => Number(ref.id));
-  return workItemIds.length > 0 ? await workItemClient.getWorkItems(workItemIds) : [];
-};
-
-const setFullScreenMode = async (): Promise<boolean> => {
-  const layoutService = await DevOps.getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
-  const fullScreenMode = await layoutService.getFullScreenMode();
-  layoutService.setFullScreenMode(!fullScreenMode);
-  return !fullScreenMode;
+export const toggleFullScreenMode = () => async (dispatch: Dispatch<FetchAction>) => {
+  const newFullScreenModeState = await setFullScreenMode();
+  dispatch({ type: ActionTypes.TOGGLE_FULL_SCREEN_MODE, payload: newFullScreenModeState });
 };
