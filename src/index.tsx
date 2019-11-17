@@ -1,4 +1,8 @@
+import 'es6-promise/auto';
+
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, Dispatch } from 'redux';
@@ -6,12 +10,14 @@ import { createStore, applyMiddleware, Dispatch } from 'redux';
 import * as DevOps from 'azure-devops-extension-sdk';
 import { Filter } from 'azure-devops-ui/Utilities/Filter';
 
+import { addPolyFills } from './polyfills';
+
 import './index.scss';
 import { reducer } from './state/store';
-import { showRootComponent } from './common';
 import { TabsProvider } from './tabs/TabsProvider';
 import { setCurrentUser, setRepositories, setPullRequests } from './state/actions';
 
+addPolyFills();
 const store = createStore(reducer, applyMiddleware(thunk));
 
 export class App extends React.PureComponent {
@@ -41,4 +47,4 @@ export class App extends React.PureComponent {
     );
   }
 }
-showRootComponent(<App />);
+ReactDOM.render(<App />, document.getElementById('root'));
