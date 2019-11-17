@@ -21,25 +21,25 @@ export const fromPullRequestToPR = ({ pr, workItems, userContext }: fromPullRequ
     secondaryTitle: `#${pr.pullRequestId} created by ${pr.createdBy.displayName}`,
     sourceBranch: {
       name: pr.sourceRefName.replace('refs/heads/', ''),
-      href: `${pr.repository.webUrl}?version=GB${pr.sourceRefName.replace('refs/heads/', '')}`
+      href: `${pr.repository.webUrl}?version=GB${pr.sourceRefName.replace('refs/heads/', '')}`,
     },
     targetBranch: {
       name: pr.targetRefName.replace('refs/heads/', ''),
-      href: `${pr.repository.webUrl}?version=GB${pr.targetRefName.replace('refs/heads/', '')}`
+      href: `${pr.repository.webUrl}?version=GB${pr.targetRefName.replace('refs/heads/', '')}`,
     },
     repository: {
       href: pr.repository.webUrl,
-      name: pr.repository.name
+      name: pr.repository.name,
     },
     myApprovalStatus: getCurrentUserVoteStatus(pr.reviewers, userContext),
     workItems: workItems,
-    reviewers: pr.reviewers
+    reviewers: pr.reviewers,
   };
   return pullRequest;
 };
 
 export const fromPRToFilterItems = (pullRequests: PR[]): FilterItemsDictionary => {
-  let filterItems: FilterItemsDictionary = {
+  const filterItems: FilterItemsDictionary = {
     repositories: [],
     sourceBranch: [],
     targetBranch: [],
@@ -48,25 +48,25 @@ export const fromPRToFilterItems = (pullRequests: PR[]): FilterItemsDictionary =
     myApprovalStatus: [
       {
         id: ReviewerVoteLabel.Approved,
-        text: 'Approved'
+        text: 'Approved',
       },
       {
         id: ReviewerVoteLabel.ApprovedWithSuggestions,
-        text: 'Approved with suggestions'
+        text: 'Approved with suggestions',
       },
       {
         id: ReviewerVoteLabel.NoVote,
-        text: 'Assigned to me'
+        text: 'Assigned to me',
       },
       {
         id: ReviewerVoteLabel.WaitingForAuthor,
-        text: 'Waiting for author'
+        text: 'Waiting for author',
       },
       {
         id: ReviewerVoteLabel.Rejected,
-        text: 'Rejected'
-      }
-    ]
+        text: 'Rejected',
+      },
+    ],
   };
 
   pullRequests.forEach(pr => {

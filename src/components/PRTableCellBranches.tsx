@@ -9,9 +9,9 @@ export const PRTableCellBranches: React.FC<{ tableItem: PR }> = ({ tableItem }: 
   const targetBranch = tableItem.targetBranch.name.replace('refs/heads/', '');
 
   return (
-    <div className='flex-row flex-center rhythm-horizontal-4'>
+    <div className="flex-row flex-center rhythm-horizontal-4">
       <Button
-        className='branch-button'
+        className="branch-button"
         text={tableItem.repository.name}
         iconProps={{ iconName: 'Repo' }}
         onClick={() => {
@@ -20,7 +20,7 @@ export const PRTableCellBranches: React.FC<{ tableItem: PR }> = ({ tableItem }: 
         subtle
       />
       <Button
-        className='branch-button text-ellipsis'
+        className="branch-button text-ellipsis"
         text={sourceBranch}
         iconProps={{ iconName: 'BranchCompare' }}
         tooltipProps={{ text: sourceBranch, delayMs: 500 }}
@@ -30,7 +30,7 @@ export const PRTableCellBranches: React.FC<{ tableItem: PR }> = ({ tableItem }: 
         subtle
       />
       <Button
-        className='branch-button'
+        className="branch-button"
         text={targetBranch}
         iconProps={{ iconName: 'BranchMerge' }}
         onClick={() => {

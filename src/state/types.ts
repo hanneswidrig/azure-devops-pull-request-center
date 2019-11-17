@@ -28,7 +28,7 @@ export const ActionTypes = {
   TOGGLE_FILTER_BAR,
   DISPLAY_WORK_ITEMS,
   REFRESH_PULL_REQUESTS,
-  TOGGLE_FULL_SCREEN_MODE
+  TOGGLE_FULL_SCREEN_MODE,
 } as const;
 
 export interface PR {

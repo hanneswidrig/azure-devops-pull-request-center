@@ -10,12 +10,12 @@ export const ApprovalStatusItem = (
   rowIndex: number,
   columnIndex: number,
   tableColumn: ITableColumn<IListBoxItem<{}>>,
-  tableItem: IListBoxItem<{}>
+  tableItem: IListBoxItem<{}>,
 ) => {
   return (
-    <td key={rowIndex} className='bolt-list-box-text bolt-list-box-text-multi-select asi-container'>
+    <td key={rowIndex} className="bolt-list-box-text bolt-list-box-text-multi-select asi-container">
       {getReviewerVoteIconStatus(tableItem.id)}
-      <span className='margin-left-8'>{tableItem.text}</span>
+      <span className="margin-left-8">{tableItem.text}</span>
     </td>
   );
 };

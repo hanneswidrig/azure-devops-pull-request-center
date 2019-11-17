@@ -16,7 +16,7 @@ type Reviewer = {
   elementWidth: number;
 };
 export const PRTableCellReviewers: React.FC<{ reviewers: IdentityRefWithVote[] }> = ({
-  reviewers
+  reviewers,
 }: {
   reviewers: IdentityRefWithVote[];
 }) => {
@@ -37,7 +37,7 @@ export const PRTableCellReviewers: React.FC<{ reviewers: IdentityRefWithVote[] }
           breakpointHit = true;
         }
         return newSum;
-      }, 0)
+      }, 0),
     );
   }, [pills]);
 
@@ -63,11 +63,11 @@ export const PRTableCellReviewers: React.FC<{ reviewers: IdentityRefWithVote[] }
         {displayPills.map(p => p.element)}
         {width > BREAKPOINT_WIDTH && (
           <Tooltip
-            className='tooltip-overflow'
+            className="tooltip-overflow"
             renderContent={() => (
-              <div className='tooltip-overflow-parent'>
+              <div className="tooltip-overflow-parent">
                 {overflowPills.map(p => (
-                  <div key={p.id} className='tooltip-overflow-child'>
+                  <div key={p.id} className="tooltip-overflow-child">
                     {p.element}
                   </div>
                 ))}
@@ -92,7 +92,7 @@ interface CalculatePillWidthProps {
 const CalculatePillWidth: React.FC<CalculatePillWidthProps> = ({
   reviewer,
   index,
-  setPills
+  setPills,
 }: CalculatePillWidthProps) => {
   const [innerWidth, setInnerWidth] = React.useState(0);
   const reviewerRef = React.useRef<HTMLDivElement>(null);
@@ -104,8 +104,8 @@ const CalculatePillWidth: React.FC<CalculatePillWidthProps> = ({
         {
           id: index,
           element: defaultReviewerPill(reviewer, index),
-          elementWidth: Math.ceil(innerWidth)
-        }
+          elementWidth: Math.ceil(innerWidth),
+        },
       ]);
     return () => setPills([]);
   }, [reviewer, index, innerWidth, setPills]);
@@ -115,7 +115,7 @@ const CalculatePillWidth: React.FC<CalculatePillWidthProps> = ({
   }, [reviewerRef]);
 
   return (
-    <div className='flex-row invisible' ref={reviewerRef}>
+    <div className="flex-row invisible" ref={reviewerRef}>
       {defaultReviewerPill(reviewer, index)}
     </div>
   );
@@ -125,27 +125,27 @@ const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
   <Tooltip
     key={i}
     renderContent={() => (
-      <div className='flex-row rhythm-horizontal-4'>
-        <div className='flex-column'>
-          <div className='flex-row flex-center justify-center'>
+      <div className="flex-row rhythm-horizontal-4">
+        <div className="flex-column">
+          <div className="flex-row flex-center justify-center">
             <VssPersona
-              className='icon-margin'
+              className="icon-margin"
               imageUrl={reviewer._links['avatar'].href}
               size={'small'}
               displayName={reviewer.displayName}
             />
             <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
           </div>
-          <div className='flex-row flex-center justify-start margin-top-8'>
+          <div className="flex-row flex-center justify-start margin-top-8">
             {getReviewerVoteIconStatus(reviewer.vote)}
-            <span className='font-weight-semibold margin-left-4'>{getVoteDescription(reviewer.vote)}</span>
+            <span className="font-weight-semibold margin-left-4">{getVoteDescription(reviewer.vote)}</span>
           </div>
         </div>
       </div>
     )}
   >
     <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
-      <div className='flex-row rhythm-horizontal-8'>
+      <div className="flex-row rhythm-horizontal-8">
         {getReviewerVoteIconStatus(reviewer.vote)}
         <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
       </div>

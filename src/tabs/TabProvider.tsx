@@ -24,7 +24,7 @@ import {
   ActiveItemProvider,
   FilterItemsDictionary,
   FilterDictionary,
-  FilterOptions
+  FilterOptions,
 } from './TabTypes';
 
 type Props = { filter: Filter };
@@ -40,7 +40,7 @@ export const TabProvider: React.FC<Props> = ({ filter }) => {
     targetBranch: [],
     author: [],
     reviewer: [],
-    myApprovalStatus: []
+    myApprovalStatus: [],
   });
 
   React.useEffect(() => {
@@ -56,7 +56,7 @@ export const TabProvider: React.FC<Props> = ({ filter }) => {
         targetBranch: filter.getFilterItemValue<string[]>(FilterOptions.targetBranch),
         author: filter.getFilterItemValue<string[]>(FilterOptions.author),
         reviewer: filter.getFilterItemValue<string[]>(FilterOptions.reviewer),
-        myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus)
+        myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus),
       };
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, filterValues, store.ui.selectedTab));
@@ -66,7 +66,7 @@ export const TabProvider: React.FC<Props> = ({ filter }) => {
 
   return (
     <Surface background={1}>
-      <Page className='azure-pull-request-hub flex-grow'>
+      <Page className="azure-pull-request-hub flex-grow">
         <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch)} />
         <TabBar
           selectedTabId={store.ui.selectedTab}
@@ -76,10 +76,10 @@ export const TabProvider: React.FC<Props> = ({ filter }) => {
             <HeaderCommandBarWithFilter filter={filter} items={[]} filterToggled={store.ui.isFilterVisible} />
           )}
         >
-          <Tab name='Active' id='active' />
-          <Tab name='Draft' id='draft' />
+          <Tab name="Active" id="active" />
+          <Tab name="Draft" id="draft" />
         </TabBar>
-        <div className='page-content-left page-content-right page-content-top page-content-bottom'>
+        <div className="page-content-left page-content-right page-content-top page-content-bottom">
           {getPageContent({ newSelectedTab: store.ui.selectedTab, filter, filterItems, store })}
         </div>
       </Page>
@@ -90,7 +90,7 @@ export const TabProvider: React.FC<Props> = ({ filter }) => {
 const getPageContent = ({ newSelectedTab, filter, filterItems, store }: { newSelectedTab: TabOptions } & ITab) => {
   const tabs: Record<TabOptions, JSX.Element> = {
     active: <Active filter={filter} filterItems={filterItems} store={store} />,
-    draft: <Draft filter={filter} filterItems={filterItems} store={store} />
+    draft: <Draft filter={filter} filterItems={filterItems} store={store} />,
   };
   return tabs[newSelectedTab];
 };
@@ -106,8 +106,8 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
         dispatch(setPullRequests());
       },
       iconProps: {
-        iconName: 'fabric-icon ms-Icon--Refresh'
-      }
+        iconName: 'fabric-icon ms-Icon--Refresh',
+      },
     },
     {
       id: 'full-screen',
@@ -117,9 +117,9 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
         dispatch(toggleFullScreenMode());
       },
       iconProps: {
-        iconName: 'fabric-icon ms-Icon--FullScreen'
-      }
-    }
+        iconName: 'fabric-icon ms-Icon--FullScreen',
+      },
+    },
   ];
 };
 
@@ -128,13 +128,13 @@ export const columns: ITableColumn<PR>[] = [
     id: 'title',
     name: 'Pull Request',
     renderCell: titleColumn,
-    width: -100
+    width: -100,
   },
   {
     id: 'reviewers',
     name: 'Reviewers',
     renderCell: reviewersColumn,
-    width: 416
+    width: 416,
   },
   new ColumnMore(() => {
     return {
@@ -144,9 +144,9 @@ export const columns: ITableColumn<PR>[] = [
           id: 'submenu-one',
           text: 'Show Work Items',
           iconProps: { iconName: 'WorkItem' },
-          onActivate: () => {}
-        }
-      ]
+          onActivate: () => {},
+        },
+      ],
     };
-  })
+  }),
 ];

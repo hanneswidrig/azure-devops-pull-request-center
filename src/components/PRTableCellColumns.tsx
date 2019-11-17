@@ -10,10 +10,10 @@ export const titleColumn = (
   rowIndex: number,
   columnIndex: number,
   tableColumn: ITableColumn<PR>,
-  tableItem: PR
+  tableItem: PR,
 ): JSX.Element => (
   <SimpleTableCell
-    className='padding-8'
+    className="padding-8"
     key={'col-' + columnIndex}
     columnIndex={columnIndex}
     tableColumn={tableColumn}
@@ -25,12 +25,12 @@ export const reviewersColumn = (
   rowIndex: number,
   columnIndex: number,
   tableColumn: ITableColumn<PR>,
-  tableItem: PR
+  tableItem: PR,
 ): JSX.Element => {
   const reviewers = tableItem.reviewers.sort(sortByDisplayName);
   return (
     <SimpleTableCell
-      className='bolt-table-cell-content-with-inline-link no-v-padding'
+      className="bolt-table-cell-content-with-inline-link no-v-padding"
       key={'col-' + columnIndex}
       columnIndex={columnIndex}
       tableColumn={tableColumn}

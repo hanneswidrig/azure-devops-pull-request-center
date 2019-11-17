@@ -28,7 +28,7 @@ export const pullRequestCriteria: GitPullRequestSearchCriteria = {
   sourceRefName: '',
   sourceRepositoryId: '',
   status: PullRequestStatus.Active,
-  targetRefName: ''
+  targetRefName: '',
 };
 
 // VSTS REST Clients
@@ -59,11 +59,11 @@ export const setPullRequests = () => {
       dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
       const repositories = await getRepositories();
       const getAllRepositoryPullRequests = repositories.map(
-        async repo => await gitClient.getPullRequests(repo.id, pullRequestCriteria)
+        async repo => await gitClient.getPullRequests(repo.id, pullRequestCriteria),
       );
       const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
       const getCompletePullRequests = allRepositoryPullRequests.flatMap(prsForSingleRepo =>
-        prsForSingleRepo.map(async pr => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId))
+        prsForSingleRepo.map(async pr => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId)),
       );
       const allPullRequests = await Promise.all(getCompletePullRequests);
       const transformedPopulatedPullRequests = await Promise.all(
@@ -71,9 +71,9 @@ export const setPullRequests = () => {
           fromPullRequestToPR({
             pr: pullRequest,
             workItems: await getWorkItemsForPr(pullRequest),
-            userContext: DevOps.getUser()
-          })
-        )
+            userContext: DevOps.getUser(),
+          }),
+        ),
       );
       dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload: transformedPopulatedPullRequests });
       dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });

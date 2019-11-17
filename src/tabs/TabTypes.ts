@@ -18,7 +18,7 @@ const allFilterOptions = [
   targetBranch,
   author,
   reviewer,
-  myApprovalStatus
+  myApprovalStatus,
 ] as const;
 
 export const FilterOptions = {
@@ -28,7 +28,7 @@ export const FilterOptions = {
   targetBranch,
   author,
   reviewer,
-  myApprovalStatus
+  myApprovalStatus,
 } as const;
 export type FilterTypes = typeof allFilterOptions[number];
 export type FilterDictionary = Record<FilterTypes, string | string[] | undefined>;

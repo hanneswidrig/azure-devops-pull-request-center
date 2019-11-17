@@ -30,7 +30,7 @@ export const getVoteDescription = (vote: number): string => {
       [ReviewerVoteLabel.ApprovedWithSuggestions, ReviewerVoteOption['5']],
       [ReviewerVoteLabel.NoVote, ReviewerVoteOption['0']],
       [ReviewerVoteLabel.WaitingForAuthor, ReviewerVoteOption['-5']],
-      [ReviewerVoteLabel.Rejected, ReviewerVoteOption['-10']]
+      [ReviewerVoteLabel.Rejected, ReviewerVoteOption['-10']],
     ]).get(vote) || 'No Vote'
   );
 };

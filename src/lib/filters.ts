@@ -58,86 +58,86 @@ export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, ta
       {
         func: filterByTitle,
         val: [searchString || ''],
-        isActive: searchString !== undefined && searchString.length > 0 && searchString[0].length > 0
+        isActive: searchString !== undefined && searchString.length > 0 && searchString[0].length > 0,
       },
       {
         func: filterByRepositoryId,
         val: repositories || [],
-        isActive: repositories !== undefined && repositories.length > 0
+        isActive: repositories !== undefined && repositories.length > 0,
       },
       {
         func: filterBySourceBranchDisplayName,
         val: sourceBranch || [],
-        isActive: sourceBranch !== undefined && sourceBranch.length > 0
+        isActive: sourceBranch !== undefined && sourceBranch.length > 0,
       },
       {
         func: filterByTargetBranchDisplayName,
         val: targetBranch || [],
-        isActive: targetBranch !== undefined && targetBranch.length > 0
+        isActive: targetBranch !== undefined && targetBranch.length > 0,
       },
       {
         func: filterByCreatedByUserId,
         val: author || [],
-        isActive: author !== undefined && author.length > 0
+        isActive: author !== undefined && author.length > 0,
       },
       {
         func: filterByReviewers,
         val: reviewer || [],
-        isActive: reviewer !== undefined && reviewer.length > 0
+        isActive: reviewer !== undefined && reviewer.length > 0,
       },
       {
         func: filterByApprovalStatus,
         val: myApprovalStatus || [],
-        isActive: myApprovalStatus !== undefined && myApprovalStatus.length > 0
+        isActive: myApprovalStatus !== undefined && myApprovalStatus.length > 0,
       },
       {
         func: filterByDraftStatus,
         val: ['false'],
-        isActive: true
-      }
+        isActive: true,
+      },
     ],
     draft: [
       {
         func: filterByTitle,
         val: [searchString || ''],
-        isActive: searchString !== undefined && searchString.length > 0 && searchString[0].length > 0
+        isActive: searchString !== undefined && searchString.length > 0 && searchString[0].length > 0,
       },
       {
         func: filterByRepositoryId,
         val: repositories || [],
-        isActive: repositories !== undefined && repositories.length > 0
+        isActive: repositories !== undefined && repositories.length > 0,
       },
       {
         func: filterBySourceBranchDisplayName,
         val: sourceBranch || [],
-        isActive: sourceBranch !== undefined && sourceBranch.length > 0
+        isActive: sourceBranch !== undefined && sourceBranch.length > 0,
       },
       {
         func: filterByTargetBranchDisplayName,
         val: targetBranch || [],
-        isActive: targetBranch !== undefined && targetBranch.length > 0
+        isActive: targetBranch !== undefined && targetBranch.length > 0,
       },
       {
         func: filterByCreatedByUserId,
         val: author || [],
-        isActive: author !== undefined && author.length > 0
+        isActive: author !== undefined && author.length > 0,
       },
       {
         func: filterByReviewers,
         val: reviewer || [],
-        isActive: reviewer !== undefined && reviewer.length > 0
+        isActive: reviewer !== undefined && reviewer.length > 0,
       },
       {
         func: filterByApprovalStatus,
         val: myApprovalStatus || [],
-        isActive: myApprovalStatus !== undefined && myApprovalStatus.length > 0
+        isActive: myApprovalStatus !== undefined && myApprovalStatus.length > 0,
       },
       {
         func: filterByDraftStatus,
         val: ['true'],
-        isActive: true
-      }
-    ]
+        isActive: true,
+      },
+    ],
   };
   return opts[tab].filter(fs => fs.isActive);
 };
