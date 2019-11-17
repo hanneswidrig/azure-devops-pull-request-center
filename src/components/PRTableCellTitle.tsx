@@ -6,11 +6,11 @@ import { Tooltip } from 'azure-devops-ui/TooltipEx';
 import { VssPersona } from 'azure-devops-ui/VssPersona';
 
 import { Tag } from './Tag';
-import './PullRequestCellUI.scss';
+import './PRTableCellTitle.scss';
 import { PR } from '../state/types';
-import { BranchUI } from './BranchUI';
+import { PRTableCellBranches } from './PRTableCellBranches';
 
-export const PullRequestCellUI: React.FC<{ tableItem: PR }> = ({ tableItem }: { tableItem: PR }) => {
+export const PRTableCellTitle: React.FC<{ tableItem: PR }> = ({ tableItem }: { tableItem: PR }) => {
   return (
     <div className='flex-column ui-container'>
       <div className='flex-row line-one'>
@@ -42,7 +42,7 @@ export const PullRequestCellUI: React.FC<{ tableItem: PR }> = ({ tableItem }: { 
         </div>
       </div>
       <div className='flex-row line-two'>
-        <BranchUI tableItem={tableItem}></BranchUI>
+        <PRTableCellBranches tableItem={tableItem}></PRTableCellBranches>
       </div>
     </div>
   );

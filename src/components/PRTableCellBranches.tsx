@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from 'azure-devops-ui/Button';
 
-import './BranchUI.scss';
+import './PRTableCellBranches.scss';
 import { PR } from '../state/types';
 
-export const BranchUI: React.FC<{ tableItem: PR }> = ({ tableItem }: { tableItem: PR }) => {
+export const PRTableCellBranches: React.FC<{ tableItem: PR }> = ({ tableItem }: { tableItem: PR }) => {
   const sourceBranch = tableItem.sourceBranch.name.replace('refs/heads/', '');
   const targetBranch = tableItem.targetBranch.name.replace('refs/heads/', '');
 

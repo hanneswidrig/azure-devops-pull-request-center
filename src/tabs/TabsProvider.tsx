@@ -4,19 +4,20 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { Draft } from './Draft/Draft';
 import { Active } from './Active/Active';
-import { PrHubState, PR } from '../state/types';
 import { Page } from 'azure-devops-ui/Page';
-import { applyFilter } from '../lib/filters';
 import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
-import { fromPRToFilterItems } from '../state/transformData';
 import { ITableColumn, ColumnMore } from 'azure-devops-ui/Table';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import { TabBarFilterIcon } from '../components/TabBarFilterIcon';
 import { IHeaderCommandBarItem } from 'azure-devops-ui/HeaderCommandBar';
 import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
-import { renderTitleColumn, renderReviewersColumn } from '../components/Columns';
+
+import { applyFilter } from '../lib/filters';
+import { PrHubState, PR } from '../state/types';
+import { fromPRToFilterItems } from '../state/transformData';
+import { titleColumn, reviewersColumn } from '../components/PRTableCellColumns';
 import { setSelectedTab, setPullRequests, toggleFullScreenMode } from '../state/actions';
 import {
   ITab,
@@ -127,13 +128,13 @@ export const columns: ITableColumn<PR>[] = [
   {
     id: 'title',
     name: 'Pull Request',
-    renderCell: renderTitleColumn,
+    renderCell: titleColumn,
     width: -100
   },
   {
     id: 'reviewers',
     name: 'Reviewers',
-    renderCell: renderReviewersColumn,
+    renderCell: reviewersColumn,
     width: 416
   },
   new ColumnMore(() => {

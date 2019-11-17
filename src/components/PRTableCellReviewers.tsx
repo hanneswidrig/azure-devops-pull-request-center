@@ -1,60 +1,25 @@
 import React from 'react';
+import { IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
+
 import { Pill } from 'azure-devops-ui/Pill';
 import { Tooltip } from 'azure-devops-ui/TooltipEx';
 import { PillGroup } from 'azure-devops-ui/PillGroup';
 import { VssPersona } from 'azure-devops-ui/VssPersona';
-import { SimpleTableCell, ITableColumn } from 'azure-devops-ui/Table';
-import { IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
-import './Columns.scss';
-import { PR } from '../state/types';
-import { PullRequestCellUI } from './PullRequestCellUI';
+import { getVoteDescription } from '../lib/utilities';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 import { reviewerVoteToIColorLight } from '../lib/colors';
-import { sortByDisplayName, getVoteDescription } from '../lib/utilities';
-
-export const renderTitleColumn = (
-  rowIndex: number,
-  columnIndex: number,
-  tableColumn: ITableColumn<PR>,
-  tableItem: PR
-): JSX.Element => (
-  <SimpleTableCell
-    className='padding-8'
-    key={'col-' + columnIndex}
-    columnIndex={columnIndex}
-    tableColumn={tableColumn}
-    children={<PullRequestCellUI tableItem={tableItem} />}
-  />
-);
-
-export const renderReviewersColumn = (
-  rowIndex: number,
-  columnIndex: number,
-  tableColumn: ITableColumn<PR>,
-  tableItem: PR
-): JSX.Element => {
-  const reviewers = tableItem.reviewers.sort(sortByDisplayName);
-  return (
-    <SimpleTableCell
-      className='bolt-table-cell-content-with-inline-link no-v-padding'
-      key={'col-' + columnIndex}
-      columnIndex={columnIndex}
-      tableColumn={tableColumn}
-      children={<ReviewersCell reviewers={reviewers} />}
-    />
-  );
-};
 
 type Reviewer = {
   id: number;
   element: JSX.Element;
   elementWidth: number;
 };
-interface ReviewersCellProps {
+export const PRTableCellReviewers: React.FC<{ reviewers: IdentityRefWithVote[] }> = ({
+  reviewers
+}: {
   reviewers: IdentityRefWithVote[];
-}
-const ReviewersCell: React.FC<ReviewersCellProps> = ({ reviewers }: ReviewersCellProps) => {
+}) => {
   const [width, setWidth] = React.useState(0);
   const [pills, setPills] = React.useState<Reviewer[]>([]);
   const [displayPills, setDisplayPills] = React.useState<Reviewer[]>([]);
