@@ -10,9 +10,8 @@ import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
 import { ITableColumn, ColumnMore } from 'azure-devops-ui/Table';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
-import { TabBarFilterIcon } from '../components/TabBarFilterIcon';
-import { IHeaderCommandBarItem } from 'azure-devops-ui/HeaderCommandBar';
 import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
+import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
 
 import { applyFilter } from '../lib/filters';
 import { PrHubState, PR } from '../state/types';
@@ -74,7 +73,7 @@ export const TabsProvider: React.FC<Props> = ({ filter }) => {
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab(newSelectedTab))}
           tabSize={'tall' as any}
           renderAdditionalContent={() => (
-            <TabBarFilterIcon filter={filter} isFilterVisible={ui.isFilterVisible} items={[]} />
+            <HeaderCommandBarWithFilter filter={filter} items={[]} filterToggled={ui.isFilterVisible} />
           )}
         >
           <Tab name='Active' id='active' />
