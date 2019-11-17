@@ -1,19 +1,19 @@
 import { Enum } from './typings';
 
-export const ReviewerVoteLabel = {
+export const ReviewerVoteNumber = {
   Approved: '10',
   ApprovedWithSuggestions: '5',
   NoVote: '0',
   WaitingForAuthor: '-5',
   Rejected: '-10',
 } as const;
-export type ReviewerVoteLabel = Enum<typeof ReviewerVoteLabel>;
+export type ReviewerVoteNumber = Enum<typeof ReviewerVoteNumber>;
 
-export const ReviewerVoteOption = {
-  '10': 'Approved',
-  '5': 'ApprovedWithSuggestions',
-  '0': 'NoVote',
-  '-5': 'WaitingForAuthor',
-  '-10': 'Rejected',
+export const ReviewerVoteLabel = {
+  Approved: 'Approved',
+  ApprovedWithSuggestions: 'Approved with suggestions',
+  NoVote: 'Assigned',
+  WaitingForAuthor: 'Waiting for author',
+  Rejected: 'Rejected',
 } as const;
-export type ReviewerVoteOption = Enum<typeof ReviewerVoteOption>;
+export type ReviewerVoteLabel = Enum<typeof ReviewerVoteLabel>;

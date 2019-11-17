@@ -5,7 +5,7 @@ import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTr
 import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
 
 import { TabOptions } from '../tabs/TabTypes';
-import { ReviewerVoteLabel } from '../lib/enums';
+import { ReviewerVoteNumber } from '../lib/enums';
 
 const SET_REPOSITORIES = 'setRepositories';
 const SET_PULL_REQUESTS = 'setPullRequests';
@@ -48,7 +48,7 @@ export interface PR {
   targetBranch: PRRef;
   repository: PRRef;
 
-  myApprovalStatus: ReviewerVoteLabel;
+  myApprovalStatus: ReviewerVoteNumber;
 
   workItems: WorkItem[];
   reviewers: IdentityRefWithVote[];

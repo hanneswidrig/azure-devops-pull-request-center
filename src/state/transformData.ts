@@ -3,16 +3,16 @@ import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTr
 import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
 import { PR } from './types';
-import { ReviewerVoteLabel } from '../lib/enums';
+import { ReviewerVoteNumber, ReviewerVoteLabel } from '../lib/enums';
 import { FilterItemsDictionary } from '../tabs/TabTypes';
 
 const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext: DevOps.IUserContext) => {
-  let voteResult: ReviewerVoteLabel = ReviewerVoteLabel.NoVote;
+  let voteResult: ReviewerVoteNumber = ReviewerVoteNumber.NoVote;
   if (reviewers && reviewers.length > 0) {
     const currentUserReviewer = reviewers.filter(r => r.id === userContext.id);
 
     if (currentUserReviewer.length > 0) {
-      voteResult = currentUserReviewer[0].vote.toString() as ReviewerVoteLabel;
+      voteResult = currentUserReviewer[0].vote.toString() as ReviewerVoteNumber;
     }
   }
 
@@ -60,24 +60,24 @@ export const fromPRToFilterItems = (pullRequests: PR[]): FilterItemsDictionary =
     reviewer: [],
     myApprovalStatus: [
       {
-        id: ReviewerVoteLabel.Approved,
-        text: 'Approved',
+        id: ReviewerVoteNumber.Approved,
+        text: ReviewerVoteLabel.Approved,
       },
       {
-        id: ReviewerVoteLabel.ApprovedWithSuggestions,
-        text: 'Approved with suggestions',
+        id: ReviewerVoteNumber.ApprovedWithSuggestions,
+        text: ReviewerVoteLabel.ApprovedWithSuggestions,
       },
       {
-        id: ReviewerVoteLabel.NoVote,
-        text: 'Assigned to me',
+        id: ReviewerVoteNumber.NoVote,
+        text: ReviewerVoteLabel.NoVote,
       },
       {
-        id: ReviewerVoteLabel.WaitingForAuthor,
-        text: 'Waiting for author',
+        id: ReviewerVoteNumber.WaitingForAuthor,
+        text: ReviewerVoteLabel.WaitingForAuthor,
       },
       {
-        id: ReviewerVoteLabel.Rejected,
-        text: 'Rejected',
+        id: ReviewerVoteNumber.Rejected,
+        text: ReviewerVoteLabel.Rejected,
       },
     ],
   };
