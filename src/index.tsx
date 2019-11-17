@@ -1,4 +1,4 @@
-import 'es6-promise/auto';
+import 'react-app-polyfill/stable';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -10,14 +10,11 @@ import { createStore, applyMiddleware, Dispatch } from 'redux';
 import * as DevOps from 'azure-devops-extension-sdk';
 import { Filter } from 'azure-devops-ui/Utilities/Filter';
 
-import { addPolyFills } from './polyfills';
-
 import './index.scss';
 import { reducer } from './state/store';
-import { TabsProvider } from './tabs/TabsProvider';
+import { TabProvider } from './tabs/TabProvider';
 import { setCurrentUser, setRepositories, setPullRequests } from './state/actions';
 
-addPolyFills();
 const store = createStore(reducer, applyMiddleware(thunk));
 
 export class App extends React.PureComponent {
@@ -42,7 +39,7 @@ export class App extends React.PureComponent {
   public render(): JSX.Element {
     return (
       <Provider store={store}>
-        <TabsProvider filter={this.filter} />
+        <TabProvider filter={this.filter} />
       </Provider>
     );
   }

@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Dispatch } from 'redux';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Draft } from './Draft/Draft';
-import { Active } from './Active/Active';
+import { Draft } from './Draft';
+import { Active } from './Active';
 import { Page } from 'azure-devops-ui/Page';
 import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
@@ -25,13 +25,13 @@ import {
   FilterItemsDictionary,
   FilterDictionary,
   FilterOptions
-} from './Tabs.types';
+} from './TabTypes';
 
 type Props = { filter: Filter };
 
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
-export const TabsProvider: React.FC<Props> = ({ filter }) => {
-  const { data, ui } = useSelector((store: PrHubState) => store);
+export const TabProvider: React.FC<Props> = ({ filter }) => {
+  const store = useSelector((store: PrHubState) => store);
   const dispatch = useDispatch();
 
   const [filterItems, setFilterItems] = React.useState<FilterItemsDictionary>({
@@ -45,8 +45,8 @@ export const TabsProvider: React.FC<Props> = ({ filter }) => {
 
   React.useEffect(() => {
     pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-    pullRequestItemProvider$.push(...applyFilter(data.pullRequests, {}, ui.selectedTab));
-    setFilterItems(fromPRToFilterItems(data.pullRequests));
+    pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, {}, store.ui.selectedTab));
+    setFilterItems(fromPRToFilterItems(store.data.pullRequests));
 
     filter.subscribe(() => {
       const filterValues: FilterDictionary = {
@@ -59,38 +59,38 @@ export const TabsProvider: React.FC<Props> = ({ filter }) => {
         myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus)
       };
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-      pullRequestItemProvider$.push(...applyFilter(data.pullRequests, filterValues, ui.selectedTab));
+      pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, filterValues, store.ui.selectedTab));
     }, FILTER_CHANGE_EVENT);
     return () => filter.unsubscribe(() => {}, FILTER_CHANGE_EVENT);
-  }, [filter, data.pullRequests, ui.selectedTab, setFilterItems]);
+  }, [filter, store.data.pullRequests, store.ui.selectedTab, setFilterItems]);
 
   return (
     <Surface background={1}>
       <Page className='azure-pull-request-hub flex-grow'>
         <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch)} />
         <TabBar
-          selectedTabId={ui.selectedTab}
+          selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab(newSelectedTab))}
           tabSize={'tall' as any}
           renderAdditionalContent={() => (
-            <HeaderCommandBarWithFilter filter={filter} items={[]} filterToggled={ui.isFilterVisible} />
+            <HeaderCommandBarWithFilter filter={filter} items={[]} filterToggled={store.ui.isFilterVisible} />
           )}
         >
           <Tab name='Active' id='active' />
           <Tab name='Draft' id='draft' />
         </TabBar>
         <div className='page-content-left page-content-right page-content-top page-content-bottom'>
-          {getPageContent({ newSelectedTab: ui.selectedTab, filter, filterItems })}
+          {getPageContent({ newSelectedTab: store.ui.selectedTab, filter, filterItems, store })}
         </div>
       </Page>
     </Surface>
   );
 };
 
-const getPageContent = ({ newSelectedTab, filter, filterItems }: { newSelectedTab: TabOptions } & ITab) => {
+const getPageContent = ({ newSelectedTab, filter, filterItems, store }: { newSelectedTab: TabOptions } & ITab) => {
   const tabs: Record<TabOptions, JSX.Element> = {
-    active: <Active filter={filter} filterItems={filterItems} />,
-    draft: <Draft filter={filter} filterItems={filterItems} />
+    active: <Active filter={filter} filterItems={filterItems} store={store} />,
+    draft: <Draft filter={filter} filterItems={filterItems} store={store} />
   };
   return tabs[newSelectedTab];
 };

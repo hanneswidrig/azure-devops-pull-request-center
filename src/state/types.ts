@@ -4,7 +4,7 @@ import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
 import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
 
-import { TabOptions } from '../tabs/Tabs.types';
+import { TabOptions } from '../tabs/TabTypes';
 import { ReviewerVoteLabel } from '../lib/enums';
 
 const SET_REPOSITORIES = 'setRepositories';

@@ -11,7 +11,7 @@ import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemT
 
 import { ActionTypes } from './types';
 import { fromPullRequestToPR } from './transformData';
-import { sortByRepositoryName } from '../lib/utilities';
+import { sortByRepositoryName } from '../lib/utils';
 import { GitPullRequest, GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 
 // action interfaces

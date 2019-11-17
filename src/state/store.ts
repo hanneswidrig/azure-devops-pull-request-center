@@ -19,7 +19,6 @@ const initialState: PrHubState = {
 };
 
 export const reducer: Reducer<PrHubState, FetchAction> = (state: PrHubState = initialState, action: FetchAction) => {
-  console.log(action);
   switch (action.type) {
     case ActionTypes.SET_REPOSITORIES:
       return {
