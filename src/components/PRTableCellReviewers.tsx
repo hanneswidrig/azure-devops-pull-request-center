@@ -84,6 +84,38 @@ export const PRTableCellReviewers: React.FC<{ reviewers: IdentityRefWithVote[] }
   );
 };
 
+const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
+  <Tooltip
+    key={i}
+    renderContent={() => (
+      <div className="flex-row rhythm-horizontal-4">
+        <div className="flex-column">
+          <div className="flex-row flex-center justify-center">
+            <VssPersona
+              className="icon-margin"
+              imageUrl={reviewer._links['avatar'].href}
+              size={'small'}
+              displayName={reviewer.displayName}
+            />
+            <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
+          </div>
+          <div className="flex-row flex-center justify-start margin-top-8">
+            {getReviewerVoteIconStatus(reviewer.vote)}
+            <span className="font-weight-semibold margin-left-4">{getVoteDescription(reviewer.vote)}</span>
+          </div>
+        </div>
+      </div>
+    )}
+  >
+    <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
+      <div className="flex-row rhythm-horizontal-8">
+        {getReviewerVoteIconStatus(reviewer.vote)}
+        <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
+      </div>
+    </Pill>
+  </Tooltip>
+);
+
 interface CalculatePillWidthProps {
   reviewer: IdentityRefWithVote;
   index: number;
@@ -120,35 +152,3 @@ const CalculatePillWidth: React.FC<CalculatePillWidthProps> = ({
     </div>
   );
 };
-
-const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
-  <Tooltip
-    key={i}
-    renderContent={() => (
-      <div className="flex-row rhythm-horizontal-4">
-        <div className="flex-column">
-          <div className="flex-row flex-center justify-center">
-            <VssPersona
-              className="icon-margin"
-              imageUrl={reviewer._links['avatar'].href}
-              size={'small'}
-              displayName={reviewer.displayName}
-            />
-            <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
-          </div>
-          <div className="flex-row flex-center justify-start margin-top-8">
-            {getReviewerVoteIconStatus(reviewer.vote)}
-            <span className="font-weight-semibold margin-left-4">{getVoteDescription(reviewer.vote)}</span>
-          </div>
-        </div>
-      </div>
-    )}
-  >
-    <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
-      <div className="flex-row rhythm-horizontal-8">
-        {getReviewerVoteIconStatus(reviewer.vote)}
-        <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
-      </div>
-    </Pill>
-  </Tooltip>
-);

@@ -12,7 +12,7 @@ import { PR } from '../state/types';
 import { UIFilterBar } from '../components/UIFilterBar';
 import { pullRequestItemProvider$, columns } from './TabProvider';
 
-export const ClassicTab: React.FC<ITab> = ({ filter, filterItems, store }) => {
+export const ClassicTab: React.FC<ITab> = ({ filter, filterItems, store }: ITab) => {
   return (
     <div className="flex-column">
       <ConditionalChildren renderChildren={store.ui.isFilterVisible}>

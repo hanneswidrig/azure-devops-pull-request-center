@@ -12,13 +12,9 @@ export const titleColumn = (
   tableColumn: ITableColumn<PR>,
   tableItem: PR,
 ): JSX.Element => (
-  <SimpleTableCell
-    className="padding-8"
-    key={'col-' + columnIndex}
-    columnIndex={columnIndex}
-    tableColumn={tableColumn}
-    children={<PRTableCellTitle tableItem={tableItem} />}
-  />
+  <SimpleTableCell className="padding-8" key={'col-' + columnIndex} columnIndex={columnIndex} tableColumn={tableColumn}>
+    <PRTableCellTitle tableItem={tableItem} />
+  </SimpleTableCell>
 );
 
 export const reviewersColumn = (
@@ -34,7 +30,8 @@ export const reviewersColumn = (
       key={'col-' + columnIndex}
       columnIndex={columnIndex}
       tableColumn={tableColumn}
-      children={<PRTableCellReviewers reviewers={reviewers} />}
-    />
+    >
+      <PRTableCellReviewers reviewers={reviewers} />
+    </SimpleTableCell>
   );
 };

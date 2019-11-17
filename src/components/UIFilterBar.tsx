@@ -12,7 +12,7 @@ import { Filter } from 'azure-devops-ui/Utilities/Filter';
 import { FilterOptions, FilterItemsDictionary } from '../tabs/TabTypes';
 
 type Props = { filter: Filter; filterItems: FilterItemsDictionary };
-export const UIFilterBar: React.FC<Props> = ({ filter, filterItems }) => {
+export const UIFilterBar: React.FC<Props> = ({ filter, filterItems }: Props) => {
   const dispatch = useDispatch();
   return (
     <div className={'margin-bottom-16'}>

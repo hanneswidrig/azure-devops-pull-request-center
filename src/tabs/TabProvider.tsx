@@ -29,8 +29,44 @@ import {
 
 type Props = { filter: Filter };
 
+const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
+  return [
+    {
+      id: 'refresh',
+      text: 'Refresh',
+      isPrimary: true,
+      important: true,
+      onActivate: () => {
+        dispatch(setPullRequests());
+      },
+      iconProps: {
+        iconName: 'fabric-icon ms-Icon--Refresh',
+      },
+    },
+    {
+      id: 'full-screen',
+      text: 'Full Screen Mode',
+      important: false,
+      onActivate: () => {
+        dispatch(toggleFullScreenMode());
+      },
+      iconProps: {
+        iconName: 'fabric-icon ms-Icon--FullScreen',
+      },
+    },
+  ];
+};
+
+const getPageContent = ({ newSelectedTab, filter, filterItems, store }: { newSelectedTab: TabOptions } & ITab) => {
+  const tabs: Record<TabOptions, JSX.Element> = {
+    active: <Active filter={filter} filterItems={filterItems} store={store} />,
+    draft: <Draft filter={filter} filterItems={filterItems} store={store} />,
+  };
+  return tabs[newSelectedTab];
+};
+
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
-export const TabProvider: React.FC<Props> = ({ filter }) => {
+export const TabProvider: React.FC<Props> = ({ filter }: Props) => {
   const store = useSelector((store: PrHubState) => store);
   const dispatch = useDispatch();
 
@@ -85,42 +121,6 @@ export const TabProvider: React.FC<Props> = ({ filter }) => {
       </Page>
     </Surface>
   );
-};
-
-const getPageContent = ({ newSelectedTab, filter, filterItems, store }: { newSelectedTab: TabOptions } & ITab) => {
-  const tabs: Record<TabOptions, JSX.Element> = {
-    active: <Active filter={filter} filterItems={filterItems} store={store} />,
-    draft: <Draft filter={filter} filterItems={filterItems} store={store} />,
-  };
-  return tabs[newSelectedTab];
-};
-
-const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
-  return [
-    {
-      id: 'refresh',
-      text: 'Refresh',
-      isPrimary: true,
-      important: true,
-      onActivate: () => {
-        dispatch(setPullRequests());
-      },
-      iconProps: {
-        iconName: 'fabric-icon ms-Icon--Refresh',
-      },
-    },
-    {
-      id: 'full-screen',
-      text: 'Full Screen Mode',
-      important: false,
-      onActivate: () => {
-        dispatch(toggleFullScreenMode());
-      },
-      iconProps: {
-        iconName: 'fabric-icon ms-Icon--FullScreen',
-      },
-    },
-  ];
 };
 
 export const columns: ITableColumn<PR>[] = [

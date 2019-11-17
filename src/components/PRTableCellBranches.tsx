@@ -4,7 +4,8 @@ import { Button } from 'azure-devops-ui/Button';
 import './PRTableCellBranches.scss';
 import { PR } from '../state/types';
 
-export const PRTableCellBranches: React.FC<{ tableItem: PR }> = ({ tableItem }: { tableItem: PR }) => {
+type Props = { tableItem: PR };
+export const PRTableCellBranches: React.FC<Props> = ({ tableItem }: Props) => {
   const sourceBranch = tableItem.sourceBranch.name.replace('refs/heads/', '');
   const targetBranch = tableItem.targetBranch.name.replace('refs/heads/', '');
 
