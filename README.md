@@ -4,4 +4,8 @@
 
 # Pull Request Center
 
-## A centralized location for your DevOps' Pull Requests
+A centralized location for your DevOps' Pull Requests.
+
+<p align="center">
+  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-1.png" />
+</p>
