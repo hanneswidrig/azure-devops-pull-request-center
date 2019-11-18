@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Tag /> should use autoComplete type 1`] = `
+<div>
+  <span
+    class="tag-container"
+    style="color: rgb(235, 121, 8); border: 1px solid rgb(235, 121, 8);"
+  >
+    <span
+      class="tag-text"
+    >
+      Title
+    </span>
+  </span>
+</div>
+`;
+
+exports[`<Tag /> should use draft type 1`] = `
+<div>
+  <span
+    class="tag-container"
+    style="color: rgb(0, 120, 212); border: 1px solid rgb(0, 120, 212);"
+  >
+    <span
+      class="tag-text"
+    >
+      Title
+    </span>
+  </span>
+</div>
+`;
