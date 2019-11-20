@@ -7,8 +7,8 @@ import { PR } from '../state/types';
 afterEach(cleanup);
 
 describe('<PRTableCellBranches />', () => {
-  test('render with correct text for each button', () => {
-    const props = {
+  test('should render with correct text for branches', () => {
+    const tableItem = {
       repository: {
         name: 'Repository',
       },
@@ -19,7 +19,7 @@ describe('<PRTableCellBranches />', () => {
         name: 'refs/heads/Target Branch',
       },
     } as PR;
-    const { container, getByText } = render(<PRTableCellBranches tableItem={props} />);
+    const { container, getByText } = render(<PRTableCellBranches tableItem={tableItem} />);
     expect(container).toMatchSnapshot();
     expect(getByText('Repository')).toBeTruthy();
     expect(getByText('Source Branch', { exact: true })).toBeTruthy();

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<PRTableCellBranches /> render with correct text for each button 1`] = `
+exports[`<PRTableCellBranches /> should render with correct text for branches 1`] = `
 <div>
   <div
     class="flex-row flex-center rhythm-horizontal-4"
