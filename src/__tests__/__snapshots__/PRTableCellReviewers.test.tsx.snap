@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PRTableCellReviewers /> renders successfully column without any reviewers 1`] = `
+<div>
+  <div
+    class="bolt-pill-group flex-row overflow-wrap"
+  >
+    <div
+      class="bolt-pill-group-inner flex-row"
+    />
+  </div>
+</div>
+`;
