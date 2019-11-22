@@ -10,16 +10,14 @@ import { getVoteDescription } from '../lib/utils';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 import { reviewerVoteToIColorLight } from '../lib/colors';
 
-type Reviewer = {
+export type Reviewer = {
   id: number;
   element: JSX.Element;
   elementWidth: number;
 };
-export const PRTableCellReviewers: React.FC<{ reviewers: IdentityRefWithVote[] }> = ({
-  reviewers,
-}: {
-  reviewers: IdentityRefWithVote[];
-}) => {
+
+type Props = { reviewers: IdentityRefWithVote[] };
+export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
   const [width, setWidth] = React.useState(0);
   const [pills, setPills] = React.useState<Reviewer[]>([]);
   const [displayPills, setDisplayPills] = React.useState<Reviewer[]>([]);
@@ -116,12 +114,12 @@ const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
   </Tooltip>
 );
 
-interface CalculatePillWidthProps {
+type CalculatePillWidthProps = {
   reviewer: IdentityRefWithVote;
   index: number;
   setPills: React.Dispatch<React.SetStateAction<Reviewer[]>>;
-}
-const CalculatePillWidth: React.FC<CalculatePillWidthProps> = ({
+};
+export const CalculatePillWidth: React.FC<CalculatePillWidthProps> = ({
   reviewer,
   index,
   setPills,
