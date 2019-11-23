@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
 import { Pill } from 'azure-devops-ui/Pill';
@@ -6,83 +6,172 @@ import { Tooltip } from 'azure-devops-ui/TooltipEx';
 import { PillGroup } from 'azure-devops-ui/PillGroup';
 import { VssPersona } from 'azure-devops-ui/VssPersona';
 
+import './PRTableCellReviewers.scss';
 import { getVoteDescription } from '../lib/utils';
-import { getReviewerVoteIconStatus } from './StatusIcon';
 import { reviewerVoteToIColorLight } from '../lib/colors';
+import { getReviewerVoteIconStatus, NoVote } from './StatusIcon';
 
-export type Reviewer = {
-  id: number;
-  element: JSX.Element;
-  elementWidth: number;
+const mockReviewers = [
+  {
+    reviewerUrl:
+      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
+    vote: 10,
+    isFlagged: false,
+    displayName: 'Hannes Widrig',
+    url:
+      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
+    _links: {
+      avatar: {
+        href:
+          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
+      },
+    },
+    id: '34e23bae-b50a-60e7-8258-075090a1841a',
+    uniqueName: 'hannes_widrig@outlook.com',
+    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
+  },
+  {
+    reviewerUrl:
+      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
+    vote: 10,
+    isFlagged: false,
+    displayName: 'Hannes Widrig',
+    url:
+      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
+    _links: {
+      avatar: {
+        href:
+          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
+      },
+    },
+    id: '34e23bae-b50a-60e7-8258-075090a1841a',
+    uniqueName: 'hannes_widrig@outlook.com',
+    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
+  },
+  {
+    reviewerUrl:
+      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
+    vote: 5,
+    isFlagged: false,
+    displayName: 'Hannes Widrig',
+    url:
+      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
+    _links: {
+      avatar: {
+        href:
+          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
+      },
+    },
+    id: '34e23bae-b50a-60e7-8258-075090a1841a',
+    uniqueName: 'hannes_widrig@outlook.com',
+    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
+  },
+  {
+    reviewerUrl:
+      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
+    vote: 0,
+    isFlagged: false,
+    displayName: 'Hannes Widrig',
+    url:
+      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
+    _links: {
+      avatar: {
+        href:
+          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
+      },
+    },
+    id: '34e23bae-b50a-60e7-8258-075090a1841a',
+    uniqueName: 'hannes_widrig@outlook.com',
+    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
+  },
+  {
+    reviewerUrl:
+      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
+    vote: -5,
+    isFlagged: false,
+    displayName: 'Hannes Widrig',
+    url:
+      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
+    _links: {
+      avatar: {
+        href:
+          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
+      },
+    },
+    id: '34e23bae-b50a-60e7-8258-075090a1841a',
+    uniqueName: 'hannes_widrig@outlook.com',
+    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
+  },
+  {
+    reviewerUrl:
+      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
+    vote: -10,
+    isFlagged: false,
+    displayName: 'Hannes Widrig',
+    url:
+      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
+    _links: {
+      avatar: {
+        href:
+          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
+      },
+    },
+    id: '34e23bae-b50a-60e7-8258-075090a1841a',
+    uniqueName: 'hannes_widrig@outlook.com',
+    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
+  },
+  {
+    reviewerUrl:
+      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
+    vote: -10,
+    isFlagged: false,
+    displayName: 'Hannes Widrig',
+    url:
+      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
+    _links: {
+      avatar: {
+        href:
+          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
+      },
+    },
+    id: '34e23bae-b50a-60e7-8258-075090a1841a',
+    uniqueName: 'hannes_widrig@outlook.com',
+    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
+  },
+] as IdentityRefWithVote[];
+
+type Widths = {
+  index: number;
+  width: number;
+  totalWidth: number;
+  isOverflow: boolean;
+  tagElement: React.ReactElement;
 };
 
-type Props = { reviewers: IdentityRefWithVote[] };
-export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
-  const [width, setWidth] = React.useState(0);
-  const [pills, setPills] = React.useState<Reviewer[]>([]);
-  const [displayPills, setDisplayPills] = React.useState<Reviewer[]>([]);
-  const [overflowPills, setOverflowPills] = React.useState<Reviewer[]>([]);
-  const [breakpointPillId, setBreakpointPillId] = React.useState(0);
-  const BREAKPOINT_WIDTH = 600;
+const ReviewerOverflow: React.FC<{ hiddenElements: Widths[] }> = ({ hiddenElements }: { hiddenElements: Widths[] }) => (
+  <Tooltip
+    className="tooltip-overflow"
+    renderContent={() => (
+      <div className="tooltip-overflow-container">
+        <div className="tooltip-overflow-title">
+          <NoVote className="vote-status no-vote" />
+          <span>Reviewers</span>
+        </div>
+        <div className="tooltip-overflow-parent">
+          {hiddenElements.length > 0 && hiddenElements.map(ve => ve.tagElement)}
+        </div>
+      </div>
+    )}
+  >
+    <div className="tooltip-overflow-child">
+      <Pill variant={2} size={1}>
+        <span style={{ fontWeight: 'bold' }}>+{hiddenElements.length}</span>
+      </Pill>
+    </div>
+  </Tooltip>
+);
 
-  React.useEffect(() => {
-    let breakpointHit = false;
-    setWidth(
-      pills.reduce((acc, cur) => {
-        const newSum = acc + cur.elementWidth;
-        if (newSum > BREAKPOINT_WIDTH && !breakpointHit) {
-          setBreakpointPillId(cur.id);
-          breakpointHit = true;
-        }
-        return newSum;
-      }, 0),
-    );
-  }, [pills]);
-
-  React.useEffect(() => {
-    const noOverflowRequired = pills.length > 0 && width > 0 && width < BREAKPOINT_WIDTH;
-    if (noOverflowRequired) {
-      setDisplayPills(pills);
-    }
-
-    const overflowRequired = pills.length > 0 && width > BREAKPOINT_WIDTH;
-    if (overflowRequired) {
-      setDisplayPills(pills.slice(0, breakpointPillId));
-      setOverflowPills(pills.slice(breakpointPillId));
-    }
-  }, [pills, breakpointPillId, width]);
-
-  return (
-    <>
-      {reviewers.map((reviewer, index) => (
-        <CalculatePillWidth key={index} reviewer={reviewer} index={index} setPills={setPills} />
-      ))}
-      <PillGroup overflow={1}>
-        {displayPills.map(p => p.element)}
-        {width > BREAKPOINT_WIDTH && (
-          <Tooltip
-            className="tooltip-overflow"
-            renderContent={() => (
-              <div className="tooltip-overflow-parent">
-                {overflowPills.map(p => (
-                  <div key={p.id} className="tooltip-overflow-child">
-                    {p.element}
-                  </div>
-                ))}
-              </div>
-            )}
-          >
-            <Pill key={`overflow-pill`} variant={2} size={1}>
-              <span style={{ fontWeight: 'bold' }}>+{overflowPills.length}</span>
-            </Pill>
-          </Tooltip>
-        )}
-      </PillGroup>
-    </>
-  );
-};
-
-const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
+export const reviewerPill = (reviewer: IdentityRefWithVote, i: number, ref?: (node: any) => void) => (
   <Tooltip
     key={i}
     renderContent={() => (
@@ -95,7 +184,7 @@ const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
               size={'small'}
               displayName={reviewer.displayName}
             />
-            <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
+            <span>{reviewer.displayName}</span>
           </div>
           <div className="flex-row flex-center justify-start margin-top-8">
             {getReviewerVoteIconStatus(reviewer.vote)}
@@ -105,48 +194,61 @@ const defaultReviewerPill = (reviewer: IdentityRefWithVote, i: number) => (
       </div>
     )}
   >
-    <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
-      <div className="flex-row rhythm-horizontal-8">
-        {getReviewerVoteIconStatus(reviewer.vote)}
-        <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
-      </div>
-    </Pill>
+    <div ref={ref} className="tooltip-overflow-child">
+      <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
+        <div className="flex-row rhythm-horizontal-8">
+          {getReviewerVoteIconStatus(reviewer.vote)}
+          <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
+        </div>
+      </Pill>
+    </div>
   </Tooltip>
 );
 
-type CalculatePillWidthProps = {
-  reviewer: IdentityRefWithVote;
-  index: number;
-  setPills: React.Dispatch<React.SetStateAction<Reviewer[]>>;
-};
-export const CalculatePillWidth: React.FC<CalculatePillWidthProps> = ({
-  reviewer,
-  index,
-  setPills,
-}: CalculatePillWidthProps) => {
-  const [innerWidth, setInnerWidth] = React.useState(0);
-  const reviewerRef = React.useRef<HTMLDivElement>(null);
+type Props = { reviewers: IdentityRefWithVote[] };
+export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
+  const [widths, setWidths] = useState<Widths[]>([]);
+  const [visibleElements, setVisibleElements] = useState<Widths[]>([]);
+  const [hiddenElements, setHiddenElements] = useState<Widths[]>([]);
 
-  React.useLayoutEffect(() => {
-    innerWidth > 0 &&
-      setPills(prevState => [
-        ...prevState,
-        {
-          id: index,
-          element: defaultReviewerPill(reviewer, index),
-          elementWidth: Math.ceil(innerWidth),
-        },
-      ]);
-    return () => setPills([]);
-  }, [reviewer, index, innerWidth, setPills]);
+  const measureTag = useCallback(
+    (node: any) =>
+      setWidths(widths => {
+        if (node !== null) {
+          const index = widths.length;
+          const elementWidth = Math.ceil(node?.getBoundingClientRect().width) ?? 0;
+          const totalWidth = [...widths.map(w => w.width), elementWidth].reduce((prev, curr) => prev + curr, 0);
+          return [
+            ...widths,
+            {
+              index: index,
+              width: elementWidth,
+              totalWidth: totalWidth,
+              isOverflow: totalWidth > 600,
+              tagElement: reviewerPill(mockReviewers[index], index),
+            },
+          ];
+        }
 
-  React.useLayoutEffect(() => {
-    setInnerWidth((reviewerRef.current as HTMLDivElement).getBoundingClientRect().width);
-  }, [reviewerRef]);
+        return widths;
+      }),
+    [],
+  );
+
+  useEffect(() => {
+    if (widths.length > 0) {
+      setVisibleElements(widths.filter(w => !w.isOverflow));
+      setHiddenElements(widths.filter(w => w.isOverflow));
+    }
+  }, [widths]);
 
   return (
-    <div className="flex-row invisible" ref={reviewerRef}>
-      {defaultReviewerPill(reviewer, index)}
+    <div className="reviewers-container">
+      <div className="reviewers-container-hidden">{mockReviewers.map((r, i) => reviewerPill(r, i, measureTag))}</div>
+      <PillGroup overflow={1}>
+        {visibleElements.length > 0 && visibleElements.map(ve => ve.tagElement)}
+        {hiddenElements.length > 0 && <ReviewerOverflow hiddenElements={hiddenElements} />}
+      </PillGroup>
     </div>
   );
 };
