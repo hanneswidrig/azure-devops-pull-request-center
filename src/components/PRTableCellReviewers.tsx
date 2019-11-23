@@ -89,6 +89,7 @@ export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
           const index = widths.length;
           const elementWidth = Math.ceil(node?.getBoundingClientRect().width) ?? 0;
           const totalWidth = [...widths.map(w => w.width), elementWidth].reduce((prev, curr) => prev + curr, 0);
+
           return [
             ...widths,
             {
@@ -110,6 +111,7 @@ export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
     if (widths.length > 0) {
       setVisibleElements(widths.filter(w => !w.isOverflow));
       setHiddenElements(widths.filter(w => w.isOverflow));
+      setWidths([]);
     }
   }, [widths]);
 

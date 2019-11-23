@@ -3,11 +3,18 @@
 exports[`<PRTableCellReviewers /> renders successfully column without any reviewers 1`] = `
 <div>
   <div
-    class="bolt-pill-group flex-row overflow-wrap"
+    class="reviewers-container"
   >
     <div
-      class="bolt-pill-group-inner flex-row"
+      class="reviewers-container-hidden"
     />
+    <div
+      class="bolt-pill-group flex-row overflow-wrap"
+    >
+      <div
+        class="bolt-pill-group-inner flex-row"
+      />
+    </div>
   </div>
 </div>
 `;
