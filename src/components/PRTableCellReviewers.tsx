@@ -157,7 +157,7 @@ const ReviewerOverflow: React.FC<{ hiddenElements: Widths[] }> = ({ hiddenElemen
           <NoVote className="vote-status no-vote" />
           <span style={{ fontWeight: 'bold' }}>Reviewers</span>
         </div>
-        <div className="flex-column flex-center justify-start margin-top-8">
+        <div className="flex-column flex-center justify-start">
           {hiddenElements.length > 0 && hiddenElements.map(ve => ve.tagElement)}
         </div>
       </div>
@@ -198,7 +198,7 @@ export const reviewerPill = (reviewer: IdentityRefWithVote, i: number, ref?: (no
       <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
         <div className="flex-row rhythm-horizontal-8">
           {getReviewerVoteIconStatus(reviewer.vote)}
-          <span style={{ paddingBottom: 2 }}>{reviewer.displayName}</span>
+          <span>{reviewer.displayName}</span>
         </div>
       </Pill>
     </div>
