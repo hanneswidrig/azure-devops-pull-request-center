@@ -152,12 +152,12 @@ const ReviewerOverflow: React.FC<{ hiddenElements: Widths[] }> = ({ hiddenElemen
   <Tooltip
     className="tooltip-overflow"
     renderContent={() => (
-      <div className="tooltip-overflow-container">
-        <div className="tooltip-overflow-title">
+      <div className="tooltip-overflow-container flex-column rhythm-horizontal-4">
+        <div className="flex-row flex-center justify-center">
           <NoVote className="vote-status no-vote" />
           <span>Reviewers</span>
         </div>
-        <div className="tooltip-overflow-parent">
+        <div className="flex-column flex-center justify-start margin-top-8">
           {hiddenElements.length > 0 && hiddenElements.map(ve => ve.tagElement)}
         </div>
       </div>
