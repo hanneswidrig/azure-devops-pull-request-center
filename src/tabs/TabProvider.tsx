@@ -136,17 +136,17 @@ export const columns: ITableColumn<PR>[] = [
     renderCell: reviewersColumn,
     width: 416,
   },
-  new ColumnMore(() => {
-    return {
-      id: 'sub-menu',
-      items: [
-        {
-          id: 'submenu-one',
-          text: 'Show Work Items',
-          iconProps: { iconName: 'WorkItem' },
-          onActivate: () => {},
-        },
-      ],
-    };
-  }),
+  // new ColumnMore(() => {
+  //   return {
+  //     id: 'sub-menu',
+  //     items: [
+  //       {
+  //         id: 'submenu-one',
+  //         text: 'Show Work Items',
+  //         iconProps: { iconName: 'WorkItem' },
+  //         onActivate: () => {},
+  //       },
+  //     ],
+  //   };
+  // }),
 ];
