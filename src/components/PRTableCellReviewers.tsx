@@ -11,135 +11,6 @@ import { getVoteDescription } from '../lib/utils';
 import { reviewerVoteToIColorLight } from '../lib/colors';
 import { getReviewerVoteIconStatus, NoVote } from './StatusIcon';
 
-const mockReviewers = [
-  {
-    reviewerUrl:
-      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
-    vote: 10,
-    isFlagged: false,
-    displayName: 'Hannes Widrig',
-    url:
-      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
-    _links: {
-      avatar: {
-        href:
-          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
-      },
-    },
-    id: '34e23bae-b50a-60e7-8258-075090a1841a',
-    uniqueName: 'hannes_widrig@outlook.com',
-    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
-  },
-  {
-    reviewerUrl:
-      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
-    vote: 10,
-    isFlagged: false,
-    displayName: 'Hannes Widrig',
-    url:
-      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
-    _links: {
-      avatar: {
-        href:
-          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
-      },
-    },
-    id: '34e23bae-b50a-60e7-8258-075090a1841a',
-    uniqueName: 'hannes_widrig@outlook.com',
-    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
-  },
-  {
-    reviewerUrl:
-      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
-    vote: 5,
-    isFlagged: false,
-    displayName: 'Hannes Widrig',
-    url:
-      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
-    _links: {
-      avatar: {
-        href:
-          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
-      },
-    },
-    id: '34e23bae-b50a-60e7-8258-075090a1841a',
-    uniqueName: 'hannes_widrig@outlook.com',
-    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
-  },
-  {
-    reviewerUrl:
-      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
-    vote: 0,
-    isFlagged: false,
-    displayName: 'Hannes Widrig',
-    url:
-      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
-    _links: {
-      avatar: {
-        href:
-          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
-      },
-    },
-    id: '34e23bae-b50a-60e7-8258-075090a1841a',
-    uniqueName: 'hannes_widrig@outlook.com',
-    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
-  },
-  {
-    reviewerUrl:
-      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
-    vote: -5,
-    isFlagged: false,
-    displayName: 'Hannes Widrig',
-    url:
-      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
-    _links: {
-      avatar: {
-        href:
-          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
-      },
-    },
-    id: '34e23bae-b50a-60e7-8258-075090a1841a',
-    uniqueName: 'hannes_widrig@outlook.com',
-    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
-  },
-  {
-    reviewerUrl:
-      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
-    vote: -10,
-    isFlagged: false,
-    displayName: 'Hannes Widrig',
-    url:
-      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
-    _links: {
-      avatar: {
-        href:
-          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
-      },
-    },
-    id: '34e23bae-b50a-60e7-8258-075090a1841a',
-    uniqueName: 'hannes_widrig@outlook.com',
-    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
-  },
-  {
-    reviewerUrl:
-      'https://dev.azure.com/hanneswidrig/f2613275-db5d-4cbb-95c8-00ba53f76641/_apis/git/repositories/cd200cef-44c7-4839-8f93-57c6a0979eaa/pullRequests/1/reviewers/34e23bae-b50a-60e7-8258-075090a1841a',
-    vote: -10,
-    isFlagged: false,
-    displayName: 'Hannes Widrig',
-    url:
-      'https://spsprodcus2.vssps.visualstudio.com/A3c1dfbfa-3808-4342-bb22-1929bc938ccd/_apis/Identities/34e23bae-b50a-60e7-8258-075090a1841a',
-    _links: {
-      avatar: {
-        href:
-          'https://dev.azure.com/hanneswidrig/_apis/GraphProfile/MemberAvatars/msa.MzRlMjNiYWUtYjUwYS03MGU3LTgyNTgtMDc1MDkwYTE4NDFh',
-      },
-    },
-    id: '34e23bae-b50a-60e7-8258-075090a1841a',
-    uniqueName: 'hannes_widrig@outlook.com',
-    imageUrl: 'https://dev.azure.com/hanneswidrig/_api/_common/identityImage?id=34e23bae-b50a-60e7-8258-075090a1841a',
-  },
-] as IdentityRefWithVote[];
-
 type Widths = {
   index: number;
   width: number;
@@ -225,14 +96,14 @@ export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
               width: elementWidth,
               totalWidth: totalWidth,
               isOverflow: totalWidth > 600,
-              tagElement: reviewerPill(mockReviewers[index], index),
+              tagElement: reviewerPill(reviewers[index], index),
             },
           ];
         }
 
         return widths;
       }),
-    [],
+    [reviewers],
   );
 
   useEffect(() => {
@@ -244,7 +115,7 @@ export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
 
   return (
     <div className="reviewers-container">
-      <div className="reviewers-container-hidden">{mockReviewers.map((r, i) => reviewerPill(r, i, measureTag))}</div>
+      <div className="reviewers-container-hidden">{reviewers.map((r, i) => reviewerPill(r, i, measureTag))}</div>
       <PillGroup overflow={1}>
         {visibleElements.length > 0 && visibleElements.map(ve => ve.tagElement)}
         {hiddenElements.length > 0 && <ReviewerOverflow hiddenElements={hiddenElements} />}
