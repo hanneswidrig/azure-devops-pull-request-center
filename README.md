@@ -16,9 +16,9 @@ A centralized location for your Azure DevOps Pull Requests.
 
 ## 📐 Features
 
-- Modern UI based on Azure DevOps
-- Quick glance information about pull request across all your repositories.
-- Advanced filtering and full screen experience
+- Modern UI based on Azure DevOps Design System.
+- At a quick glance information about pull request across all your repositories.
+- Advanced filtering and full screen experience.
 
 ## 🧩 Compatibility
 
