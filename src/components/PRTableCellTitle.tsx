@@ -29,6 +29,7 @@ export const PRTableCellTitle: React.FC<{ tableItem: PR }> = ({ tableItem }: { t
             </Tooltip>
             {tableItem.isDraft && <Tag title={'Draft'} type={'draft'}></Tag>}
             {tableItem.isAutoComplete && <Tag title={'Auto Complete'} type={'autoComplete'}></Tag>}
+            {tableItem.hasMergeConflicts && <Tag title={'Merge Conflict'} type={'mergeConflict'}></Tag>}
           </div>
           <div className="pr-info">
             <span className="secondary-text body-s">

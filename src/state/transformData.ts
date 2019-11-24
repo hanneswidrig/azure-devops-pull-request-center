@@ -1,6 +1,6 @@
 import * as DevOps from 'azure-devops-extension-sdk';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
-import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
+import { GitPullRequest, IdentityRefWithVote, PullRequestAsyncStatus } from 'azure-devops-extension-api/Git/Git';
 
 import { PR } from './types';
 import { ReviewerVoteNumber, ReviewerVoteLabel } from '../lib/enums';
@@ -19,13 +19,21 @@ const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext:
   return voteResult;
 };
 
-type fromPullRequestToPRType = { pr: GitPullRequest; workItems: WorkItem[]; userContext: DevOps.IUserContext };
-export const fromPullRequestToPR = ({ pr, workItems, userContext }: fromPullRequestToPRType) => {
+export const fromPullRequestToPR = ({
+  pr,
+  workItems,
+  userContext,
+}: {
+  pr: GitPullRequest;
+  workItems: WorkItem[];
+  userContext: DevOps.IUserContext;
+}) => {
   const pullRequest: PR = {
     pullRequestId: pr.pullRequestId,
     repositoryId: pr.repository.id,
     isDraft: pr.isDraft,
     isAutoComplete: pr.autoCompleteSetBy !== undefined,
+    hasMergeConflicts: pr.mergeStatus === 2,
     status: pr.status,
     title: pr.title,
     href: `${pr.repository.webUrl}/pullrequest/${pr.pullRequestId}`,

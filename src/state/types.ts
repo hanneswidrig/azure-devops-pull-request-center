@@ -36,6 +36,7 @@ export interface PR {
   repositoryId: string;
   isDraft: boolean;
   isAutoComplete: boolean;
+  hasMergeConflicts: boolean;
   status: PullRequestStatus;
 
   title: string;

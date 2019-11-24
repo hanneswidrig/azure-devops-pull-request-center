@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Tag /> should use autoComplete type 1`] = `
+exports[`<Tag /> should display autoComplete 1`] = `
 <div>
   <span
     class="tag-container"
@@ -9,13 +9,13 @@ exports[`<Tag /> should use autoComplete type 1`] = `
     <span
       class="tag-text"
     >
-      Title
+      Auto Complete
     </span>
   </span>
 </div>
 `;
 
-exports[`<Tag /> should use draft type 1`] = `
+exports[`<Tag /> should display draft 1`] = `
 <div>
   <span
     class="tag-container"
@@ -24,7 +24,22 @@ exports[`<Tag /> should use draft type 1`] = `
     <span
       class="tag-text"
     >
-      Title
+      Draft
+    </span>
+  </span>
+</div>
+`;
+
+exports[`<Tag /> should display mergeConflict 1`] = `
+<div>
+  <span
+    class="tag-container"
+    style="color: rgb(218, 30, 40); border: 1px solid rgb(218, 30, 40);"
+  >
+    <span
+      class="tag-text"
+    >
+      Merge Conflict
     </span>
   </span>
 </div>

@@ -8,15 +8,24 @@ import { Tag } from '../components/Tag';
 afterEach(cleanup);
 
 describe('<Tag />', () => {
-  test('should use autoComplete type', () => {
-    const { container } = render(<Tag title={'Title'} type={'autoComplete'} />);
+  test('should display autoComplete', () => {
+    const { container, getByText } = render(<Tag title={'Auto Complete'} type={'autoComplete'} />);
     expect(container).toMatchSnapshot();
+    expect(getByText('Auto Complete')).toBeTruthy();
     expect(container.querySelector('.tag-container')).toHaveStyle(`color: ${Colors.orange.primary}`);
   });
 
-  test('should use draft type', () => {
-    const { container } = render(<Tag title={'Title'} type={'draft'} />);
+  test('should display draft', () => {
+    const { container, getByText } = render(<Tag title={'Draft'} type={'draft'} />);
     expect(container).toMatchSnapshot();
+    expect(getByText('Draft')).toBeTruthy();
     expect(container.querySelector('.tag-container')).toHaveStyle(`color: ${Colors.blue.primary}`);
+  });
+
+  test('should display mergeConflict', () => {
+    const { container, getByText } = render(<Tag title={'Merge Conflict'} type={'mergeConflict'} />);
+    expect(container).toMatchSnapshot();
+    expect(getByText('Merge Conflict')).toBeTruthy();
+    expect(container.querySelector('.tag-container')).toHaveStyle(`color: ${Colors.red.primary}`);
   });
 });
