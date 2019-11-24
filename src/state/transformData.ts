@@ -1,6 +1,6 @@
 import * as DevOps from 'azure-devops-extension-sdk';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
-import { GitPullRequest, IdentityRefWithVote, PullRequestAsyncStatus } from 'azure-devops-extension-api/Git/Git';
+import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
 import { PR } from './types';
 import { ReviewerVoteNumber, ReviewerVoteLabel } from '../lib/enums';
