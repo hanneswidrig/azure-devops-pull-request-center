@@ -24,6 +24,13 @@ A centralized location for your Azure DevOps Pull Requests.
 
 I built this extension for Azure DevOps Services 2019. If someone wanted to explore/test older versions of DevOps with source code modifications, I might be able to add support.
 
+## 🛣 Roadmap
+
+✖ Settings experience and preservation of filtering/settings.
+✖ Ability to view work items associated with PR.
+✖ Extra tabs for additional viewing experiences.
+✖ Auto-updating options for close monitoring of pull requests.
+
 ## ⛅ Inspiration
 
 [Pull Request Hub](https://github.com/cribeiro84/azure-devops-pull-request-hub) by [@cribeiro84](https://github.com/cribeiro84)
