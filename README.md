@@ -27,8 +27,11 @@ I built this extension for Azure DevOps Services 2019. If someone wanted to expl
 ## 🛣 Roadmap
 
 ✖ Settings experience and preservation of filtering/settings.
+
 ✖ Ability to view work items associated with PR.
+
 ✖ Extra tabs for additional viewing experiences.
+
 ✖ Auto-updating options for close monitoring of pull requests.
 
 ## ⛅ Inspiration
