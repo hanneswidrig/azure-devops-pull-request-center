@@ -12,8 +12,8 @@ import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
 
-import { PrHubState } from '../state/types';
 import { applyFilter } from '../lib/filters';
+import { PrHubState, PR } from '../state/types';
 import { fromPRToFilterItems } from '../state/transformData';
 import {
   setSelectedTab,
@@ -84,6 +84,23 @@ const getPageContent = ({ newSelectedTab, filter, filterItems, store }: { newSel
   return tabs[newSelectedTab];
 };
 
+const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | undefined = (
+  pullRequests: PR[],
+  selectedTab: TabOptions,
+) => {
+  if (pullRequests.length === 0) {
+    return undefined;
+  }
+
+  if (selectedTab === 'active') {
+    return pullRequests.filter(v => !v.isDraft).length;
+  }
+
+  if (selectedTab === 'draft') {
+    return pullRequests.filter(v => v.isDraft).length;
+  }
+};
+
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
 export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: Filter }) => {
   const store = useSelector((store: PrHubState) => store);
@@ -140,8 +157,8 @@ export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: 
             />
           )}
         >
-          <Tab name="Active" id="active" />
-          <Tab name="Draft" id="draft" />
+          <Tab name="Active" id="active" badgeCount={badgeCount(store.data.pullRequests, 'active')} />
+          <Tab name="Draft" id="draft" badgeCount={badgeCount(store.data.pullRequests, 'draft')} />
         </TabBar>
         <div className="page-content-left page-content-right page-content-top page-content-bottom">
           {getPageContent({ newSelectedTab: store.ui.selectedTab, filter, filterItems, store })}
