@@ -54,13 +54,7 @@ export const reducer: Reducer<PrHubState, FetchAction> = (state: PrHubState = in
       };
     case ActionTypes.TOGGLE_FILTER_BAR:
       state.ui.isFilterVisible.value = !state.ui.isFilterVisible.value;
-      return {
-        ...state,
-        ui: {
-          ...state.ui,
-          isFilterVisible: state.ui.isFilterVisible,
-        },
-      };
+      return state;
     case ActionTypes.TOGGLE_FULL_SCREEN_MODE:
       return {
         ...state,
