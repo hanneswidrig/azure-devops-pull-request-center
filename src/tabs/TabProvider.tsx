@@ -64,6 +64,10 @@ const getFilterCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): I
     {
       id: 'sort-direction',
       text: store.ui.sortDirection === 'desc' ? 'Newest' : 'Oldest',
+      tooltipProps: {
+        text: 'Sorting by',
+        delayMs: 1000,
+      },
       important: true,
       subtle: true,
       onActivate: () => {
