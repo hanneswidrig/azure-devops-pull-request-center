@@ -8,15 +8,13 @@ import { Page } from 'azure-devops-ui/Page';
 import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
-import { ITableColumn } from 'azure-devops-ui/Table';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
 
+import { PrHubState } from '../state/types';
 import { applyFilter } from '../lib/filters';
-import { PrHubState, PR } from '../state/types';
 import { fromPRToFilterItems } from '../state/transformData';
-import { titleColumn, reviewersColumn } from '../components/PRTableCellColumns';
 import {
   setSelectedTab,
   setPullRequests,
@@ -124,7 +122,7 @@ export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: 
 
   React.useEffect(() => {
     dispatch(triggerSortDirection());
-  }, [store.ui.selectedTab]);
+  }, [store.ui.selectedTab, dispatch]);
 
   return (
     <Surface background={1}>
