@@ -93,11 +93,13 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
   }
 
   if (selectedTab === 'active') {
-    return pullRequests.filter(v => !v.isDraft).length;
+    const activePrsCount = pullRequests.filter(v => !v.isDraft).length;
+    return activePrsCount > 0 ? activePrsCount : undefined;
   }
 
   if (selectedTab === 'draft') {
-    return pullRequests.filter(v => v.isDraft).length;
+    const draftPrsCount = pullRequests.filter(v => v.isDraft).length;
+    return draftPrsCount > 0 ? draftPrsCount : undefined;
   }
 };
 
