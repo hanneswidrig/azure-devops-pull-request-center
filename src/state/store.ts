@@ -1,8 +1,11 @@
+import produce from 'immer';
 import { Reducer } from 'redux';
 import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 
 import { FetchAction } from './actions';
 import { ActionTypes, PrHubState } from './types';
+import { sortByPullRequestId } from '../lib/utils';
+import { pullRequestItemProvider$ } from '../tabs/TabProvider';
 
 const initialState: PrHubState = {
   data: {
@@ -15,6 +18,7 @@ const initialState: PrHubState = {
     isFilterVisible: new ObservableValue(false),
     isFullScreenMode: false,
     selectedTab: 'active',
+    sortDirection: 'desc',
   },
 };
 
@@ -54,6 +58,17 @@ export const reducer: Reducer<PrHubState, FetchAction> = (state: PrHubState = in
       };
     case ActionTypes.TOGGLE_FILTER_BAR:
       state.ui.isFilterVisible.value = !state.ui.isFilterVisible.value;
+      return state;
+    case ActionTypes.TOGGLE_SORT_DIRECTION:
+      const nextState = produce(state, draft => {
+        draft.ui.sortDirection = draft.ui.sortDirection === 'desc' ? 'asc' : 'desc';
+      });
+      pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
+        sortByPullRequestId(a, b, nextState),
+      );
+      return nextState;
+    case ActionTypes.TRIGGER_SORT_DIRECTION:
+      pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) => sortByPullRequestId(a, b, state));
       return state;
     case ActionTypes.TOGGLE_FULL_SCREEN_MODE:
       return {

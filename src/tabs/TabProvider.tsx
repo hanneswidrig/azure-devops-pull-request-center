@@ -17,7 +17,13 @@ import { applyFilter } from '../lib/filters';
 import { PrHubState, PR } from '../state/types';
 import { fromPRToFilterItems } from '../state/transformData';
 import { titleColumn, reviewersColumn } from '../components/PRTableCellColumns';
-import { setSelectedTab, setPullRequests, toggleFullScreenMode } from '../state/actions';
+import {
+  setSelectedTab,
+  setPullRequests,
+  toggleFullScreenMode,
+  toggleSortDirection,
+  triggerSortDirection,
+} from '../state/actions';
 import {
   ITab,
   TabOptions,
@@ -26,8 +32,6 @@ import {
   FilterDictionary,
   FilterOptions,
 } from './TabTypes';
-
-type Props = { filter: Filter };
 
 const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
   return [
@@ -57,6 +61,23 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
   ];
 };
 
+const getFilterCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): IHeaderCommandBarItem[] => {
+  return [
+    {
+      id: 'sort-direction',
+      text: store.ui.sortDirection === 'desc' ? 'Newest' : 'Oldest',
+      important: true,
+      subtle: true,
+      onActivate: () => {
+        dispatch(toggleSortDirection());
+      },
+      iconProps: {
+        iconName: store.ui.sortDirection === 'desc' ? 'SortDown' : 'SortUp',
+      },
+    },
+  ];
+};
+
 const getPageContent = ({ newSelectedTab, filter, filterItems, store }: { newSelectedTab: TabOptions } & ITab) => {
   const tabs: Record<TabOptions, JSX.Element> = {
     active: <Active filter={filter} filterItems={filterItems} store={store} />,
@@ -66,7 +87,7 @@ const getPageContent = ({ newSelectedTab, filter, filterItems, store }: { newSel
 };
 
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
-export const TabProvider: React.FC<Props> = ({ filter }: Props) => {
+export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: Filter }) => {
   const store = useSelector((store: PrHubState) => store);
   const dispatch = useDispatch();
 
@@ -96,9 +117,14 @@ export const TabProvider: React.FC<Props> = ({ filter }: Props) => {
       };
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, filterValues, store.ui.selectedTab));
+      dispatch(triggerSortDirection());
     }, FILTER_CHANGE_EVENT);
     return () => filter.unsubscribe(() => {}, FILTER_CHANGE_EVENT);
-  }, [filter, store.data.pullRequests, store.ui.selectedTab, setFilterItems]);
+  }, [filter, store.data.pullRequests, store.ui.selectedTab, setFilterItems, dispatch]);
+
+  React.useEffect(() => {
+    dispatch(triggerSortDirection());
+  }, [store.ui.selectedTab]);
 
   return (
     <Surface background={1}>
@@ -109,7 +135,11 @@ export const TabProvider: React.FC<Props> = ({ filter }: Props) => {
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab(newSelectedTab))}
           tabSize={'tall' as any}
           renderAdditionalContent={() => (
-            <HeaderCommandBarWithFilter filter={filter} items={[]} filterToggled={store.ui.isFilterVisible} />
+            <HeaderCommandBarWithFilter
+              filter={filter}
+              items={getFilterCommandBarItems(dispatch, store)}
+              filterToggled={store.ui.isFilterVisible}
+            />
           )}
         >
           <Tab name="Active" id="active" />

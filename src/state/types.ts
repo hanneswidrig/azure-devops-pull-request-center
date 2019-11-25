@@ -16,6 +16,8 @@ const REMOVE_ASYNC_TASK = 'removeAsyncTask';
 const TOGGLE_FILTER_BAR = 'toggleFilterBar';
 const DISPLAY_WORK_ITEMS = 'displayWorkItems';
 const REFRESH_PULL_REQUESTS = 'refreshPullRequests';
+const TOGGLE_SORT_DIRECTION = 'toggleSortDirection';
+const TRIGGER_SORT_DIRECTION = 'triggerSortDirection';
 const TOGGLE_FULL_SCREEN_MODE = 'toggleFullScreenMode';
 
 export const ActionTypes = {
@@ -28,6 +30,8 @@ export const ActionTypes = {
   TOGGLE_FILTER_BAR,
   DISPLAY_WORK_ITEMS,
   REFRESH_PULL_REQUESTS,
+  TOGGLE_SORT_DIRECTION,
+  TRIGGER_SORT_DIRECTION,
   TOGGLE_FULL_SCREEN_MODE,
 } as const;
 
@@ -68,6 +72,7 @@ export interface UI {
   isFilterVisible: ObservableValue<boolean>;
   isFullScreenMode: boolean;
   selectedTab: TabOptions;
+  sortDirection: 'desc' | 'asc';
 }
 
 export interface PrHubState {

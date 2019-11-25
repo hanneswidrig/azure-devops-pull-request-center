@@ -62,6 +62,14 @@ export const setCurrentUser = () => {
     dispatch({ type: ActionTypes.SET_CURRENT_USER, payload: DevOps.getUser() });
 };
 
+export const toggleSortDirection = () => {
+  return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
+};
+
+export const triggerSortDirection = () => {
+  return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+};
+
 export const setSelectedTab = (newSelectedTab: string) => {
   return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
 };
