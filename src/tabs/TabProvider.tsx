@@ -152,31 +152,3 @@ export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: 
     </Surface>
   );
 };
-
-export const columns: ITableColumn<PR>[] = [
-  {
-    id: 'title',
-    name: 'Pull Request',
-    renderCell: titleColumn,
-    width: -100,
-  },
-  {
-    id: 'reviewers',
-    name: 'Reviewers',
-    renderCell: reviewersColumn,
-    width: 416,
-  },
-  // new ColumnMore(() => {
-  //   return {
-  //     id: 'sub-menu',
-  //     items: [
-  //       {
-  //         id: 'submenu-one',
-  //         text: 'Show Work Items',
-  //         iconProps: { iconName: 'WorkItem' },
-  //         onActivate: () => {},
-  //       },
-  //     ],
-  //   };
-  // }),
-];
