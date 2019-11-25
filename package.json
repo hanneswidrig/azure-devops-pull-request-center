@@ -8,6 +8,7 @@
     "@testing-library/react": "^9.3.2",
     "@uifabric/utilities": "^7.6.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "immer": "^5.0.0",
     "jest": "^24.9.0",
     "node-sass": "^4.13.0",
     "react": "^16.12.0",
