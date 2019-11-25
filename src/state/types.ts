@@ -7,32 +7,32 @@ import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-dev
 import { TabOptions } from '../tabs/TabTypes';
 import { ReviewerVoteNumber } from '../lib/enums';
 
+const ADD_ASYNC_TASK = 'addAsyncTask';
 const SET_REPOSITORIES = 'setRepositories';
-const SET_PULL_REQUESTS = 'setPullRequests';
 const SET_CURRENT_USER = 'setCurrentUser';
 const SET_SELECTED_TAB = 'setSelectedTab';
-const ADD_ASYNC_TASK = 'addAsyncTask';
+const SET_PULL_REQUESTS = 'setPullRequests';
 const REMOVE_ASYNC_TASK = 'removeAsyncTask';
 const TOGGLE_FILTER_BAR = 'toggleFilterBar';
 const DISPLAY_WORK_ITEMS = 'displayWorkItems';
+const SET_FULL_SCREEN_MODE = 'setFullScreenMode';
 const REFRESH_PULL_REQUESTS = 'refreshPullRequests';
 const TOGGLE_SORT_DIRECTION = 'toggleSortDirection';
 const TRIGGER_SORT_DIRECTION = 'triggerSortDirection';
-const TOGGLE_FULL_SCREEN_MODE = 'toggleFullScreenMode';
 
 export const ActionTypes = {
+  ADD_ASYNC_TASK,
   SET_REPOSITORIES,
-  SET_PULL_REQUESTS,
   SET_CURRENT_USER,
   SET_SELECTED_TAB,
-  ADD_ASYNC_TASK,
+  SET_PULL_REQUESTS,
   REMOVE_ASYNC_TASK,
   TOGGLE_FILTER_BAR,
   DISPLAY_WORK_ITEMS,
+  SET_FULL_SCREEN_MODE,
   REFRESH_PULL_REQUESTS,
   TOGGLE_SORT_DIRECTION,
   TRIGGER_SORT_DIRECTION,
-  TOGGLE_FULL_SCREEN_MODE,
 } as const;
 
 export interface PR {

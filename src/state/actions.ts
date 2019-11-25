@@ -119,5 +119,5 @@ export const setRepositories = () => async (dispatch: Dispatch<FetchAction>) => 
  */
 export const toggleFullScreenMode = () => async (dispatch: Dispatch<FetchAction>) => {
   const newFullScreenModeState = await setFullScreenMode();
-  dispatch({ type: ActionTypes.TOGGLE_FULL_SCREEN_MODE, payload: newFullScreenModeState });
+  dispatch({ type: ActionTypes.SET_FULL_SCREEN_MODE, payload: newFullScreenModeState });
 };
