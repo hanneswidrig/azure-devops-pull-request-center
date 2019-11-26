@@ -11,6 +11,7 @@ import { ITab } from './TabTypes';
 import { PR } from '../state/types';
 import { UIFilterBar } from '../components/UIFilterBar';
 import { pullRequestItemProvider$ } from './TabProvider';
+import { EmptyDataVisual } from '../components/EmptyDataVisual';
 import { titleColumn, reviewersColumn } from '../components/PRTableCellColumns';
 
 export const columns: ITableColumn<PR>[] = [
@@ -49,7 +50,10 @@ export const ClassicTab: React.FC<ITab> = ({ filter, filterItems, store }: ITab)
       </ConditionalChildren>
       {store.data.asyncTaskCount === 0 ? (
         <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: false }}>
-          <Table<PR> columns={columns} itemProvider={pullRequestItemProvider$} showLines={true} role="table" />
+          {pullRequestItemProvider$.value.length > 0 && (
+            <Table<PR> columns={columns} itemProvider={pullRequestItemProvider$} showLines={true} role="table" />
+          )}
+          {pullRequestItemProvider$.value.length === 0 && <EmptyDataVisual />}
         </Card>
       ) : (
         <Spinner label="fetching pull requests..." size={3} className="center-spinner" />
