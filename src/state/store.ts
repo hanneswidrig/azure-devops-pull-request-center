@@ -114,7 +114,7 @@ const modifyObservables: SplitReducer = state => [
   ],
 ];
 
-export const reducer: Reducer<PrHubState, FetchAction> = (state: PrHubState = initialState, action: FetchAction) => {
+export const reducer: Reducer<PrHubState, any> = (state: PrHubState = initialState, action: FetchAction) => {
   const reducerActions = new Map<Enum<typeof ActionTypes>, () => PrHubState>([
     ...setState(state, action),
     ...updateState(state, action),

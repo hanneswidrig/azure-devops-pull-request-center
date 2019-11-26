@@ -121,3 +121,11 @@ export const toggleFullScreenMode = () => async (dispatch: Dispatch<FetchAction>
   const newFullScreenModeState = await setFullScreenMode();
   dispatch({ type: ActionTypes.SET_FULL_SCREEN_MODE, payload: newFullScreenModeState });
 };
+
+export const onInitialLoad = () => {
+  return (dispatch: Dispatch<any>) => {
+    dispatch(setCurrentUser());
+    dispatch(setRepositories());
+    dispatch(setPullRequests());
+  };
+};
