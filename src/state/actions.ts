@@ -6,7 +6,12 @@ import * as DevOps from 'azure-devops-extension-sdk';
 // azure-devops-extension-api
 import { ResourceRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
-import { getClient, IProjectPageService, IHostPageLayoutService } from 'azure-devops-extension-api';
+import {
+  getClient,
+  IProjectPageService,
+  IHostPageLayoutService,
+  IExtensionDataService,
+} from 'azure-devops-extension-api';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
 import { ActionTypes } from './types';
@@ -45,6 +50,13 @@ const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
   const workItemRefs = await gitClient.getPullRequestWorkItemRefs(pullRequest.repository.id, pullRequest.pullRequestId);
   const workItemIds = workItemRefs.flatMap((ref: ResourceRef) => Number(ref.id));
   return workItemIds.length > 0 ? await workItemClient.getWorkItems(workItemIds) : [];
+};
+
+const getSavedPrefs = async () => {
+  const extensionId = DevOps.getExtensionContext().id;
+  const accessToken = await DevOps.getAccessToken();
+  const extensionDataService = await DevOps.getService<IExtensionDataService>('ms.vss-features.extension-data-service');
+  const dataManagementContext = await extensionDataService.getExtensionDataManager(extensionId, accessToken);
 };
 
 const setFullScreenMode = async (): Promise<boolean> => {
