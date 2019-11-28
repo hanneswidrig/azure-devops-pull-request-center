@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { Action, Dispatch } from 'redux';
 
 // azure-devops-extension-sdk
@@ -11,12 +12,13 @@ import {
   IProjectPageService,
   IHostPageLayoutService,
   IExtensionDataService,
+  IExtensionDataManager,
 } from 'azure-devops-extension-api';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
-import { ActionTypes } from './types';
-import { fromPullRequestToPR } from './transformData';
 import { sortByRepositoryName } from '../lib/utils';
+import { fromPullRequestToPR } from './transformData';
+import { ActionTypes, SavedPrHubState } from './types';
 import { GitPullRequest, GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 
 // action interfaces
@@ -50,13 +52,6 @@ const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
   const workItemRefs = await gitClient.getPullRequestWorkItemRefs(pullRequest.repository.id, pullRequest.pullRequestId);
   const workItemIds = workItemRefs.flatMap((ref: ResourceRef) => Number(ref.id));
   return workItemIds.length > 0 ? await workItemClient.getWorkItems(workItemIds) : [];
-};
-
-const getSavedPrefs = async () => {
-  const extensionId = DevOps.getExtensionContext().id;
-  const accessToken = await DevOps.getAccessToken();
-  const extensionDataService = await DevOps.getService<IExtensionDataService>('ms.vss-features.extension-data-service');
-  const dataManagementContext = await extensionDataService.getExtensionDataManager(extensionId, accessToken);
 };
 
 const setFullScreenMode = async (): Promise<boolean> => {
@@ -140,4 +135,38 @@ export const onInitialLoad = () => {
     dispatch(setRepositories());
     dispatch(setPullRequests());
   };
+};
+
+/**
+ * @summary Get Azure Extension Storage Context
+ */
+const getDataManagementContext = async (): Promise<IExtensionDataManager> => {
+  const extensionId = DevOps.getExtensionContext().id;
+  const accessToken = await DevOps.getAccessToken();
+  const extensionDataService = await DevOps.getService<IExtensionDataService>('ms.vss-features.extension-data-service');
+  return extensionDataService.getExtensionDataManager(extensionId, accessToken);
+};
+
+export const getSettings = async (userId = 'default') => {
+  const dbKey = `prc-ext-data-${userId}`;
+  const context = await getDataManagementContext();
+  const db = await context.getValue(dbKey, { defaultValue: {} });
+  console.log(db);
+};
+
+export const saveSettings = async (data: SavedPrHubState, userId = 'default') => {
+  const dbKey = `prc-ext-data-${userId}`;
+  const context = await getDataManagementContext();
+  const newSavedState: SavedPrHubState = {
+    settings: {
+      settingsLastSaved: new Date().toISOString(),
+    },
+    ui: {
+      isFilterVisible: data.ui.isFilterVisible,
+      isFullScreenMode: data.ui.isFullScreenMode,
+      selectedTab: data.ui.selectedTab,
+      sortDirection: data.ui.sortDirection,
+    },
+  };
+  await context.setValue(dbKey, newSavedState, { defaultValue: {} });
 };

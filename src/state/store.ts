@@ -21,6 +21,9 @@ const initialState: PrHubState = {
     selectedTab: 'active',
     sortDirection: 'desc',
   },
+  settings: {
+    settingsLastSaved: new Date(0).toISOString(),
+  },
 };
 
 const setState: SplitReducer = (state, action) => [

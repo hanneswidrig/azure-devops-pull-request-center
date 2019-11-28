@@ -7,6 +7,8 @@ import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-dev
 import { TabOptions } from '../tabs/TabTypes';
 import { ReviewerVoteNumber } from '../lib/enums';
 
+const GET_SETTINGS = 'getSettings';
+const SET_SETTINGS = 'setSettings';
 const ADD_ASYNC_TASK = 'addAsyncTask';
 const SET_REPOSITORIES = 'setRepositories';
 const SET_CURRENT_USER = 'setCurrentUser';
@@ -21,6 +23,8 @@ const TOGGLE_SORT_DIRECTION = 'toggleSortDirection';
 const TRIGGER_SORT_DIRECTION = 'triggerSortDirection';
 
 export const ActionTypes = {
+  GET_SETTINGS,
+  SET_SETTINGS,
   ADD_ASYNC_TASK,
   SET_REPOSITORIES,
   SET_CURRENT_USER,
@@ -35,7 +39,11 @@ export const ActionTypes = {
   TRIGGER_SORT_DIRECTION,
 } as const;
 
-export interface PR {
+export type Settings = {
+  settingsLastSaved: string;
+};
+
+export type PR = {
   pullRequestId: number;
   repositoryId: string;
   isDraft: boolean;
@@ -57,25 +65,27 @@ export interface PR {
 
   workItems: WorkItem[];
   reviewers: IdentityRefWithVote[];
-}
+};
 
 type PRRef = { name: string; href: string };
-
-export interface Data {
+export type Data = {
   repositories: GitRepository[];
   pullRequests: PR[];
   currentUser: DevOps.IUserContext;
   asyncTaskCount: number;
-}
+};
 
-export interface UI {
+export type UI = {
   isFilterVisible: ObservableValue<boolean>;
   isFullScreenMode: boolean;
   selectedTab: TabOptions;
   sortDirection: 'desc' | 'asc';
-}
+};
 
-export interface PrHubState {
+export type PrHubState = {
+  settings: Settings;
   data: Data;
   ui: UI;
-}
+};
+
+export type SavedPrHubState = Omit<PrHubState, 'data'>;
