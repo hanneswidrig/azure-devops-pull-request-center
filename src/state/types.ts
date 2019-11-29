@@ -10,9 +10,10 @@ import { ReviewerVoteNumber } from '../lib/enums';
 const GET_SETTINGS = 'getSettings';
 const SET_SETTINGS = 'setSettings';
 const ADD_ASYNC_TASK = 'addAsyncTask';
-const SET_REPOSITORIES = 'setRepositories';
 const SET_CURRENT_USER = 'setCurrentUser';
 const SET_SELECTED_TAB = 'setSelectedTab';
+const RESTORE_SETTINGS = 'restoreSettings';
+const SET_REPOSITORIES = 'setRepositories';
 const SET_PULL_REQUESTS = 'setPullRequests';
 const REMOVE_ASYNC_TASK = 'removeAsyncTask';
 const TOGGLE_FILTER_BAR = 'toggleFilterBar';
@@ -26,9 +27,10 @@ export const ActionTypes = {
   GET_SETTINGS,
   SET_SETTINGS,
   ADD_ASYNC_TASK,
-  SET_REPOSITORIES,
   SET_CURRENT_USER,
   SET_SELECTED_TAB,
+  RESTORE_SETTINGS,
+  SET_REPOSITORIES,
   SET_PULL_REQUESTS,
   REMOVE_ASYNC_TASK,
   TOGGLE_FILTER_BAR,

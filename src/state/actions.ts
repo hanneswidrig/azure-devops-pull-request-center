@@ -1,4 +1,3 @@
-import produce from 'immer';
 import { Action, Dispatch } from 'redux';
 
 // azure-devops-extension-sdk
@@ -16,6 +15,7 @@ import {
 } from 'azure-devops-extension-api';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
+import { initialState } from './store';
 import { sortByRepositoryName } from '../lib/utils';
 import { fromPullRequestToPR } from './transformData';
 import { ActionTypes, SavedPrHubState } from './types';
@@ -129,8 +129,25 @@ export const toggleFullScreenMode = () => async (dispatch: Dispatch<FetchAction>
   dispatch({ type: ActionTypes.SET_FULL_SCREEN_MODE, payload: newFullScreenModeState });
 };
 
+export const restoreSettings = () => async (dispatch: Dispatch<FetchAction>) => {
+  const settings = await getSettings();
+  dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
+  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+};
+
+export const clearSettings = () => async (dispatch: Dispatch<FetchAction>) => {
+  const pristineState: SavedPrHubState = {
+    settings: initialState.settings,
+    ui: initialState.ui,
+  };
+  await setSettings(pristineState);
+  dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: pristineState });
+  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+};
+
 export const onInitialLoad = () => {
   return (dispatch: Dispatch<any>) => {
+    dispatch(restoreSettings());
     dispatch(setCurrentUser());
     dispatch(setRepositories());
     dispatch(setPullRequests());
@@ -147,15 +164,14 @@ const getDataManagementContext = async (): Promise<IExtensionDataManager> => {
   return extensionDataService.getExtensionDataManager(extensionId, accessToken);
 };
 
-export const getSettings = async (userId = 'default') => {
-  const dbKey = `prc-ext-data-${userId}`;
+export const getSettings = async (): Promise<SavedPrHubState> => {
+  const dbKey = `prc-ext-data-default`;
   const context = await getDataManagementContext();
-  const db = await context.getValue(dbKey, { defaultValue: {} });
-  console.log(db);
+  return context.getValue(dbKey, { defaultValue: null });
 };
 
-export const saveSettings = async (data: SavedPrHubState, userId = 'default') => {
-  const dbKey = `prc-ext-data-${userId}`;
+export const setSettings = async (data: SavedPrHubState): Promise<SavedPrHubState> => {
+  const dbKey = `prc-ext-data-default`;
   const context = await getDataManagementContext();
   const newSavedState: SavedPrHubState = {
     settings: {
@@ -168,5 +184,5 @@ export const saveSettings = async (data: SavedPrHubState, userId = 'default') =>
       sortDirection: data.ui.sortDirection,
     },
   };
-  await context.setValue(dbKey, newSavedState, { defaultValue: {} });
+  return context.setValue(dbKey, newSavedState);
 };

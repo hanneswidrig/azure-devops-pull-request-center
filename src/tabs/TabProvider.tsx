@@ -21,6 +21,8 @@ import {
   toggleFullScreenMode,
   toggleSortDirection,
   triggerSortDirection,
+  setSettings,
+  clearSettings,
 } from '../state/actions';
 import {
   ITab,
@@ -31,7 +33,7 @@ import {
   FilterOptions,
 } from './TabTypes';
 
-const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
+const getCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): IHeaderCommandBarItem[] => {
   return [
     {
       id: 'refresh',
@@ -46,6 +48,30 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
       },
     },
     {
+      id: 'save-prefs',
+      text: 'Save Preferences',
+      important: false,
+      onActivate: () => {
+        setSettings({ ...store });
+      },
+      iconProps: {
+        title: 'Preserve application state',
+        iconName: 'fabric-icon ms-Icon--Save',
+      },
+    },
+    {
+      id: 'clear-prefs',
+      text: 'Clear Preferences',
+      important: false,
+      onActivate: () => {
+        dispatch(clearSettings());
+      },
+      iconProps: {
+        title: 'Reset application state',
+        iconName: 'fabric-icon ms-Icon--ClearFilter',
+      },
+    },
+    {
       id: 'full-screen',
       text: 'Full Screen Mode',
       important: false,
@@ -53,6 +79,7 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
         dispatch(toggleFullScreenMode());
       },
       iconProps: {
+        title: 'Visually hide or show Azure DevOps UI Shell',
         iconName: 'fabric-icon ms-Icon--FullScreen',
       },
     },
@@ -150,7 +177,7 @@ export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: 
   return (
     <Surface background={1}>
       <Page className="azure-pull-request-hub flex-grow">
-        <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch)} />
+        <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch, store)} />
         <TabBar
           selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab(newSelectedTab))}
