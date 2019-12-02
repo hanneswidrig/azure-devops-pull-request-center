@@ -154,6 +154,8 @@ export const onInitialLoad = () => {
   };
 };
 
+// This all needs to be in context of setting a "default view"
+
 /**
  * @summary Get Azure Extension Storage Context
  */
