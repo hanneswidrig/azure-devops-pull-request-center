@@ -55,7 +55,7 @@ const getCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): IHeader
         setSettings({ ...store });
       },
       iconProps: {
-        title: 'Preserve application state',
+        title: 'Preserve current application state',
         iconName: 'fabric-icon ms-Icon--Save',
       },
     },
@@ -67,7 +67,7 @@ const getCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): IHeader
         dispatch(clearSettings());
       },
       iconProps: {
-        title: 'Reset application state',
+        title: 'Reset default application state',
         iconName: 'fabric-icon ms-Icon--ClearFilter',
       },
     },
@@ -167,7 +167,7 @@ export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: 
       pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, filterValues, store.ui.selectedTab));
       dispatch(triggerSortDirection());
     }, FILTER_CHANGE_EVENT);
-    return () => filter.unsubscribe(() => {}, FILTER_CHANGE_EVENT);
+    return () => filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);
   }, [filter, store.data.pullRequests, store.ui.selectedTab, setFilterItems, dispatch]);
 
   React.useEffect(() => {
