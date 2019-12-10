@@ -23,6 +23,15 @@ export const initialState: PrHubState = {
   },
   settings: {
     settingsLastSaved: new Date(0).toISOString(),
+    filterValues: {
+      searchString: '',
+      repositories: '',
+      sourceBranch: '',
+      targetBranch: '',
+      author: '',
+      reviewer: '',
+      myApprovalStatus: '',
+    },
   },
 };
 
@@ -60,12 +69,21 @@ const setState: SplitReducer = (state, action) => [
     },
   ],
   [
+    ActionTypes.SET_FILTER_VALUES,
+    () => {
+      return produce(state, draft => {
+        draft.settings.filterValues = action.payload;
+      });
+    },
+  ],
+  [
     ActionTypes.RESTORE_SETTINGS,
     () => {
       if (action.payload) {
         const savedSettings: SavedPrHubState = action.payload;
         return produce(state, draft => {
           draft.settings.settingsLastSaved = savedSettings.settings.settingsLastSaved;
+          draft.settings.filterValues = savedSettings.settings.filterValues;
           draft.ui.isFilterVisible.value = savedSettings.ui.isFilterVisible.value;
           draft.ui.isFullScreenMode = savedSettings.ui.isFullScreenMode;
           draft.ui.selectedTab = savedSettings.ui.selectedTab;

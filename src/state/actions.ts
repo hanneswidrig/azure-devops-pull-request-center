@@ -16,6 +16,7 @@ import {
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
 import { initialState } from './store';
+import { FilterDictionary } from '../tabs/TabTypes';
 import { sortByRepositoryName } from '../lib/utils';
 import { fromPullRequestToPR } from './transformData';
 import { ActionTypes, SavedPrHubState } from './types';
@@ -75,6 +76,10 @@ export const toggleSortDirection = () => {
 
 export const triggerSortDirection = () => {
   return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+};
+
+export const setFilterValues = (filterValues: FilterDictionary) => {
+  return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.SET_FILTER_VALUES, payload: filterValues });
 };
 
 export const setSelectedTab = (newSelectedTab: string) => {
@@ -178,6 +183,7 @@ export const setSettings = async (data: SavedPrHubState): Promise<SavedPrHubStat
   const newSavedState: SavedPrHubState = {
     settings: {
       settingsLastSaved: new Date().toISOString(),
+      filterValues: data.settings.filterValues,
     },
     ui: {
       isFilterVisible: data.ui.isFilterVisible,

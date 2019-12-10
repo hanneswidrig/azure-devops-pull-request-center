@@ -23,6 +23,7 @@ import {
   triggerSortDirection,
   setSettings,
   clearSettings,
+  setFilterValues,
 } from '../state/actions';
 import {
   ITab,
@@ -163,6 +164,7 @@ export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: 
         reviewer: filter.getFilterItemValue<string[]>(FilterOptions.reviewer),
         myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus),
       };
+      dispatch(setFilterValues(filterValues));
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, filterValues, store.ui.selectedTab));
       dispatch(triggerSortDirection());

@@ -4,8 +4,8 @@ import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
 import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
 
-import { TabOptions } from '../tabs/TabTypes';
 import { ReviewerVoteNumber } from '../lib/enums';
+import { TabOptions, FilterDictionary } from '../tabs/TabTypes';
 
 const GET_SETTINGS = 'getSettings';
 const SET_SETTINGS = 'setSettings';
@@ -14,6 +14,7 @@ const SET_CURRENT_USER = 'setCurrentUser';
 const SET_SELECTED_TAB = 'setSelectedTab';
 const RESTORE_SETTINGS = 'restoreSettings';
 const SET_REPOSITORIES = 'setRepositories';
+const SET_FILTER_VALUES = 'setFilterValues';
 const SET_PULL_REQUESTS = 'setPullRequests';
 const REMOVE_ASYNC_TASK = 'removeAsyncTask';
 const TOGGLE_FILTER_BAR = 'toggleFilterBar';
@@ -31,6 +32,7 @@ export const ActionTypes = {
   SET_SELECTED_TAB,
   RESTORE_SETTINGS,
   SET_REPOSITORIES,
+  SET_FILTER_VALUES,
   SET_PULL_REQUESTS,
   REMOVE_ASYNC_TASK,
   TOGGLE_FILTER_BAR,
@@ -43,6 +45,7 @@ export const ActionTypes = {
 
 export type Settings = {
   settingsLastSaved: string;
+  filterValues: FilterDictionary;
 };
 
 export type PR = {
