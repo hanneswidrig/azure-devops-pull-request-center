@@ -45,7 +45,7 @@ export const ActionTypes = {
 
 export type Settings = {
   settingsLastSaved: string;
-  filterValues: FilterDictionary;
+  filterValues: FilterDictionary | undefined;
 };
 
 export type PR = {

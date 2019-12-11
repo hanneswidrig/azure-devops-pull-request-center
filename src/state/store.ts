@@ -23,15 +23,7 @@ export const initialState: PrHubState = {
   },
   settings: {
     settingsLastSaved: new Date(0).toISOString(),
-    filterValues: {
-      searchString: '',
-      repositories: '',
-      sourceBranch: '',
-      targetBranch: '',
-      author: '',
-      reviewer: '',
-      myApprovalStatus: '',
-    },
+    filterValues: undefined,
   },
 };
 

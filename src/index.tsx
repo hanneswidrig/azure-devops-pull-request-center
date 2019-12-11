@@ -16,7 +16,7 @@ import { onInitialLoad } from './state/actions';
 import { TabProvider } from './tabs/TabProvider';
 
 const store = createStore(reducer, applyMiddleware(thunk));
-const filter: Filter = new Filter();
+export const filter: Filter = new Filter();
 
 const App: React.FC = () => {
   React.useEffect(() => {
@@ -25,7 +25,7 @@ const App: React.FC = () => {
 
   return (
     <Provider store={store}>
-      <TabProvider filter={filter} />
+      <TabProvider />
     </Provider>
   );
 };

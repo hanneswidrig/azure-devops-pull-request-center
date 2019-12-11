@@ -9,9 +9,10 @@ import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
-import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
+import { FILTER_CHANGE_EVENT } from 'azure-devops-ui/Utilities/Filter';
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
 
+import { filter } from '..';
 import { applyFilter } from '../lib/filters';
 import { PrHubState, PR } from '../state/types';
 import { fromPRToFilterItems } from '../state/transformData';
@@ -136,7 +137,7 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
 };
 
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
-export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: Filter }) => {
+export const TabProvider: React.FC = () => {
   const store = useSelector((store: PrHubState) => store);
   const dispatch = useDispatch();
 
@@ -166,15 +167,29 @@ export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: 
       };
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, filterValues, store.ui.selectedTab));
-      dispatch(setFilterValues(filterValues));
       dispatch(triggerSortDirection());
     }, FILTER_CHANGE_EVENT);
     return () => filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);
-  }, [filter, store.data.pullRequests, store.ui.selectedTab, setFilterItems, dispatch]);
+  }, [store.data.pullRequests, store.ui.selectedTab, setFilterItems, dispatch]);
 
   React.useEffect(() => {
     dispatch(triggerSortDirection());
   }, [store.ui.selectedTab, dispatch]);
+
+  React.useEffect(() => {
+    const filterValues = store.settings.filterValues;
+    // if (filterValues) {
+    //   filter.setState({
+    //     [FilterOptions.searchString]: { value: filterValues.searchString },
+    //     [FilterOptions.repositories]: { value: filterValues.repositories },
+    //     [FilterOptions.sourceBranch]: { value: filterValues.sourceBranch },
+    //     [FilterOptions.targetBranch]: { value: filterValues.targetBranch },
+    //     [FilterOptions.author]: { value: filterValues.author },
+    //     [FilterOptions.reviewer]: { value: filterValues.reviewer },
+    //     [FilterOptions.myApprovalStatus]: { value: filterValues.myApprovalStatus },
+    //   });
+    // }
+  }, [store.settings.filterValues]);
 
   return (
     <Surface background={1}>
