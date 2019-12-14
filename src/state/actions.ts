@@ -113,6 +113,7 @@ export const setPullRequests = () => async (dispatch: Dispatch<FetchAction>) => 
     ),
   );
   dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload: transformedPopulatedPullRequests });
+  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
   dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
 };
 
