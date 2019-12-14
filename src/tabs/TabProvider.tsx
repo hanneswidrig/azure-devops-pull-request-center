@@ -24,7 +24,6 @@ import {
   triggerSortDirection,
   setSettings,
   clearSettings,
-  setFilterValues,
 } from '../state/actions';
 import {
   ITab,
@@ -175,21 +174,6 @@ export const TabProvider: React.FC = () => {
   React.useEffect(() => {
     dispatch(triggerSortDirection());
   }, [store.ui.selectedTab, dispatch]);
-
-  React.useEffect(() => {
-    const filterValues = store.settings.filterValues;
-    // if (filterValues) {
-    //   filter.setState({
-    //     [FilterOptions.searchString]: { value: filterValues.searchString },
-    //     [FilterOptions.repositories]: { value: filterValues.repositories },
-    //     [FilterOptions.sourceBranch]: { value: filterValues.sourceBranch },
-    //     [FilterOptions.targetBranch]: { value: filterValues.targetBranch },
-    //     [FilterOptions.author]: { value: filterValues.author },
-    //     [FilterOptions.reviewer]: { value: filterValues.reviewer },
-    //     [FilterOptions.myApprovalStatus]: { value: filterValues.myApprovalStatus },
-    //   });
-    // }
-  }, [store.settings.filterValues]);
 
   return (
     <Surface background={1}>
