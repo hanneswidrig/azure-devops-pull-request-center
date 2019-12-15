@@ -50,7 +50,7 @@ const getCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): IHeader
     },
     {
       id: 'save-prefs',
-      text: 'Save Preferences',
+      text: 'Set as default filters',
       important: false,
       onActivate: () => {
         setSettings({ ...store });
@@ -62,7 +62,7 @@ const getCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): IHeader
     },
     {
       id: 'clear-prefs',
-      text: 'Clear Preferences',
+      text: 'Reset default filters',
       important: false,
       onActivate: () => {
         dispatch(clearSettings());
