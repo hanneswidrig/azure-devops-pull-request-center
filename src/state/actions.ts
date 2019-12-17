@@ -153,7 +153,7 @@ export const clearSettings = () => async (dispatch: Dispatch<FetchAction>) => {
 
 export const onInitialLoad = () => {
   return (dispatch: Dispatch<any>) => {
-    dispatch(restoreSettings());
+    // dispatch(restoreSettings());
     dispatch(setCurrentUser());
     dispatch(setRepositories());
     dispatch(setPullRequests());

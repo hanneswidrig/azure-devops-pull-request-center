@@ -48,30 +48,30 @@ const getCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): IHeader
         iconName: 'fabric-icon ms-Icon--Refresh',
       },
     },
-    {
-      id: 'save-prefs',
-      text: 'Set as default filters',
-      important: false,
-      onActivate: () => {
-        setSettings({ ...store });
-      },
-      iconProps: {
-        title: 'Preserve current application state',
-        iconName: 'fabric-icon ms-Icon--Save',
-      },
-    },
-    {
-      id: 'clear-prefs',
-      text: 'Reset default filters',
-      important: false,
-      onActivate: () => {
-        dispatch(clearSettings());
-      },
-      iconProps: {
-        title: 'Reset default application state',
-        iconName: 'fabric-icon ms-Icon--ClearFilter',
-      },
-    },
+    // {
+    //   id: 'save-prefs',
+    //   text: 'Set as default filters',
+    //   important: false,
+    //   onActivate: () => {
+    //     setSettings({ ...store });
+    //   },
+    //   iconProps: {
+    //     title: 'Preserve current application state',
+    //     iconName: 'fabric-icon ms-Icon--Save',
+    //   },
+    // },
+    // {
+    //   id: 'clear-prefs',
+    //   text: 'Reset default filters',
+    //   important: false,
+    //   onActivate: () => {
+    //     dispatch(clearSettings());
+    //   },
+    //   iconProps: {
+    //     title: 'Reset default application state',
+    //     iconName: 'fabric-icon ms-Icon--ClearFilter',
+    //   },
+    // },
     {
       id: 'full-screen',
       text: 'Full Screen Mode',
@@ -183,7 +183,7 @@ export const TabProvider: React.FC = () => {
     pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
     pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, {}, store.ui.selectedTab));
     setFilterItems(fromPRToFilterItems(store.data.pullRequests));
-    setDefaultFilterState(store.settings.filterValues);
+    // setDefaultFilterState(store.settings.filterValues);
 
     filter.subscribe(() => {
       const filterValues: FilterDictionary = {
