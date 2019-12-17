@@ -135,6 +135,36 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
   }
 };
 
+const setDefaultFilterState = (filterValues: FilterDictionary | undefined) => {
+  if (filterValues?.searchString) {
+    filter.setFilterItemState(FilterOptions.searchString, { value: filterValues.searchString });
+  }
+
+  if (filterValues?.repositories) {
+    filter.setFilterItemState(FilterOptions.repositories, { value: filterValues.repositories });
+  }
+
+  if (filterValues?.sourceBranch) {
+    filter.setFilterItemState(FilterOptions.sourceBranch, { value: filterValues.sourceBranch });
+  }
+
+  if (filterValues?.targetBranch) {
+    filter.setFilterItemState(FilterOptions.targetBranch, { value: filterValues.targetBranch });
+  }
+
+  if (filterValues?.author) {
+    filter.setFilterItemState(FilterOptions.author, { value: filterValues.author });
+  }
+
+  if (filterValues?.reviewer) {
+    filter.setFilterItemState(FilterOptions.reviewer, { value: filterValues.reviewer });
+  }
+
+  if (filterValues?.myApprovalStatus) {
+    filter.setFilterItemState(FilterOptions.myApprovalStatus, { value: filterValues.myApprovalStatus });
+  }
+};
+
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
 export const TabProvider: React.FC = () => {
   const store = useSelector((store: PrHubState) => store);
@@ -153,6 +183,7 @@ export const TabProvider: React.FC = () => {
     pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
     pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, {}, store.ui.selectedTab));
     setFilterItems(fromPRToFilterItems(store.data.pullRequests));
+    setDefaultFilterState(store.settings.filterValues);
 
     filter.subscribe(() => {
       const filterValues: FilterDictionary = {
@@ -169,7 +200,7 @@ export const TabProvider: React.FC = () => {
       dispatch(triggerSortDirection());
     }, FILTER_CHANGE_EVENT);
     return () => filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);
-  }, [store.data.pullRequests, store.ui.selectedTab, setFilterItems, dispatch]);
+  }, [store.data.pullRequests, store.ui.selectedTab, store.settings.filterValues, dispatch]);
 
   React.useEffect(() => {
     dispatch(triggerSortDirection());
