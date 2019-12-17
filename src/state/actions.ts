@@ -17,7 +17,7 @@ import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemT
 
 import { initialState } from './store';
 import { FilterDictionary } from '../tabs/TabTypes';
-import { sortByRepositoryName } from '../lib/utils';
+import { sortByRepositoryName, sortByPullRequestId } from '../lib/utils';
 import { fromPullRequestToPR } from './transformData';
 import { ActionTypes, SavedPrHubState } from './types';
 import { GitPullRequest, GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
@@ -112,7 +112,12 @@ export const setPullRequests = () => async (dispatch: Dispatch<FetchAction>) => 
       }),
     ),
   );
-  dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload: transformedPopulatedPullRequests });
+  dispatch({
+    type: ActionTypes.SET_PULL_REQUESTS,
+    payload: transformedPopulatedPullRequests.sort((a, b) =>
+      sortByPullRequestId(a, b, { ui: { sortDirection: 'desc' } } as any),
+    ),
+  });
   dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
   dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
 };

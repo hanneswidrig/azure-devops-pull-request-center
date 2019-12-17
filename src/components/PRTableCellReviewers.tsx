@@ -112,13 +112,14 @@ export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
     if (widths.length > 0) {
       setVisibleElements(widths.filter(w => !w.isOverflow));
       setHiddenElements(widths.filter(w => w.isOverflow));
+      setWidths([]);
     }
   }, [widths]);
 
-  useEffect(() => {
-    setVisibleElements([]);
-    setHiddenElements([]);
-  }, [reviewers]);
+  // useEffect(() => {
+  //   setVisibleElements([]);
+  //   setHiddenElements([]);
+  // }, [reviewers]);
 
   return (
     <div className="reviewers-container">
