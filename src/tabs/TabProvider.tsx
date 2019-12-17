@@ -9,9 +9,10 @@ import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
-import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
+import { FILTER_CHANGE_EVENT } from 'azure-devops-ui/Utilities/Filter';
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
 
+import { filter } from '..';
 import { applyFilter } from '../lib/filters';
 import { PrHubState, PR } from '../state/types';
 import { fromPRToFilterItems } from '../state/transformData';
@@ -21,6 +22,8 @@ import {
   toggleFullScreenMode,
   toggleSortDirection,
   triggerSortDirection,
+  setSettings,
+  clearSettings,
 } from '../state/actions';
 import {
   ITab,
@@ -31,7 +34,7 @@ import {
   FilterOptions,
 } from './TabTypes';
 
-const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
+const getCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): IHeaderCommandBarItem[] => {
   return [
     {
       id: 'refresh',
@@ -45,6 +48,30 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
         iconName: 'fabric-icon ms-Icon--Refresh',
       },
     },
+    // {
+    //   id: 'save-prefs',
+    //   text: 'Set as default filters',
+    //   important: false,
+    //   onActivate: () => {
+    //     setSettings({ ...store });
+    //   },
+    //   iconProps: {
+    //     title: 'Preserve current application state',
+    //     iconName: 'fabric-icon ms-Icon--Save',
+    //   },
+    // },
+    // {
+    //   id: 'clear-prefs',
+    //   text: 'Reset default filters',
+    //   important: false,
+    //   onActivate: () => {
+    //     dispatch(clearSettings());
+    //   },
+    //   iconProps: {
+    //     title: 'Reset default application state',
+    //     iconName: 'fabric-icon ms-Icon--ClearFilter',
+    //   },
+    // },
     {
       id: 'full-screen',
       text: 'Full Screen Mode',
@@ -53,6 +80,7 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
         dispatch(toggleFullScreenMode());
       },
       iconProps: {
+        title: 'Visually hide or show Azure DevOps UI Shell',
         iconName: 'fabric-icon ms-Icon--FullScreen',
       },
     },
@@ -107,8 +135,38 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
   }
 };
 
+const setDefaultFilterState = (filterValues: FilterDictionary | undefined) => {
+  if (filterValues?.searchString) {
+    filter.setFilterItemState(FilterOptions.searchString, { value: filterValues.searchString });
+  }
+
+  if (filterValues?.repositories) {
+    filter.setFilterItemState(FilterOptions.repositories, { value: filterValues.repositories });
+  }
+
+  if (filterValues?.sourceBranch) {
+    filter.setFilterItemState(FilterOptions.sourceBranch, { value: filterValues.sourceBranch });
+  }
+
+  if (filterValues?.targetBranch) {
+    filter.setFilterItemState(FilterOptions.targetBranch, { value: filterValues.targetBranch });
+  }
+
+  if (filterValues?.author) {
+    filter.setFilterItemState(FilterOptions.author, { value: filterValues.author });
+  }
+
+  if (filterValues?.reviewer) {
+    filter.setFilterItemState(FilterOptions.reviewer, { value: filterValues.reviewer });
+  }
+
+  if (filterValues?.myApprovalStatus) {
+    filter.setFilterItemState(FilterOptions.myApprovalStatus, { value: filterValues.myApprovalStatus });
+  }
+};
+
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
-export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: Filter }) => {
+export const TabProvider: React.FC = () => {
   const store = useSelector((store: PrHubState) => store);
   const dispatch = useDispatch();
 
@@ -125,6 +183,7 @@ export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: 
     pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
     pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, {}, store.ui.selectedTab));
     setFilterItems(fromPRToFilterItems(store.data.pullRequests));
+    // setDefaultFilterState(store.settings.filterValues);
 
     filter.subscribe(() => {
       const filterValues: FilterDictionary = {
@@ -140,8 +199,8 @@ export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: 
       pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, filterValues, store.ui.selectedTab));
       dispatch(triggerSortDirection());
     }, FILTER_CHANGE_EVENT);
-    return () => filter.unsubscribe(() => {}, FILTER_CHANGE_EVENT);
-  }, [filter, store.data.pullRequests, store.ui.selectedTab, setFilterItems, dispatch]);
+    return () => filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);
+  }, [store.data.pullRequests, store.ui.selectedTab, store.settings.filterValues, dispatch]);
 
   React.useEffect(() => {
     dispatch(triggerSortDirection());
@@ -150,7 +209,7 @@ export const TabProvider: React.FC<{ filter: Filter }> = ({ filter }: { filter: 
   return (
     <Surface background={1}>
       <Page className="azure-pull-request-hub flex-grow">
-        <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch)} />
+        <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch, store)} />
         <TabBar
           selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab(newSelectedTab))}

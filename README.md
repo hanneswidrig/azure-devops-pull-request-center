@@ -18,7 +18,7 @@ A centralized location for your Azure DevOps Pull Requests.
 
 - Modern UI based on Azure DevOps Design System.
 - At a quick glance information about pull request across all your repositories.
-- Advanced filtering and full screen experience.
+- Advanced filtering and full screen experience with preservation of filtering/settings.
 
 ## 🧩 Compatibility
 
@@ -26,7 +26,7 @@ I built this extension for Azure DevOps Services 2019. If someone wanted to expl
 
 ## 🛣 Roadmap
 
-✖ Settings experience and preservation of filtering/settings.
+✖ Greater Settings experience.
 
 ✖ Ability to view work items associated with PR.
 

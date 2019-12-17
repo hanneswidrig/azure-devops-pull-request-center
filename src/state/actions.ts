@@ -6,12 +6,20 @@ import * as DevOps from 'azure-devops-extension-sdk';
 // azure-devops-extension-api
 import { ResourceRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
-import { getClient, IProjectPageService, IHostPageLayoutService } from 'azure-devops-extension-api';
+import {
+  getClient,
+  IProjectPageService,
+  IHostPageLayoutService,
+  IExtensionDataService,
+  IExtensionDataManager,
+} from 'azure-devops-extension-api';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
-import { ActionTypes } from './types';
-import { fromPullRequestToPR } from './transformData';
+import { initialState } from './store';
+import { FilterDictionary } from '../tabs/TabTypes';
 import { sortByRepositoryName } from '../lib/utils';
+import { fromPullRequestToPR } from './transformData';
+import { ActionTypes, SavedPrHubState } from './types';
 import { GitPullRequest, GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 
 // action interfaces
@@ -70,6 +78,10 @@ export const triggerSortDirection = () => {
   return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
 };
 
+export const setFilterValues = (filterValues: FilterDictionary) => {
+  return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.SET_FILTER_VALUES, payload: filterValues });
+};
+
 export const setSelectedTab = (newSelectedTab: string) => {
   return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
 };
@@ -101,6 +113,7 @@ export const setPullRequests = () => async (dispatch: Dispatch<FetchAction>) => 
     ),
   );
   dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload: transformedPopulatedPullRequests });
+  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
   dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
 };
 
@@ -120,4 +133,65 @@ export const setRepositories = () => async (dispatch: Dispatch<FetchAction>) => 
 export const toggleFullScreenMode = () => async (dispatch: Dispatch<FetchAction>) => {
   const newFullScreenModeState = await setFullScreenMode();
   dispatch({ type: ActionTypes.SET_FULL_SCREEN_MODE, payload: newFullScreenModeState });
+};
+
+export const restoreSettings = () => async (dispatch: Dispatch<FetchAction>) => {
+  const settings = await getSettings();
+  dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
+  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+};
+
+export const clearSettings = () => async (dispatch: Dispatch<FetchAction>) => {
+  const pristineState: SavedPrHubState = {
+    settings: initialState.settings,
+    ui: initialState.ui,
+  };
+  await setSettings(pristineState);
+  dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: pristineState });
+  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+};
+
+export const onInitialLoad = () => {
+  return (dispatch: Dispatch<any>) => {
+    // dispatch(restoreSettings());
+    dispatch(setCurrentUser());
+    dispatch(setRepositories());
+    dispatch(setPullRequests());
+  };
+};
+
+// This all needs to be in context of setting a "default view"
+
+/**
+ * @summary Get Azure Extension Storage Context
+ */
+const getDataManagementContext = async (): Promise<IExtensionDataManager> => {
+  const extensionId = DevOps.getExtensionContext().id;
+  const accessToken = await DevOps.getAccessToken();
+  const extensionDataService = await DevOps.getService<IExtensionDataService>('ms.vss-features.extension-data-service');
+  return extensionDataService.getExtensionDataManager(extensionId, accessToken);
+};
+
+export const getSettings = async (): Promise<SavedPrHubState> => {
+  const dbKey = `prc-ext-data-default`;
+  const context = await getDataManagementContext();
+  return context.getValue(dbKey, { defaultValue: null });
+};
+
+export const setSettings = async (data: SavedPrHubState): Promise<SavedPrHubState> => {
+  const dbKey = `prc-ext-data-default`;
+  const context = await getDataManagementContext();
+  const newSavedState: SavedPrHubState = {
+    settings: {
+      settingsLastSaved: new Date().toISOString(),
+      filterValues: data.settings.filterValues,
+    },
+    ui: {
+      isFilterVisible: data.ui.isFilterVisible,
+      isFullScreenMode: data.ui.isFullScreenMode,
+      selectedTab: data.ui.selectedTab,
+      sortDirection: data.ui.sortDirection,
+    },
+  };
+  return context.setValue(dbKey, newSavedState);
 };

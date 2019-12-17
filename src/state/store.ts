@@ -3,12 +3,12 @@ import { Reducer } from 'redux';
 import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 
 import { FetchAction } from './actions';
-import { ActionTypes, PrHubState } from './types';
 import { sortByPullRequestId } from '../lib/utils';
 import { Enum, SplitReducer } from '../lib/typings';
 import { pullRequestItemProvider$ } from '../tabs/TabProvider';
+import { ActionTypes, PrHubState, SavedPrHubState } from './types';
 
-const initialState: PrHubState = {
+export const initialState: PrHubState = {
   data: {
     repositories: [],
     pullRequests: [],
@@ -20,6 +20,10 @@ const initialState: PrHubState = {
     isFullScreenMode: false,
     selectedTab: 'active',
     sortDirection: 'desc',
+  },
+  settings: {
+    settingsLastSaved: new Date(0).toISOString(),
+    filterValues: undefined,
   },
 };
 
@@ -54,6 +58,31 @@ const setState: SplitReducer = (state, action) => [
       return produce(state, draft => {
         draft.data.repositories = action.payload;
       });
+    },
+  ],
+  [
+    ActionTypes.SET_FILTER_VALUES,
+    () => {
+      return produce(state, draft => {
+        draft.settings.filterValues = action.payload;
+      });
+    },
+  ],
+  [
+    ActionTypes.RESTORE_SETTINGS,
+    () => {
+      if (action.payload) {
+        const savedSettings: SavedPrHubState = action.payload;
+        return produce(state, draft => {
+          draft.settings.settingsLastSaved = savedSettings.settings.settingsLastSaved;
+          draft.settings.filterValues = savedSettings.settings.filterValues;
+          draft.ui.isFilterVisible.value = savedSettings.ui.isFilterVisible.value;
+          draft.ui.isFullScreenMode = savedSettings.ui.isFullScreenMode;
+          draft.ui.selectedTab = savedSettings.ui.selectedTab;
+          draft.ui.sortDirection = savedSettings.ui.sortDirection;
+        });
+      }
+      return state;
     },
   ],
   [
@@ -114,7 +143,7 @@ const modifyObservables: SplitReducer = state => [
   ],
 ];
 
-export const reducer: Reducer<PrHubState, FetchAction> = (state: PrHubState = initialState, action: FetchAction) => {
+export const reducer: Reducer<PrHubState, any> = (state: PrHubState = initialState, action: FetchAction) => {
   const reducerActions = new Map<Enum<typeof ActionTypes>, () => PrHubState>([
     ...setState(state, action),
     ...updateState(state, action),

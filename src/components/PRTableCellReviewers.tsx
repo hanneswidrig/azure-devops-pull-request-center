@@ -42,7 +42,7 @@ const ReviewerOverflow: React.FC<{ hiddenElements: Widths[] }> = ({ hiddenElemen
   </Tooltip>
 );
 
-export const reviewerPill = (reviewer: IdentityRefWithVote, i: number, ref?: (node: any) => void) => (
+export const reviewerPill = (reviewer: IdentityRefWithVote, i: number, ref?: (node: HTMLDivElement | null) => void) => (
   <Tooltip
     key={i}
     renderContent={() => (
@@ -83,7 +83,7 @@ export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
   const [hiddenElements, setHiddenElements] = useState<Widths[]>([]);
 
   const measureTag = useCallback(
-    (node: any) =>
+    (node: HTMLDivElement | null) => {
       setWidths(widths => {
         if (node !== null) {
           const index = widths.length;
@@ -103,7 +103,8 @@ export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
         }
 
         return widths;
-      }),
+      });
+    },
     [reviewers],
   );
 
@@ -111,9 +112,13 @@ export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
     if (widths.length > 0) {
       setVisibleElements(widths.filter(w => !w.isOverflow));
       setHiddenElements(widths.filter(w => w.isOverflow));
-      setWidths([]);
     }
   }, [widths]);
+
+  useEffect(() => {
+    setVisibleElements([]);
+    setHiddenElements([]);
+  }, [reviewers]);
 
   return (
     <div className="reviewers-container">
