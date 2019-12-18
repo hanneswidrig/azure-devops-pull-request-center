@@ -34,7 +34,7 @@ export const PRTableCellTitle: React.FC<{ tableItem: PR }> = ({ tableItem }: { t
           <div className="pr-info">
             <span className="secondary-text body-s">
               <span className="margin-right-4">{tableItem.secondaryTitle}</span>
-              {`on`}
+              {`•`}
               <Ago className="margin-left-4 margin-right-4" format={1} date={tableItem.creationDate} />
             </span>
           </div>
