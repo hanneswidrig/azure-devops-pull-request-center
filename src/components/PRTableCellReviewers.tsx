@@ -35,8 +35,8 @@ const ReviewerOverflow: React.FC<ReviewerOverflowProps> = ({ reviewers, hiddenRe
     )}
   >
     <div className="tooltip-overflow-child">
-      <Pill variant={2} size={1}>
-        <span style={{ fontWeight: 'bold' }}>+{hiddenReviewers.length}</span>
+      <Pill variant={2} size={2}>
+        <div style={{ height: '22px' }}>+{hiddenReviewers.length}</div>
       </Pill>
     </div>
   </Tooltip>
@@ -66,7 +66,7 @@ export const reviewerPill = (reviewer: IdentityRefWithVote) => (
     )}
   >
     <div className="tooltip-overflow-child">
-      <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
+      <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={2}>
         <div className="flex-row rhythm-horizontal-8">
           {getReviewerVoteIconStatus(reviewer.vote)}
           <span>{reviewer.displayName}</span>
@@ -119,7 +119,7 @@ export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
       <PillGroup overflow={1}>
         {reviewers.map(reviewer => (
           <div key={reviewer.id} ref={measureTag} className="tooltip-overflow-child">
-            <Pill variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
+            <Pill variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={2}>
               <div className="flex-row rhythm-horizontal-8">
                 {getReviewerVoteIconStatus(reviewer.vote)}
                 <span>{reviewer.displayName}</span>
