@@ -1,6 +1,5 @@
 import React from 'react';
 import { Ago } from 'azure-devops-ui/Ago';
-import { Duration } from 'azure-devops-ui/Duration';
 import { Link } from 'azure-devops-ui/Link';
 import { Tooltip } from 'azure-devops-ui/TooltipEx';
 import { VssPersona } from 'azure-devops-ui/VssPersona';
