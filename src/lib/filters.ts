@@ -10,7 +10,11 @@ type IFilterSetup = {
 };
 
 export const filterByTitle: FilterFunc = (pullRequest, filterValue) =>
-  pullRequest.title.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1;
+  pullRequest.title.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1 ||
+  pullRequest.pullRequestId.toString().indexOf(filterValue[0].toLocaleLowerCase()) > -1 ||
+  pullRequest.repository.name.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1 ||
+  pullRequest.sourceBranch.name.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1 ||
+  pullRequest.targetBranch.name.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1;
 
 export const filterByRepositoryId: FilterFunc = (pullRequest, filterValue) =>
   filterValue.some(v => pullRequest.repositoryId === v);
