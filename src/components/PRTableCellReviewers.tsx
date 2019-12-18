@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
 import { Pill } from 'azure-devops-ui/Pill';
@@ -16,10 +16,10 @@ type Widths = {
   width: number;
   totalWidth: number;
   isOverflow: boolean;
-  tagElement: React.ReactElement;
 };
 
-const ReviewerOverflow: React.FC<{ hiddenElements: Widths[] }> = ({ hiddenElements }: { hiddenElements: Widths[] }) => (
+type ReviewerOverflowProps = { reviewers: IdentityRefWithVote[]; hiddenReviewers: Widths[] };
+const ReviewerOverflow: React.FC<ReviewerOverflowProps> = ({ reviewers, hiddenReviewers }: ReviewerOverflowProps) => (
   <Tooltip
     className="tooltip-overflow"
     renderContent={() => (
@@ -29,22 +29,22 @@ const ReviewerOverflow: React.FC<{ hiddenElements: Widths[] }> = ({ hiddenElemen
           <span style={{ fontWeight: 'bold' }}>Reviewers</span>
         </div>
         <div className="flex-column flex-center justify-start">
-          {hiddenElements.length > 0 && hiddenElements.map(ve => ve.tagElement)}
+          {hiddenReviewers.map(v => reviewerPill(reviewers[v.index]))}
         </div>
       </div>
     )}
   >
     <div className="tooltip-overflow-child">
       <Pill variant={2} size={1}>
-        <span style={{ fontWeight: 'bold' }}>+{hiddenElements.length}</span>
+        <span style={{ fontWeight: 'bold' }}>+{hiddenReviewers.length}</span>
       </Pill>
     </div>
   </Tooltip>
 );
 
-export const reviewerPill = (reviewer: IdentityRefWithVote, i: number, ref?: (node: HTMLDivElement | null) => void) => (
+export const reviewerPill = (reviewer: IdentityRefWithVote) => (
   <Tooltip
-    key={i}
+    key={reviewer.id}
     renderContent={() => (
       <div className="flex-row rhythm-horizontal-4">
         <div className="flex-column">
@@ -65,7 +65,7 @@ export const reviewerPill = (reviewer: IdentityRefWithVote, i: number, ref?: (no
       </div>
     )}
   >
-    <div ref={ref} className="tooltip-overflow-child">
+    <div className="tooltip-overflow-child">
       <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
         <div className="flex-row rhythm-horizontal-8">
           {getReviewerVoteIconStatus(reviewer.vote)}
@@ -79,54 +79,54 @@ export const reviewerPill = (reviewer: IdentityRefWithVote, i: number, ref?: (no
 type Props = { reviewers: IdentityRefWithVote[] };
 export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
   const [widths, setWidths] = useState<Widths[]>([]);
-  const [visibleElements, setVisibleElements] = useState<Widths[]>([]);
-  const [hiddenElements, setHiddenElements] = useState<Widths[]>([]);
 
   const measureTag = useCallback(
-    (node: HTMLDivElement | null) => {
+    (node: HTMLDivElement | null) =>
+      node &&
       setWidths(widths => {
-        if (node !== null) {
-          const index = widths.length;
-          const elementWidth = Math.ceil(node?.getBoundingClientRect().width) ?? 0;
-          const totalWidth = [...widths.map(w => w.width), elementWidth].reduce((prev, curr) => prev + curr, 0);
+        const elementWidth = Math.ceil(node.getBoundingClientRect().width) ?? 0;
+        const totalWidth = [...widths.map(w => w.width), elementWidth].reduce((prev, curr) => prev + curr, 0);
 
-          return [
-            ...widths,
-            {
-              index: index,
-              width: elementWidth,
-              totalWidth: totalWidth,
-              isOverflow: totalWidth > 600,
-              tagElement: reviewerPill(reviewers[index], index),
-            },
-          ];
-        }
-
-        return widths;
-      });
-    },
-    [reviewers],
+        return [
+          ...widths,
+          {
+            index: widths.length,
+            width: elementWidth,
+            totalWidth: totalWidth,
+            isOverflow: totalWidth > 600,
+          },
+        ];
+      }),
+    [],
   );
 
-  useEffect(() => {
-    if (widths.length > 0) {
-      setVisibleElements(widths.filter(w => !w.isOverflow));
-      setHiddenElements(widths.filter(w => w.isOverflow));
-      setWidths([]);
-    }
-  }, [widths]);
-
-  // useEffect(() => {
-  //   setVisibleElements([]);
-  //   setHiddenElements([]);
-  // }, [reviewers]);
+  const showPillGroup = widths.length > 0 && widths.length === reviewers.length;
+  if (showPillGroup) {
+    return (
+      <div className="reviewers-container">
+        <PillGroup overflow={1}>
+          {widths.filter(w => !w.isOverflow).map(v => reviewerPill(reviewers[v.index]))}
+          {widths.filter(w => w.isOverflow).length > 0 && (
+            <ReviewerOverflow reviewers={reviewers} hiddenReviewers={widths.filter(w => w.isOverflow)} />
+          )}
+        </PillGroup>
+      </div>
+    );
+  }
 
   return (
     <div className="reviewers-container">
-      <div className="reviewers-container-hidden">{reviewers.map((r, i) => reviewerPill(r, i, measureTag))}</div>
       <PillGroup overflow={1}>
-        {visibleElements.length > 0 && visibleElements.map(ve => ve.tagElement)}
-        {hiddenElements.length > 0 && <ReviewerOverflow hiddenElements={hiddenElements} />}
+        {reviewers.map(reviewer => (
+          <div key={reviewer.id} ref={measureTag} className="tooltip-overflow-child">
+            <Pill variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={1}>
+              <div className="flex-row rhythm-horizontal-8">
+                {getReviewerVoteIconStatus(reviewer.vote)}
+                <span>{reviewer.displayName}</span>
+              </div>
+            </Pill>
+          </div>
+        ))}
       </PillGroup>
     </div>
   );
