@@ -1,10 +1,14 @@
 # [Unreleased]
 
-# 1.0.(2,3,4) (December 17, 2019)
+# 1.0.{2,3,4,5} (December 17, 2019)
 
-✔ Wrong reviewer displayed on highlight.
+✔ Fields including pull request id and target branch name are now searchable.
 
-✔ Sorting wrong on load.
+🐛 Fix crashes
+
+🐛 Wrong reviewer displayed on highlight.
+
+🐛 Sorting wrong on load.
 
 # 1.0.1 (November 26, 2019)
 

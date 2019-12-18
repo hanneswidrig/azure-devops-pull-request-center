@@ -2,8 +2,8 @@ import React from 'react';
 import { SimpleTableCell, ITableColumn } from 'azure-devops-ui/Table';
 
 import { PR } from '../state/types';
-import { PRTableCellTitle } from './PRTableCellTitle';
 import { sortByDisplayName } from '../lib/utils';
+import { PRTableCellTitle } from './PRTableCellTitle';
 import { PRTableCellReviewers } from './PRTableCellReviewers';
 
 export const titleColumn = (
