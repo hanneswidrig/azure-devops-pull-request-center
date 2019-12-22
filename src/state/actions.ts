@@ -65,26 +65,23 @@ const setFullScreenMode = async (): Promise<boolean> => {
 /**
  * @summary Synchronously sets current user in redux store
  */
-export const setCurrentUser = () => {
-  return (dispatch: Dispatch<FetchAction>) =>
-    dispatch({ type: ActionTypes.SET_CURRENT_USER, payload: DevOps.getUser() });
-};
+export const setCurrentUser = () => (dispatch: Dispatch<FetchAction>) =>
+  dispatch({ type: ActionTypes.SET_CURRENT_USER, payload: DevOps.getUser() });
 
-export const toggleSortDirection = () => {
-  return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
-};
+export const toggleSortDirection = () => (dispatch: Dispatch<FetchAction>) =>
+  dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
 
-export const triggerSortDirection = () => {
-  return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
-};
+export const triggerSortDirection = () => (dispatch: Dispatch<FetchAction>) =>
+  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
 
-export const setFilterValues = (filterValues: FilterDictionary) => {
-  return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.SET_FILTER_VALUES, payload: filterValues });
-};
+export const setFilterValues = (filterValues: FilterDictionary) => (dispatch: Dispatch<FetchAction>) =>
+  dispatch({ type: ActionTypes.SET_FILTER_VALUES, payload: filterValues });
 
-export const setSelectedTab = (newSelectedTab: string) => {
-  return (dispatch: Dispatch<FetchAction>) => dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
-};
+export const setSelectedTab = (newSelectedTab: string) => (dispatch: Dispatch<FetchAction>) =>
+  dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
+
+export const toggleSettingsPanel = () => (dispatch: Dispatch<FetchAction>) =>
+  dispatch({ type: ActionTypes.TOGGLE_SETTINGS_PANEL });
 
 /**
  * @summary Asynchronously fetches all pull requests from all connected repositories in an Azure DevOps Project.
@@ -140,21 +137,21 @@ export const toggleFullScreenMode = () => async (dispatch: Dispatch<FetchAction>
   dispatch({ type: ActionTypes.SET_FULL_SCREEN_MODE, payload: newFullScreenModeState });
 };
 
-export const restoreSettings = () => async (dispatch: Dispatch<FetchAction>) => {
-  const settings = await getSettings();
-  dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
-  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
-};
+// export const restoreSettings = () => async (dispatch: Dispatch<FetchAction>) => {
+//   const settings = await getSettings();
+//   dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
+//   dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+// };
 
-export const clearSettings = () => async (dispatch: Dispatch<FetchAction>) => {
-  const pristineState: SavedPrHubState = {
-    settings: initialState.settings,
-    ui: initialState.ui,
-  };
-  await setSettings(pristineState);
-  dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: pristineState });
-  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
-};
+// export const clearSettings = () => async (dispatch: Dispatch<FetchAction>) => {
+//   const pristineState: SavedPrHubState = {
+//     settings: initialState.settings,
+//     ui: initialState.ui,
+//   };
+//   await setSettings(pristineState);
+//   dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: pristineState });
+//   dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+// };
 
 export const onInitialLoad = () => {
   return (dispatch: Dispatch<any>) => {
@@ -189,7 +186,7 @@ export const setSettings = async (data: SavedPrHubState): Promise<SavedPrHubStat
   const newSavedState: SavedPrHubState = {
     settings: {
       settingsLastSaved: new Date().toISOString(),
-      filterValues: data.settings.filterValues,
+      settingsPanelOpen: false,
     },
     ui: {
       isFilterVisible: data.ui.isFilterVisible,

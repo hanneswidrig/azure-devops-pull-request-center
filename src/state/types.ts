@@ -4,8 +4,8 @@ import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
 import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
 
+import { TabOptions } from '../tabs/TabTypes';
 import { ReviewerVoteNumber } from '../lib/enums';
-import { TabOptions, FilterDictionary } from '../tabs/TabTypes';
 
 const GET_SETTINGS = 'getSettings';
 const SET_SETTINGS = 'setSettings';
@@ -20,6 +20,7 @@ const REMOVE_ASYNC_TASK = 'removeAsyncTask';
 const TOGGLE_FILTER_BAR = 'toggleFilterBar';
 const DISPLAY_WORK_ITEMS = 'displayWorkItems';
 const SET_FULL_SCREEN_MODE = 'setFullScreenMode';
+const TOGGLE_SETTINGS_PANEL = 'toggleSettingsPanel';
 const REFRESH_PULL_REQUESTS = 'refreshPullRequests';
 const TOGGLE_SORT_DIRECTION = 'toggleSortDirection';
 const TRIGGER_SORT_DIRECTION = 'triggerSortDirection';
@@ -38,6 +39,7 @@ export const ActionTypes = {
   TOGGLE_FILTER_BAR,
   DISPLAY_WORK_ITEMS,
   SET_FULL_SCREEN_MODE,
+  TOGGLE_SETTINGS_PANEL,
   REFRESH_PULL_REQUESTS,
   TOGGLE_SORT_DIRECTION,
   TRIGGER_SORT_DIRECTION,
@@ -45,7 +47,7 @@ export const ActionTypes = {
 
 export type Settings = {
   settingsLastSaved: string;
-  filterValues: FilterDictionary | undefined;
+  settingsPanelOpen: boolean;
 };
 
 export type PR = {
