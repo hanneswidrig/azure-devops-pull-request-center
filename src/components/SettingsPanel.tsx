@@ -53,21 +53,19 @@ export const SettingsPanel: React.FC<Props> = ({ store }: Props) => {
           onText="On"
           offText="Off"
           checked={settingValues.isFilterVisible}
-          onChange={(e, o) =>
-            setSettingValues((values: DefaultSettings) => ({ ...values, isFilterVisible: o ?? false }))
-          }
+          onChange={(_, o) => isFilterVisibleChanged(o, setSettingValues)}
         />
         <ChoiceGroup
           label={'Default Selected Tab'}
           selectedKey={settingValues.selectedTab}
           options={selectedTabItems}
-          onChange={(e, o) => ({})}
+          onChange={(_, o) => selectedTabChanged(o, setSettingValues)}
         />
         <ChoiceGroup
           label={'Default PR Sort Direction'}
           selectedKey={settingValues.sortDirection}
           options={sortDirectionItems}
-          onChange={(e, o) => ({})}
+          onChange={(_, o) => sortDirectionChanged(o, setSettingValues)}
         />
       </Stack>
     </Panel>
@@ -89,35 +87,36 @@ const sortDirectionItems: IChoiceGroupOption[] = [
   { key: 'asc', text: 'Oldest First', iconProps: { iconName: 'SortUp' } },
 ];
 
-type ChangedFunc = (
+type ChoiceGroupChanged = (
   selectedOption: IChoiceGroupOption | undefined,
   setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
 ) => void;
-const isFullScreenModeChanged: ChangedFunc = (selectedOption, setSettingValues) => {
+
+type ToggleChanged = (
+  selectedOption: boolean | undefined,
+  setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
+) => void;
+
+const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
   const isFullScreenMode = selectedOption?.key === 'true' ?? false;
   setSettingValues(values => ({ ...values, isFullScreenMode: isFullScreenMode }));
+};
+
+const isFilterVisibleChanged: ToggleChanged = (selectedOption, setSettingValues) => {
+  setSettingValues((values: DefaultSettings) => ({ ...values, isFilterVisible: selectedOption ?? false }));
+};
+
+const selectedTabChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
+  const option = selectedTabItems.find(option => option.key === selectedOption?.key) ?? selectedTabItems[0];
+  setSettingValues(values => ({ ...values, selectedTab: option.key as TabOptions }));
+};
+
+const sortDirectionChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
+  const option = sortDirectionItems.find(option => option.key === selectedOption?.key) ?? sortDirectionItems[0];
+  setSettingValues(values => ({ ...values, sortDirection: option.key as SortDirection }));
 };
 
 type SaveChanges = (store: PrHubState, defaultSettings: DefaultSettings, dispatch: Dispatch<any>) => void;
 const saveChanges: SaveChanges = (store, defaultSettings, dispatch) => {
   dispatch(setFullScreenMode(defaultSettings.isFullScreenMode));
 };
-
-// type UpdateSettingValue = (
-//   optionKey: keyof DefaultSettings,
-//   options: IChoiceGroupOption[],
-//   selectedOption: IChoiceGroupOption | undefined,
-//   setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
-// ) => void;
-// const updateSettingValue: UpdateSettingValue = (optionKey, options, selectedOption, setSettingValues) => {
-//   setSettingValues((values: DefaultSettings) =>
-//     produce(values, draft => {
-//       draft.selectedTab = (optionKey === 'selectedTab'
-//         ? options.find(option => option.key === selectedOption?.key)?.key ?? options[0].key
-//         : draft.selectedTab) as TabOptions;
-//       draft.sortDirection = (optionKey === 'sortDirection'
-//         ? options.find(option => option.key === selectedOption?.key)?.key ?? options[0].key
-//         : draft.sortDirection) as SortDirection;
-//     }),
-//   );
-// };
