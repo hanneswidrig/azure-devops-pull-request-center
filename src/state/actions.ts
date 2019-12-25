@@ -14,13 +14,12 @@ import {
   IExtensionDataManager,
 } from 'azure-devops-extension-api';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
-
-import { initialState } from './store';
-import { FilterDictionary } from '../tabs/TabTypes';
-import { sortByRepositoryName, sortByPullRequestId } from '../lib/utils';
-import { fromPullRequestToPR } from './transformData';
-import { ActionTypes, SavedPrHubState } from './types';
 import { GitPullRequest, GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
+
+import { FilterDictionary } from '../tabs/TabTypes';
+import { fromPullRequestToPR } from './transformData';
+import { ActionTypes, DefaultSettings } from './types';
+import { sortByRepositoryName, sortByPullRequestId } from '../lib/utils';
 
 // action interfaces
 export interface FetchAction extends Action {
@@ -174,26 +173,14 @@ const getDataManagementContext = async (): Promise<IExtensionDataManager> => {
   return extensionDataService.getExtensionDataManager(extensionId, accessToken);
 };
 
-export const getSettings = async (): Promise<SavedPrHubState> => {
+export const getSettings = async (): Promise<DefaultSettings> => {
   const dbKey = `prc-ext-data-default`;
   const context = await getDataManagementContext();
   return context.getValue(dbKey, { defaultValue: null });
 };
 
-export const setSettings = async (data: SavedPrHubState): Promise<SavedPrHubState> => {
+export const setSettings = async (data: DefaultSettings): Promise<DefaultSettings> => {
   const dbKey = `prc-ext-data-default`;
   const context = await getDataManagementContext();
-  const newSavedState: SavedPrHubState = {
-    settings: {
-      settingsLastSaved: new Date().toISOString(),
-      settingsPanelOpen: false,
-    },
-    ui: {
-      isFilterVisible: data.ui.isFilterVisible,
-      isFullScreenMode: data.ui.isFullScreenMode,
-      selectedTab: data.ui.selectedTab,
-      sortDirection: data.ui.sortDirection,
-    },
-  };
-  return context.setValue(dbKey, newSavedState);
+  return context.setValue(dbKey, data);
 };

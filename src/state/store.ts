@@ -6,7 +6,7 @@ import { FetchAction } from './actions';
 import { sortByPullRequestId } from '../lib/utils';
 import { Enum, SplitReducer } from '../lib/typings';
 import { pullRequestItemProvider$ } from '../tabs/TabProvider';
-import { ActionTypes, PrHubState, SavedPrHubState } from './types';
+import { ActionTypes, PrHubState, DefaultSettings } from './types';
 
 export const initialState: PrHubState = {
   data: {
@@ -64,13 +64,12 @@ const setState: SplitReducer = (state, action) => [
     ActionTypes.RESTORE_SETTINGS,
     () => {
       if (action.payload) {
-        const savedSettings: SavedPrHubState = action.payload;
+        const savedSettings: DefaultSettings = action.payload;
         return produce(state, draft => {
-          draft.settings.settingsLastSaved = savedSettings.settings.settingsLastSaved;
-          draft.ui.isFilterVisible.value = savedSettings.ui.isFilterVisible.value;
-          draft.ui.isFullScreenMode = savedSettings.ui.isFullScreenMode;
-          draft.ui.selectedTab = savedSettings.ui.selectedTab;
-          draft.ui.sortDirection = savedSettings.ui.sortDirection;
+          draft.ui.isFilterVisible.value = savedSettings.isFilterVisible;
+          draft.ui.isFullScreenMode = savedSettings.isFullScreenMode;
+          draft.ui.selectedTab = savedSettings.selectedTab;
+          draft.ui.sortDirection = savedSettings.sortDirection;
         });
       }
       return state;

@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Draft } from './Draft';
 import { Active } from './Active';
 import { Page } from 'azure-devops-ui/Page';
-import { Panel } from 'azure-devops-ui/Panel';
 import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
@@ -22,7 +21,6 @@ import {
   setPullRequests,
   toggleSettingsPanel,
   toggleSortDirection,
-  toggleFullScreenMode,
   triggerSortDirection,
 } from '../state/actions';
 import {
@@ -33,8 +31,9 @@ import {
   FilterDictionary,
   FilterOptions,
 } from './TabTypes';
+import { SettingsPanel } from '../components/SettingsPanel';
 
-const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
+const getCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): IHeaderCommandBarItem[] => {
   return [
     {
       id: 'refresh',
@@ -50,25 +49,13 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
     },
     {
       id: 'open-prefs',
-      text: 'Open Preferences',
-      important: false,
+      important: true,
+      subtle: true,
       onActivate: () => {
         dispatch(toggleSettingsPanel());
       },
       iconProps: {
         iconName: 'fabric-icon ms-Icon--Settings',
-      },
-    },
-    {
-      id: 'full-screen',
-      text: 'Full Screen Mode',
-      important: false,
-      onActivate: () => {
-        dispatch(toggleFullScreenMode());
-      },
-      iconProps: {
-        title: 'Visually hide or show Azure DevOps UI Shell',
-        iconName: 'fabric-icon ms-Icon--FullScreen',
       },
     },
   ];
@@ -165,7 +152,7 @@ export const TabProvider: React.FC = () => {
   return (
     <Surface background={1}>
       <Page className="azure-pull-request-hub flex-grow">
-        <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch)} />
+        <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch, store)} />
         <TabBar
           selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab(newSelectedTab))}
@@ -185,20 +172,7 @@ export const TabProvider: React.FC = () => {
           {getPageContent({ newSelectedTab: store.ui.selectedTab, filter, filterItems, store })}
         </div>
       </Page>
-      {store.settings.settingsPanelOpen && (
-        <Panel
-          showSeparator
-          onDismiss={() => dispatch(toggleSettingsPanel())}
-          titleProps={{
-            text: 'Extension Preferences',
-          }}
-          description={'Pull Requests Center 1.0.5'}
-          footerButtonProps={[
-            { text: 'Save Changes', primary: true },
-            { text: 'Cancel', onClick: () => dispatch(toggleSettingsPanel()) },
-          ]}
-        />
-      )}
+      {store.settings.settingsPanelOpen && <SettingsPanel store={store} />}
     </Surface>
   );
 };

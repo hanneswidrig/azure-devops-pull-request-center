@@ -45,6 +45,13 @@ export const ActionTypes = {
   TRIGGER_SORT_DIRECTION,
 } as const;
 
+export type DefaultSettings = {
+  isFilterVisible: boolean;
+  isFullScreenMode: boolean;
+  selectedTab: TabOptions;
+  sortDirection: SortDirection;
+};
+
 export type Settings = {
   settingsLastSaved: string;
   settingsPanelOpen: boolean;
@@ -82,11 +89,12 @@ export type Data = {
   asyncTaskCount: number;
 };
 
+export type SortDirection = 'desc' | 'asc';
 export type UI = {
   isFilterVisible: ObservableValue<boolean>;
   isFullScreenMode: boolean;
   selectedTab: TabOptions;
-  sortDirection: 'desc' | 'asc';
+  sortDirection: SortDirection;
 };
 
 export type PrHubState = {
@@ -94,5 +102,3 @@ export type PrHubState = {
   data: Data;
   ui: UI;
 };
-
-export type SavedPrHubState = Omit<PrHubState, 'data'>;
