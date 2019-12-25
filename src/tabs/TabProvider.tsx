@@ -14,7 +14,8 @@ import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-
 
 import { filter } from '..';
 import { applyFilter } from '../lib/filters';
-import { PrHubState, PR } from '../state/types';
+import { PrHubState, PR, TabOptions } from '../state/types';
+import { SettingsPanel } from '../components/SettingsPanel';
 import { fromPRToFilterItems } from '../state/transformData';
 import {
   setSelectedTab,
@@ -23,17 +24,9 @@ import {
   toggleSortDirection,
   triggerSortDirection,
 } from '../state/actions';
-import {
-  ITab,
-  TabOptions,
-  ActiveItemProvider,
-  FilterItemsDictionary,
-  FilterDictionary,
-  FilterOptions,
-} from './TabTypes';
-import { SettingsPanel } from '../components/SettingsPanel';
+import { ITab, ActiveItemProvider, FilterItemsDictionary, FilterDictionary, FilterOptions } from './TabTypes';
 
-const getCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): IHeaderCommandBarItem[] => {
+const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
   return [
     {
       id: 'refresh',
@@ -152,7 +145,7 @@ export const TabProvider: React.FC = () => {
   return (
     <Surface background={1}>
       <Page className="azure-pull-request-hub flex-grow">
-        <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch, store)} />
+        <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch)} />
         <TabBar
           selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab(newSelectedTab))}

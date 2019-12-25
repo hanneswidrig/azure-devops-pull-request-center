@@ -34,5 +34,4 @@ export type FilterTypes = typeof allFilterOptions[number];
 export type FilterDictionary = Record<FilterTypes, string | string[] | undefined>;
 export type FilterItemsDictionary = Record<Exclude<FilterTypes, typeof searchString>, IListBoxItem[]>;
 export type ITab = { filter: Filter; filterItems: FilterItemsDictionary; store: PrHubState };
-export type TabOptions = 'active' | 'draft';
 export type ActiveItemProvider = PR | IReadonlyObservableValue<PR | undefined>;

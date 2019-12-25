@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { produce } from 'immer';
+import { Dispatch } from 'redux';
 import { useDispatch } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
 import { ChoiceGroup, IChoiceGroupOption, Stack, Toggle } from 'office-ui-fabric-react';
 
-import { TabOptions } from '../tabs/TabTypes';
-import { toggleSettingsPanel } from '../state/actions';
-import { PrHubState, DefaultSettings, SortDirection } from '../state/types';
+import { toggleSettingsPanel, setFullScreenMode } from '../state/actions';
+import { PrHubState, DefaultSettings, TabOptions, SortDirection } from '../state/types';
 import './SettingsPanel.scss';
 
 const defaultSettingValues: DefaultSettings = {
@@ -19,7 +18,13 @@ const defaultSettingValues: DefaultSettings = {
 type Props = { store: PrHubState };
 export const SettingsPanel: React.FC<Props> = ({ store }: Props) => {
   const dispatch = useDispatch();
-  const [settingValues, setSettingValues] = React.useState<DefaultSettings>(defaultSettingValues);
+  const [settingValues, setSettingValues] = React.useState<DefaultSettings>({
+    isFilterVisible: store.ui.isFilterVisible.value,
+    isFullScreenMode: store.ui.isFullScreenMode,
+    selectedTab: store.ui.selectedTab,
+    sortDirection: store.ui.sortDirection,
+  });
+  // const [isDirty, setIsDirty] = React.useState<boolean>(false);
 
   return (
     <Panel
@@ -32,16 +37,16 @@ export const SettingsPanel: React.FC<Props> = ({ store }: Props) => {
       description={'Pull Requests Center 1.1.0'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => setSettingValues(defaultSettingValues) },
-        { text: 'Save Changes', primary: true, onClick: () => console.log(settingValues) },
+        { text: 'Save Changes', primary: true, onClick: () => saveChanges(store, settingValues, dispatch) },
         { text: 'Cancel', onClick: () => dispatch(toggleSettingsPanel()) },
       ]}
     >
       <Stack tokens={{ childrenGap: 8 }}>
         <ChoiceGroup
-          label={'Full Screen Mode'}
+          label={'Default Full Screen Mode'}
           selectedKey={`${settingValues.isFullScreenMode}`}
           options={isFullScreenModeItems}
-          onChange={(e, o) => ({})}
+          onChange={(_, o) => isFullScreenModeChanged(o, setSettingValues)}
         />
         <Toggle
           label={'Default Filter Bar Visible'}
@@ -83,6 +88,20 @@ const sortDirectionItems: IChoiceGroupOption[] = [
   { key: 'desc', text: 'Newest First', iconProps: { iconName: 'SortDown' } },
   { key: 'asc', text: 'Oldest First', iconProps: { iconName: 'SortUp' } },
 ];
+
+type ChangedFunc = (
+  selectedOption: IChoiceGroupOption | undefined,
+  setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
+) => void;
+const isFullScreenModeChanged: ChangedFunc = (selectedOption, setSettingValues) => {
+  const isFullScreenMode = selectedOption?.key === 'true' ?? false;
+  setSettingValues(values => ({ ...values, isFullScreenMode: isFullScreenMode }));
+};
+
+type SaveChanges = (store: PrHubState, defaultSettings: DefaultSettings, dispatch: Dispatch<any>) => void;
+const saveChanges: SaveChanges = (store, defaultSettings, dispatch) => {
+  dispatch(setFullScreenMode(defaultSettings.isFullScreenMode));
+};
 
 // type UpdateSettingValue = (
 //   optionKey: keyof DefaultSettings,

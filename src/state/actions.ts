@@ -54,11 +54,10 @@ const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
   return workItemIds.length > 0 ? await workItemClient.getWorkItems(workItemIds) : [];
 };
 
-const setFullScreenMode = async (): Promise<boolean> => {
+const modifyFullScreenModeState = async (isFullScreenMode: boolean): Promise<boolean> => {
   const layoutService = await DevOps.getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
-  const fullScreenMode = await layoutService.getFullScreenMode();
-  layoutService.setFullScreenMode(!fullScreenMode);
-  return !fullScreenMode;
+  layoutService.setFullScreenMode(isFullScreenMode);
+  return isFullScreenMode;
 };
 
 /**
@@ -131,8 +130,8 @@ export const setRepositories = () => async (dispatch: Dispatch<FetchAction>) => 
 /**
  * @summary Toggle full screen mode for extension
  */
-export const toggleFullScreenMode = () => async (dispatch: Dispatch<FetchAction>) => {
-  const newFullScreenModeState = await setFullScreenMode();
+export const setFullScreenMode = (isFullScreenMode: boolean) => async (dispatch: Dispatch<FetchAction>) => {
+  const newFullScreenModeState = await modifyFullScreenModeState(isFullScreenMode);
   dispatch({ type: ActionTypes.SET_FULL_SCREEN_MODE, payload: newFullScreenModeState });
 };
 

@@ -4,7 +4,6 @@ import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
 import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
 
-import { TabOptions } from '../tabs/TabTypes';
 import { ReviewerVoteNumber } from '../lib/enums';
 
 const GET_SETTINGS = 'getSettings';
@@ -90,6 +89,7 @@ export type Data = {
 };
 
 export type SortDirection = 'desc' | 'asc';
+export type TabOptions = 'active' | 'draft';
 export type UI = {
   isFilterVisible: ObservableValue<boolean>;
   isFullScreenMode: boolean;
