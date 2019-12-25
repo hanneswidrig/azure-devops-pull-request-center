@@ -4,8 +4,16 @@ import { useDispatch } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
 import { ChoiceGroup, IChoiceGroupOption, Stack, Toggle } from 'office-ui-fabric-react';
 
-import { toggleSettingsPanel, setFullScreenMode } from '../state/actions';
-import { PrHubState, DefaultSettings, TabOptions, SortDirection } from '../state/types';
+import {
+  toggleSettingsPanel,
+  setFullScreenMode,
+  setSelectedTab,
+  setSortDirection,
+  triggerSortDirection,
+  setFilterBar,
+  setSettings,
+} from '../state/actions';
+import { DefaultSettings, TabOptions, SortDirection } from '../state/types';
 import './SettingsPanel.scss';
 
 const defaultSettingValues: DefaultSettings = {
@@ -15,16 +23,9 @@ const defaultSettingValues: DefaultSettings = {
   sortDirection: 'desc',
 };
 
-type Props = { store: PrHubState };
-export const SettingsPanel: React.FC<Props> = ({ store }: Props) => {
+export const SettingsPanel: React.FC = () => {
   const dispatch = useDispatch();
-  const [settingValues, setSettingValues] = React.useState<DefaultSettings>({
-    isFilterVisible: store.ui.isFilterVisible.value,
-    isFullScreenMode: store.ui.isFullScreenMode,
-    selectedTab: store.ui.selectedTab,
-    sortDirection: store.ui.sortDirection,
-  });
-  // const [isDirty, setIsDirty] = React.useState<boolean>(false);
+  const [settingValues, setSettingValues] = React.useState<DefaultSettings>(defaultSettingValues);
 
   return (
     <Panel
@@ -37,7 +38,7 @@ export const SettingsPanel: React.FC<Props> = ({ store }: Props) => {
       description={'Pull Requests Center 1.1.0'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => setSettingValues(defaultSettingValues) },
-        { text: 'Save Changes', primary: true, onClick: () => saveChanges(store, settingValues, dispatch) },
+        { text: 'Apply Changes', primary: true, onClick: () => saveChanges(settingValues, dispatch) },
         { text: 'Cancel', onClick: () => dispatch(toggleSettingsPanel()) },
       ]}
     >
@@ -116,7 +117,12 @@ const sortDirectionChanged: ChoiceGroupChanged = (selectedOption, setSettingValu
   setSettingValues(values => ({ ...values, sortDirection: option.key as SortDirection }));
 };
 
-type SaveChanges = (store: PrHubState, defaultSettings: DefaultSettings, dispatch: Dispatch<any>) => void;
-const saveChanges: SaveChanges = (store, defaultSettings, dispatch) => {
+type SaveChanges = (defaultSettings: DefaultSettings, dispatch: Dispatch<any>) => void;
+const saveChanges: SaveChanges = (defaultSettings, dispatch) => {
   dispatch(setFullScreenMode(defaultSettings.isFullScreenMode));
+  dispatch(setFilterBar(defaultSettings.isFilterVisible));
+  dispatch(setSelectedTab(defaultSettings.selectedTab));
+  dispatch(setSortDirection(defaultSettings.sortDirection));
+  dispatch(triggerSortDirection());
+  // dispatch(setSettings(defaultSettings));
 };

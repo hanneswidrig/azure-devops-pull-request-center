@@ -45,6 +45,14 @@ const setState: SplitReducer = (state, action) => [
     },
   ],
   [
+    ActionTypes.SET_SORT_DIRECTION,
+    () => {
+      return produce(state, draft => {
+        draft.ui.sortDirection = action.payload;
+      });
+    },
+  ],
+  [
     ActionTypes.SET_PULL_REQUESTS,
     () => {
       return produce(state, draft => {
@@ -81,6 +89,13 @@ const setState: SplitReducer = (state, action) => [
       return produce(state, draft => {
         draft.ui.selectedTab = action.payload;
       });
+    },
+  ],
+  [
+    ActionTypes.SET_FILTER_BAR,
+    () => {
+      state.ui.isFilterVisible.value = action.payload;
+      return state;
     },
   ],
 ];
@@ -125,6 +140,13 @@ const updateState: SplitReducer = state => [
 ];
 
 const modifyObservables: SplitReducer = state => [
+  [
+    ActionTypes.TOGGLE_FILTER_BAR,
+    () => {
+      state.ui.isFilterVisible.value = !state.ui.isFilterVisible.value;
+      return state;
+    },
+  ],
   [
     ActionTypes.TOGGLE_FILTER_BAR,
     () => {

@@ -9,6 +9,7 @@ import { ReviewerVoteNumber } from '../lib/enums';
 const GET_SETTINGS = 'getSettings';
 const SET_SETTINGS = 'setSettings';
 const ADD_ASYNC_TASK = 'addAsyncTask';
+const SET_FILTER_BAR = 'setFilterBar';
 const SET_CURRENT_USER = 'setCurrentUser';
 const SET_SELECTED_TAB = 'setSelectedTab';
 const RESTORE_SETTINGS = 'restoreSettings';
@@ -18,6 +19,7 @@ const SET_PULL_REQUESTS = 'setPullRequests';
 const REMOVE_ASYNC_TASK = 'removeAsyncTask';
 const TOGGLE_FILTER_BAR = 'toggleFilterBar';
 const DISPLAY_WORK_ITEMS = 'displayWorkItems';
+const SET_SORT_DIRECTION = 'setSortDirection';
 const SET_FULL_SCREEN_MODE = 'setFullScreenMode';
 const TOGGLE_SETTINGS_PANEL = 'toggleSettingsPanel';
 const REFRESH_PULL_REQUESTS = 'refreshPullRequests';
@@ -28,6 +30,7 @@ export const ActionTypes = {
   GET_SETTINGS,
   SET_SETTINGS,
   ADD_ASYNC_TASK,
+  SET_FILTER_BAR,
   SET_CURRENT_USER,
   SET_SELECTED_TAB,
   RESTORE_SETTINGS,
@@ -37,6 +40,7 @@ export const ActionTypes = {
   REMOVE_ASYNC_TASK,
   TOGGLE_FILTER_BAR,
   DISPLAY_WORK_ITEMS,
+  SET_SORT_DIRECTION,
   SET_FULL_SCREEN_MODE,
   TOGGLE_SETTINGS_PANEL,
   REFRESH_PULL_REQUESTS,

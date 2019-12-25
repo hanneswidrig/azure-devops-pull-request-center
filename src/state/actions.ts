@@ -18,7 +18,7 @@ import { GitPullRequest, GitPullRequestSearchCriteria, PullRequestStatus } from 
 
 import { FilterDictionary } from '../tabs/TabTypes';
 import { fromPullRequestToPR } from './transformData';
-import { ActionTypes, DefaultSettings } from './types';
+import { ActionTypes, DefaultSettings, SortDirection } from './types';
 import { sortByRepositoryName, sortByPullRequestId } from '../lib/utils';
 
 // action interfaces
@@ -69,6 +69,9 @@ export const setCurrentUser = () => (dispatch: Dispatch<FetchAction>) =>
 export const toggleSortDirection = () => (dispatch: Dispatch<FetchAction>) =>
   dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
 
+export const setSortDirection = (sortDirection: SortDirection) => (dispatch: Dispatch<FetchAction>) =>
+  dispatch({ type: ActionTypes.SET_SORT_DIRECTION, payload: sortDirection });
+
 export const triggerSortDirection = () => (dispatch: Dispatch<FetchAction>) =>
   dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
 
@@ -77,6 +80,9 @@ export const setFilterValues = (filterValues: FilterDictionary) => (dispatch: Di
 
 export const setSelectedTab = (newSelectedTab: string) => (dispatch: Dispatch<FetchAction>) =>
   dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
+
+export const setFilterBar = (isFilterVisible: boolean) => (dispatch: Dispatch<FetchAction>) =>
+  dispatch({ type: ActionTypes.SET_FILTER_BAR, payload: isFilterVisible });
 
 export const toggleSettingsPanel = () => (dispatch: Dispatch<FetchAction>) =>
   dispatch({ type: ActionTypes.TOGGLE_SETTINGS_PANEL });

@@ -165,7 +165,7 @@ export const TabProvider: React.FC = () => {
           {getPageContent({ newSelectedTab: store.ui.selectedTab, filter, filterItems, store })}
         </div>
       </Page>
-      {store.settings.settingsPanelOpen && <SettingsPanel store={store} />}
+      {store.settings.settingsPanelOpen && <SettingsPanel />}
     </Surface>
   );
 };
