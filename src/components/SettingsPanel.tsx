@@ -80,7 +80,7 @@ export const SettingsPanel: React.FC = () => {
           iconProps={{ iconName: 'Save' }}
           secondaryText={`Default to currently selected options.`}
           onClick={() => isSavingFilterItemsChanged('save', setSettingValues)}
-          checked={settingValues.isSavingFilterItems}
+          primary={settingValues.isSavingFilterItems}
         >
           Save
         </CompoundButton>
