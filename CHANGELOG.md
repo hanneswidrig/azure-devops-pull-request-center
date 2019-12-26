@@ -4,6 +4,8 @@
 
 ✔ Set extension defaults with new settings experience.
 
+🐛 Reloading Pull Requests now preserving previously filtered values being applied.
+
 # 1.0.{2,3,4,5} (December 17, 2019)
 
 ✔ Fields including pull request id and target branch name are now searchable.
