@@ -107,7 +107,8 @@ export const setPullRequests = () => async (dispatch: Dispatch<FetchAction>) => 
     allPullRequests.map(async pullRequest =>
       fromPullRequestToPR({
         pr: pullRequest,
-        workItems: await getWorkItemsForPr(pullRequest),
+        workItems: [],
+        // workItems: await getWorkItemsForPr(pullRequest),
         userContext: DevOps.getUser(),
       }),
     ),
