@@ -87,7 +87,11 @@ describe('Filters for Pull Request Table', () => {
     const pullRequests: PR[] = [
       {
         title: 'Title',
+        pullRequestId: 1,
         repositoryId: '1',
+        repository: {
+          name: 'Repository',
+        },
         sourceBranch: {
           name: 'Source Branch',
         },
@@ -103,7 +107,11 @@ describe('Filters for Pull Request Table', () => {
       },
       {
         title: 'Hello World',
+        pullRequestId: 1,
         repositoryId: '1',
+        repository: {
+          name: 'Repository',
+        },
         sourceBranch: {
           name: 'Source Branch',
         },
