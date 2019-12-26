@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
 import { ChoiceGroup, IChoiceGroupOption, Stack, Toggle } from 'office-ui-fabric-react';
 
@@ -9,11 +9,10 @@ import {
   setFullScreenMode,
   setSelectedTab,
   setSortDirection,
-  triggerSortDirection,
   setFilterBar,
-  setSettings,
+  saveSettings,
 } from '../state/actions';
-import { DefaultSettings, TabOptions, SortDirection } from '../state/types';
+import { DefaultSettings, TabOptions, SortDirection, PrHubState } from '../state/types';
 import './SettingsPanel.scss';
 
 const defaultSettingValues: DefaultSettings = {
@@ -24,8 +23,19 @@ const defaultSettingValues: DefaultSettings = {
 };
 
 export const SettingsPanel: React.FC = () => {
+  const store = useSelector((store: PrHubState) => store);
   const dispatch = useDispatch();
-  const [settingValues, setSettingValues] = React.useState<DefaultSettings>(defaultSettingValues);
+  const [settingValues, setSettingValues] = React.useState<DefaultSettings>({
+    isFilterVisible: store.settings.defaults.isFilterVisible,
+    isFullScreenMode: store.settings.defaults.isFullScreenMode,
+    selectedTab: store.settings.defaults.selectedTab,
+    sortDirection: store.settings.defaults.sortDirection,
+  });
+  const [isDirty, setIsDirty] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    setIsDirty(JSON.stringify(settingValues) !== JSON.stringify(store.settings.defaults));
+  }, [settingValues, store.settings.defaults]);
 
   return (
     <Panel
@@ -37,18 +47,23 @@ export const SettingsPanel: React.FC = () => {
       }}
       description={'Pull Requests Center 1.1.0'}
       footerButtonProps={[
-        { text: 'Reset', subtle: true, onClick: () => setSettingValues(defaultSettingValues) },
-        { text: 'Apply Changes', primary: true, onClick: () => saveChanges(settingValues, dispatch) },
-        { text: 'Cancel', onClick: () => dispatch(toggleSettingsPanel()) },
+        { text: 'Reset', subtle: true, onClick: () => resetChanges(setSettingValues, dispatch) },
+        {
+          text: 'Apply Changes',
+          primary: true,
+          onClick: () => applyChanges(settingValues, dispatch),
+          disabled: !isDirty,
+        },
       ]}
     >
       <Stack tokens={{ childrenGap: 8 }}>
         <ChoiceGroup
-          label={'Default Full Screen Mode'}
+          label={'Full Screen Mode'}
           selectedKey={`${settingValues.isFullScreenMode}`}
           options={isFullScreenModeItems}
-          onChange={(_, o) => isFullScreenModeChanged(o, setSettingValues)}
+          onChange={(_, o) => isFullScreenModeChanged(o, setSettingValues, dispatch)}
         />
+        <div style={{ marginTop: 32 }}></div>
         <Toggle
           label={'Default Filter Bar Visible'}
           onText="On"
@@ -91,6 +106,7 @@ const sortDirectionItems: IChoiceGroupOption[] = [
 type ChoiceGroupChanged = (
   selectedOption: IChoiceGroupOption | undefined,
   setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
+  dispatch?: Dispatch<any>,
 ) => void;
 
 type ToggleChanged = (
@@ -98,9 +114,12 @@ type ToggleChanged = (
   setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
 ) => void;
 
-const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
+const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingValues, dispatch) => {
   const isFullScreenMode = selectedOption?.key === 'true' ?? false;
   setSettingValues(values => ({ ...values, isFullScreenMode: isFullScreenMode }));
+  if (dispatch) {
+    dispatch(setFullScreenMode(isFullScreenMode));
+  }
 };
 
 const isFilterVisibleChanged: ToggleChanged = (selectedOption, setSettingValues) => {
@@ -117,12 +136,20 @@ const sortDirectionChanged: ChoiceGroupChanged = (selectedOption, setSettingValu
   setSettingValues(values => ({ ...values, sortDirection: option.key as SortDirection }));
 };
 
-type SaveChanges = (defaultSettings: DefaultSettings, dispatch: Dispatch<any>) => void;
-const saveChanges: SaveChanges = (defaultSettings, dispatch) => {
-  dispatch(setFullScreenMode(defaultSettings.isFullScreenMode));
+type ResetChanges = (
+  setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
+  dispatch: Dispatch<any>,
+) => void;
+const resetChanges: ResetChanges = (setSettingValues, dispatch) => {
+  setSettingValues(defaultSettingValues);
+  dispatch(setFullScreenMode(defaultSettingValues.isFullScreenMode));
+};
+
+type ApplyChanges = (defaultSettings: DefaultSettings, dispatch: Dispatch<any>) => void;
+const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
   dispatch(setFilterBar(defaultSettings.isFilterVisible));
   dispatch(setSelectedTab(defaultSettings.selectedTab));
   dispatch(setSortDirection(defaultSettings.sortDirection));
-  dispatch(triggerSortDirection());
-  // dispatch(setSettings(defaultSettings));
+  dispatch(saveSettings(defaultSettings));
+  dispatch(toggleSettingsPanel());
 };

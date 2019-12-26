@@ -58,6 +58,7 @@ export type DefaultSettings = {
 export type Settings = {
   settingsLastSaved: string;
   settingsPanelOpen: boolean;
+  defaults: DefaultSettings;
 };
 
 export type PR = {

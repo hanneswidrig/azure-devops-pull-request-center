@@ -21,12 +21,10 @@ import { fromPullRequestToPR } from './transformData';
 import { ActionTypes, DefaultSettings, SortDirection } from './types';
 import { sortByRepositoryName, sortByPullRequestId } from '../lib/utils';
 
-// action interfaces
 export interface FetchAction extends Action {
   payload?: any;
 }
 
-// criteria setup
 export const pullRequestCriteria: GitPullRequestSearchCriteria = {
   repositoryId: '',
   creatorId: '',
@@ -54,15 +52,16 @@ const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
   return workItemIds.length > 0 ? await workItemClient.getWorkItems(workItemIds) : [];
 };
 
-const modifyFullScreenModeState = async (isFullScreenMode: boolean): Promise<boolean> => {
-  const layoutService = await DevOps.getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
+const getLayoutService = async (): Promise<IHostPageLayoutService> => {
+  return await DevOps.getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
+};
+
+const setFullScreenModeState = async (isFullScreenMode: boolean): Promise<boolean> => {
+  const layoutService = await getLayoutService();
   layoutService.setFullScreenMode(isFullScreenMode);
   return isFullScreenMode;
 };
 
-/**
- * @summary Synchronously sets current user in redux store
- */
 export const setCurrentUser = () => (dispatch: Dispatch<FetchAction>) =>
   dispatch({ type: ActionTypes.SET_CURRENT_USER, payload: DevOps.getUser() });
 
@@ -123,9 +122,6 @@ export const setPullRequests = () => async (dispatch: Dispatch<FetchAction>) => 
   dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
 };
 
-/**
- * @summary Set repositories in redux store
- */
 export const setRepositories = () => async (dispatch: Dispatch<FetchAction>) => {
   dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
   const repositories = await getRepositories();
@@ -133,42 +129,33 @@ export const setRepositories = () => async (dispatch: Dispatch<FetchAction>) => 
   dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
 };
 
-/**
- * @summary Toggle full screen mode for extension
- */
 export const setFullScreenMode = (isFullScreenMode: boolean) => async (dispatch: Dispatch<FetchAction>) => {
-  const newFullScreenModeState = await modifyFullScreenModeState(isFullScreenMode);
+  const newFullScreenModeState = await setFullScreenModeState(isFullScreenMode);
   dispatch({ type: ActionTypes.SET_FULL_SCREEN_MODE, payload: newFullScreenModeState });
 };
 
-// export const restoreSettings = () => async (dispatch: Dispatch<FetchAction>) => {
-//   const settings = await getSettings();
-//   dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
-//   dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
-// };
+export const restoreSettings = () => async (dispatch: Dispatch<FetchAction>) => {
+  const settings = await getSettings();
+  await setFullScreenModeState(settings.isFullScreenMode);
+  dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
+  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+};
 
-// export const clearSettings = () => async (dispatch: Dispatch<FetchAction>) => {
-//   const pristineState: SavedPrHubState = {
-//     settings: initialState.settings,
-//     ui: initialState.ui,
-//   };
-//   await setSettings(pristineState);
-//   dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: pristineState });
-//   dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
-// };
+export const saveSettings = (defaultSettings: DefaultSettings) => async (dispatch: Dispatch<FetchAction>) => {
+  const settings = await setSettings(defaultSettings);
+  dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
+  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+};
 
 export const onInitialLoad = () => {
   return (dispatch: Dispatch<any>) => {
-    // dispatch(restoreSettings());
     dispatch(setCurrentUser());
     dispatch(setRepositories());
     dispatch(setPullRequests());
+    dispatch(restoreSettings());
   };
 };
 
-/**
- * @summary Get Azure Extension Storage Context
- */
 const getDataManagementContext = async (): Promise<IExtensionDataManager> => {
   const extensionId = DevOps.getExtensionContext().id;
   const accessToken = await DevOps.getAccessToken();
