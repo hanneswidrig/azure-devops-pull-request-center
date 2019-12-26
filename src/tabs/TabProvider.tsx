@@ -106,7 +106,7 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
   }
 
   if (selectedTab === 'active') {
-    const activePrsCount = pullRequests.filter(v => !v.isDraft).length;
+    const activePrsCount = pullRequests.filter(v => v.isActive).length;
     return activePrsCount > 0 ? activePrsCount : undefined;
   }
 
@@ -116,7 +116,8 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
   }
 
   if (selectedTab === 'recentlyCompleted') {
-    return undefined;
+    const completedPrsCount = pullRequests.filter(v => v.isCompleted).length;
+    return completedPrsCount > 0 ? completedPrsCount : undefined;
   }
 };
 

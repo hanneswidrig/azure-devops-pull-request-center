@@ -35,8 +35,11 @@ export const filterByReviewers: FilterFunc = (pullRequest, filterValue) =>
 export const filterByApprovalStatus: FilterFunc = (pullRequest, filterValue) =>
   pullRequest.myApprovalStatus.toString() === filterValue[0].toString();
 
-export const filterByDraftStatus: FilterFunc = (pullRequest, filterValue) =>
-  pullRequest.isDraft === (filterValue[0] === 'true');
+export const filterByDraftStatus: FilterFunc = pullRequest => pullRequest.isDraft;
+
+export const filterByActiveStatus: FilterFunc = pullRequest => pullRequest.isActive;
+
+export const filterByCompletedStatus: FilterFunc = pullRequest => pullRequest.isCompleted;
 
 export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, tab: TabOptions) => {
   const { searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus } = filterValues;
@@ -78,8 +81,8 @@ export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, ta
         isActive: myApprovalStatus !== undefined && myApprovalStatus.length > 0,
       },
       {
-        func: filterByDraftStatus,
-        val: ['false'],
+        func: filterByActiveStatus,
+        val: undefined,
         isActive: true,
       },
     ],
@@ -121,7 +124,7 @@ export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, ta
       },
       {
         func: filterByDraftStatus,
-        val: ['true'],
+        val: undefined,
         isActive: true,
       },
     ],
@@ -162,8 +165,8 @@ export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, ta
         isActive: myApprovalStatus !== undefined && myApprovalStatus.length > 0,
       },
       {
-        func: filterByDraftStatus,
-        val: ['false'],
+        func: filterByCompletedStatus,
+        val: undefined,
         isActive: true,
       },
     ],

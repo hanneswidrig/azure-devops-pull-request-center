@@ -24,7 +24,7 @@ export interface FetchAction extends Action {
   payload?: any;
 }
 
-export const pullRequestCriteria: GitPullRequestSearchCriteria = {
+export const activePrCriteria: GitPullRequestSearchCriteria = {
   repositoryId: '',
   creatorId: '',
   includeLinks: true,
@@ -32,6 +32,17 @@ export const pullRequestCriteria: GitPullRequestSearchCriteria = {
   sourceRefName: '',
   sourceRepositoryId: '',
   status: PullRequestStatus.Active,
+  targetRefName: '',
+};
+
+export const completedPrCriteria: GitPullRequestSearchCriteria = {
+  repositoryId: '',
+  creatorId: '',
+  includeLinks: true,
+  reviewerId: '',
+  sourceRefName: '',
+  sourceRepositoryId: '',
+  status: PullRequestStatus.Completed,
   targetRefName: '',
 };
 
@@ -95,7 +106,12 @@ export const setPullRequests = () => async (dispatch: Dispatch<FetchAction>) => 
   dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
   const repositories = await getRepositories();
   const getAllRepositoryPullRequests = repositories.map(
-    async repo => await gitClient.getPullRequests(repo.id, pullRequestCriteria),
+    async repo => await gitClient.getPullRequests(repo.id, activePrCriteria),
+  );
+  getAllRepositoryPullRequests.push(
+    ...repositories.map(
+      async repo => await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, undefined, 10),
+    ),
   );
   const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
   const getCompletePullRequests = allRepositoryPullRequests.flatMap(prsForSingleRepo =>

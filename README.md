@@ -26,9 +26,7 @@ I built this extension for Azure DevOps Services 2019. If someone wanted to expl
 
 ## 🛣 Roadmap
 
-✖ Ability to view work items associated with PR.
-
-✖ Extra tabs for additional viewing experiences.
+✖ View work items/comments associated with PR.
 
 ✖ Auto-updating options for close monitoring of pull requests.
 

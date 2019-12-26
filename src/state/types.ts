@@ -65,6 +65,8 @@ export type PR = {
   pullRequestId: number;
   repositoryId: string;
   isDraft: boolean;
+  isActive: boolean;
+  isCompleted: boolean;
   isAutoComplete: boolean;
   hasMergeConflicts: boolean;
   status: PullRequestStatus;

@@ -4,6 +4,8 @@
 
 ✔ Set extension defaults with new settings experience.
 
+✔ Show 10 most recently completed PRs.
+
 - Filter by pull request author added to string filter.
 
 🐛 Reloading Pull Requests now preserving previously filtered values being applied.
