@@ -17,6 +17,7 @@ describe('<PRTableCellReviewers />', () => {
   test('renders successfully with reviewers', () => {
     const reviewers: IdentityRefWithVote[] = [
       {
+        id: '1',
         displayName: 'PR Reviewer #1',
         _links: {
           avatar: { href: 'https://image.com/1' },
@@ -24,6 +25,7 @@ describe('<PRTableCellReviewers />', () => {
         vote: 10,
       },
       {
+        id: '2',
         displayName: 'PR Reviewer #2',
         _links: {
           avatar: { href: 'https://image.com/2' },
@@ -31,6 +33,7 @@ describe('<PRTableCellReviewers />', () => {
         vote: 5,
       },
       {
+        id: '3',
         displayName: 'PR Reviewer #3',
         _links: {
           avatar: { href: 'https://image.com/3' },
@@ -38,6 +41,7 @@ describe('<PRTableCellReviewers />', () => {
         vote: 0,
       },
       {
+        id: '4',
         displayName: 'PR Reviewer #4',
         _links: {
           avatar: { href: 'https://image.com/4' },
@@ -45,6 +49,7 @@ describe('<PRTableCellReviewers />', () => {
         vote: -5,
       },
       {
+        id: '5',
         displayName: 'PR Reviewer #5',
         _links: {
           avatar: { href: 'https://image.com/5' },

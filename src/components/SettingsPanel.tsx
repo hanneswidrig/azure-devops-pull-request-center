@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
-import { useDispatch, useSelector } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
+import { useDispatch, useSelector } from 'react-redux';
 import { ChoiceGroup, IChoiceGroupOption, Stack, Toggle } from 'office-ui-fabric-react';
 
 import {
