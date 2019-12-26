@@ -94,7 +94,7 @@ export type Data = {
 };
 
 export type SortDirection = 'desc' | 'asc';
-export type TabOptions = 'active' | 'draft';
+export type TabOptions = 'active' | 'draft' | 'recentlyCompleted';
 export type UI = {
   isFilterVisible: ObservableValue<boolean>;
   isFullScreenMode: boolean;

@@ -8,6 +8,7 @@ import { Page } from 'azure-devops-ui/Page';
 import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
+import { RecentlyCompleted } from './RecentlyCompleted';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
@@ -91,6 +92,7 @@ const getPageContent = ({ newSelectedTab, filter, filterItems, store }: { newSel
   const tabs: Record<TabOptions, JSX.Element> = {
     active: <Active filter={filter} filterItems={filterItems} store={store} />,
     draft: <Draft filter={filter} filterItems={filterItems} store={store} />,
+    recentlyCompleted: <RecentlyCompleted filter={filter} filterItems={filterItems} store={store} />,
   };
   return tabs[newSelectedTab];
 };
@@ -111,6 +113,10 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
   if (selectedTab === 'draft') {
     const draftPrsCount = pullRequests.filter(v => v.isDraft).length;
     return draftPrsCount > 0 ? draftPrsCount : undefined;
+  }
+
+  if (selectedTab === 'recentlyCompleted') {
+    return undefined;
   }
 };
 
@@ -167,6 +173,11 @@ export const TabProvider: React.FC = () => {
         >
           <Tab name="Active" id="active" badgeCount={badgeCount(store.data.pullRequests, 'active')} />
           <Tab name="Draft" id="draft" badgeCount={badgeCount(store.data.pullRequests, 'draft')} />
+          <Tab
+            name="Completed"
+            id="recentlyCompleted"
+            badgeCount={badgeCount(store.data.pullRequests, 'recentlyCompleted')}
+          />
         </TabBar>
         <div className="page-content-left page-content-right page-content-top page-content-bottom">
           {getPageContent({ newSelectedTab: store.ui.selectedTab, filter, filterItems, store })}
