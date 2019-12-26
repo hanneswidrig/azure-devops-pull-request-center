@@ -4,7 +4,7 @@ import { Action, Dispatch } from 'redux';
 import * as DevOps from 'azure-devops-extension-sdk';
 
 // azure-devops-extension-api
-import { ResourceRef } from 'azure-devops-extension-api/WebApi/WebApi';
+// import { ResourceRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
 import {
   getClient,
@@ -14,7 +14,10 @@ import {
   IExtensionDataManager,
 } from 'azure-devops-extension-api';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
-import { GitPullRequest, GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
+import {
+  /*GitPullRequest,*/ GitPullRequestSearchCriteria,
+  PullRequestStatus,
+} from 'azure-devops-extension-api/Git/Git';
 
 import { FilterDictionary } from '../tabs/TabTypes';
 import { fromPullRequestToPR } from './transformData';
@@ -46,11 +49,11 @@ const getRepositories = async () => {
   return (await gitClient.getRepositories(currentProject?.name, true)).sort(sortByRepositoryName);
 };
 
-const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
-  const workItemRefs = await gitClient.getPullRequestWorkItemRefs(pullRequest.repository.id, pullRequest.pullRequestId);
-  const workItemIds = workItemRefs.flatMap((ref: ResourceRef) => Number(ref.id));
-  return workItemIds.length > 0 ? await workItemClient.getWorkItems(workItemIds) : [];
-};
+// const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
+//   const workItemRefs = await gitClient.getPullRequestWorkItemRefs(pullRequest.repository.id, pullRequest.pullRequestId);
+//   const workItemIds = workItemRefs.flatMap((ref: ResourceRef) => Number(ref.id));
+//   return workItemIds.length > 0 ? await workItemClient.getWorkItems(workItemIds) : [];
+// };
 
 const getLayoutService = async (): Promise<IHostPageLayoutService> => {
   return await DevOps.getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
