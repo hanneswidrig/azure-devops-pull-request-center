@@ -9,7 +9,7 @@ import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
-import { FILTER_CHANGE_EVENT } from 'azure-devops-ui/Utilities/Filter';
+import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
 
 import { filter } from '..';
@@ -25,6 +25,18 @@ import {
   triggerSortDirection,
 } from '../state/actions';
 import { ITab, ActiveItemProvider, FilterItemsDictionary, FilterDictionary, FilterOptions } from './TabTypes';
+
+const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
+  return {
+    searchString: filter.getFilterItemValue<string>(FilterOptions.searchString),
+    repositories: filter.getFilterItemValue<string[]>(FilterOptions.repositories),
+    sourceBranch: filter.getFilterItemValue<string[]>(FilterOptions.sourceBranch),
+    targetBranch: filter.getFilterItemValue<string[]>(FilterOptions.targetBranch),
+    author: filter.getFilterItemValue<string[]>(FilterOptions.author),
+    reviewer: filter.getFilterItemValue<string[]>(FilterOptions.reviewer),
+    myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus),
+  };
+};
 
 const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
   return [
@@ -118,21 +130,16 @@ export const TabProvider: React.FC = () => {
 
   React.useEffect(() => {
     pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-    pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, {}, store.ui.selectedTab));
+    pullRequestItemProvider$.push(
+      ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
+    );
     setFilterItems(fromPRToFilterItems(store.data.pullRequests));
 
     filter.subscribe(() => {
-      const filterValues: FilterDictionary = {
-        searchString: filter.getFilterItemValue<string>(FilterOptions.searchString),
-        repositories: filter.getFilterItemValue<string[]>(FilterOptions.repositories),
-        sourceBranch: filter.getFilterItemValue<string[]>(FilterOptions.sourceBranch),
-        targetBranch: filter.getFilterItemValue<string[]>(FilterOptions.targetBranch),
-        author: filter.getFilterItemValue<string[]>(FilterOptions.author),
-        reviewer: filter.getFilterItemValue<string[]>(FilterOptions.reviewer),
-        myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus),
-      };
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-      pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, filterValues, store.ui.selectedTab));
+      pullRequestItemProvider$.push(
+        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
+      );
       dispatch(triggerSortDirection());
     }, FILTER_CHANGE_EVENT);
     return () => filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);
