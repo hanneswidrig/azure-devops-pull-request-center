@@ -1,10 +1,9 @@
 import { Action, Dispatch } from 'redux';
 
 // azure-devops-extension-sdk
-import * as DevOps from 'azure-devops-extension-sdk';
+import { getService, getUser, getExtensionContext, getAccessToken } from 'azure-devops-extension-sdk';
 
 // azure-devops-extension-api
-// import { ResourceRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
 import {
   getClient,
@@ -13,11 +12,8 @@ import {
   IExtensionDataService,
   IExtensionDataManager,
 } from 'azure-devops-extension-api';
+import { GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
-import {
-  /*GitPullRequest,*/ GitPullRequestSearchCriteria,
-  PullRequestStatus,
-} from 'azure-devops-extension-api/Git/Git';
 
 import { FilterDictionary } from '../tabs/TabTypes';
 import { fromPullRequestToPR } from './transformData';
@@ -44,7 +40,7 @@ export const gitClient: GitRestClient = getClient(GitRestClient);
 export const workItemClient: WorkItemTrackingRestClient = getClient(WorkItemTrackingRestClient);
 
 const getRepositories = async () => {
-  const projectService = await DevOps.getService<IProjectPageService>('ms.vss-tfs-web.tfs-page-data-service');
+  const projectService = await getService<IProjectPageService>('ms.vss-tfs-web.tfs-page-data-service');
   const currentProject = await projectService.getProject();
   return (await gitClient.getRepositories(currentProject?.name, true)).sort(sortByRepositoryName);
 };
@@ -56,7 +52,7 @@ const getRepositories = async () => {
 // };
 
 const getLayoutService = async (): Promise<IHostPageLayoutService> => {
-  return await DevOps.getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
+  return await getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
 };
 
 const setFullScreenModeState = async (isFullScreenMode: boolean): Promise<boolean> => {
@@ -66,7 +62,7 @@ const setFullScreenModeState = async (isFullScreenMode: boolean): Promise<boolea
 };
 
 export const setCurrentUser = () => (dispatch: Dispatch<FetchAction>) =>
-  dispatch({ type: ActionTypes.SET_CURRENT_USER, payload: DevOps.getUser() });
+  dispatch({ type: ActionTypes.SET_CURRENT_USER, payload: getUser() });
 
 export const toggleSortDirection = () => (dispatch: Dispatch<FetchAction>) =>
   dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
@@ -112,7 +108,7 @@ export const setPullRequests = () => async (dispatch: Dispatch<FetchAction>) => 
         pr: pullRequest,
         workItems: [],
         // workItems: await getWorkItemsForPr(pullRequest),
-        userContext: DevOps.getUser(),
+        userContext: getUser(),
       }),
     ),
   );
@@ -161,9 +157,9 @@ export const onInitialLoad = () => {
 };
 
 const getDataManagementContext = async (): Promise<IExtensionDataManager> => {
-  const extensionId = DevOps.getExtensionContext().id;
-  const accessToken = await DevOps.getAccessToken();
-  const extensionDataService = await DevOps.getService<IExtensionDataService>('ms.vss-features.extension-data-service');
+  const extensionId = getExtensionContext().id;
+  const accessToken = await getAccessToken();
+  const extensionDataService = await getService<IExtensionDataService>('ms.vss-features.extension-data-service');
   return extensionDataService.getExtensionDataManager(extensionId, accessToken);
 };
 

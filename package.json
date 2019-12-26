@@ -23,7 +23,7 @@
   "scripts": {
     "start": "set HTTPS=true&&react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(azure-devops-ui)/)\"",
+    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(azure-devops-ui|office-ui-fabric-react)/)\"",
     "eject": "react-scripts eject",
     "package-release": "npm run clean-build && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center.vsix",
     "package-dev": "npm run clean-build && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center-develop.vsix --manifest-globs ./vss-extension.json --overrides-file ./vss-extension.dev.json --share-with hannes-widrig",
