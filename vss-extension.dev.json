@@ -1,7 +1,7 @@
 {
   "baseUri": "https://localhost:3000",
   "id": "azure-devops-pull-request-center-develop",
-  "version": "0.0.21",
+  "version": "0.1.0",
   "public": false,
   "name": "Pull Requests Center - DEVELOPMENT"
 }
