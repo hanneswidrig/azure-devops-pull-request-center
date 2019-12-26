@@ -110,8 +110,8 @@ export const SettingsPanel: React.FC = () => {
 };
 
 const isFullScreenModeItems: IChoiceGroupOption[] = [
-  { key: 'false', text: 'Disabled', iconProps: { iconName: 'BackToWindow', title: 'Show Azure DevOps UI Shell' } },
-  { key: 'true', text: 'Enabled', iconProps: { iconName: 'FullScreen', title: 'Hide Azure DevOps UI Shell' } },
+  { key: 'false', text: 'Disabled', iconProps: { iconName: 'SidePanel', title: 'Show Azure DevOps UI Shell' } },
+  { key: 'true', text: 'Enabled', iconProps: { iconName: 'ScaleUp', title: 'Hide Azure DevOps UI Shell' } },
 ];
 
 const selectedTabItems: IChoiceGroupOption[] = [
