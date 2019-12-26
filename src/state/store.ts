@@ -6,7 +6,7 @@ import { FetchAction } from './actions';
 import { sortByPullRequestId } from '../lib/utils';
 import { Enum, SplitReducer } from '../lib/typings';
 import { pullRequestItemProvider$ } from '../tabs/TabProvider';
-import { ActionTypes, PrHubState, SavedPrHubState } from './types';
+import { ActionTypes, PrHubState, DefaultSettings } from './types';
 
 export const initialState: PrHubState = {
   data: {
@@ -24,6 +24,12 @@ export const initialState: PrHubState = {
   settings: {
     settingsLastSaved: new Date(0).toISOString(),
     settingsPanelOpen: false,
+    defaults: {
+      isFilterVisible: false,
+      isFullScreenMode: false,
+      selectedTab: 'active',
+      sortDirection: 'desc',
+    },
   },
 };
 
@@ -41,6 +47,14 @@ const setState: SplitReducer = (state, action) => [
     () => {
       return produce(state, draft => {
         draft.ui.isFullScreenMode = action.payload;
+      });
+    },
+  ],
+  [
+    ActionTypes.SET_SORT_DIRECTION,
+    () => {
+      return produce(state, draft => {
+        draft.ui.sortDirection = action.payload;
       });
     },
   ],
@@ -64,13 +78,16 @@ const setState: SplitReducer = (state, action) => [
     ActionTypes.RESTORE_SETTINGS,
     () => {
       if (action.payload) {
-        const savedSettings: SavedPrHubState = action.payload;
+        const savedSettings: DefaultSettings = action.payload;
         return produce(state, draft => {
-          draft.settings.settingsLastSaved = savedSettings.settings.settingsLastSaved;
-          draft.ui.isFilterVisible.value = savedSettings.ui.isFilterVisible.value;
-          draft.ui.isFullScreenMode = savedSettings.ui.isFullScreenMode;
-          draft.ui.selectedTab = savedSettings.ui.selectedTab;
-          draft.ui.sortDirection = savedSettings.ui.sortDirection;
+          draft.ui.isFilterVisible.value = savedSettings.isFilterVisible;
+          draft.ui.isFullScreenMode = savedSettings.isFullScreenMode;
+          draft.ui.selectedTab = savedSettings.selectedTab;
+          draft.ui.sortDirection = savedSettings.sortDirection;
+          draft.settings.defaults.isFilterVisible = savedSettings.isFilterVisible;
+          draft.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode;
+          draft.settings.defaults.selectedTab = savedSettings.selectedTab;
+          draft.settings.defaults.sortDirection = savedSettings.sortDirection;
         });
       }
       return state;
@@ -82,6 +99,13 @@ const setState: SplitReducer = (state, action) => [
       return produce(state, draft => {
         draft.ui.selectedTab = action.payload;
       });
+    },
+  ],
+  [
+    ActionTypes.SET_FILTER_BAR,
+    () => {
+      state.ui.isFilterVisible.value = action.payload;
+      return state;
     },
   ],
 ];
@@ -126,6 +150,13 @@ const updateState: SplitReducer = state => [
 ];
 
 const modifyObservables: SplitReducer = state => [
+  [
+    ActionTypes.TOGGLE_FILTER_BAR,
+    () => {
+      state.ui.isFilterVisible.value = !state.ui.isFilterVisible.value;
+      return state;
+    },
+  ],
   [
     ActionTypes.TOGGLE_FILTER_BAR,
     () => {

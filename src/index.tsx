@@ -7,6 +7,7 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 
+import { initializeIcons } from '@uifabric/icons';
 import * as DevOps from 'azure-devops-extension-sdk';
 import { Filter } from 'azure-devops-ui/Utilities/Filter';
 
@@ -17,6 +18,7 @@ import { TabProvider } from './tabs/TabProvider';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 export const filter: Filter = new Filter();
+initializeIcons();
 
 const App: React.FC = () => {
   React.useEffect(() => {

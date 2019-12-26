@@ -32,6 +32,8 @@ export const fromPullRequestToPR = ({
     pullRequestId: pr.pullRequestId,
     repositoryId: pr.repository.id,
     isDraft: pr.isDraft,
+    isActive: pr.status === 1,
+    isCompleted: pr.status === 3,
     isAutoComplete: pr.autoCompleteSetBy !== undefined,
     hasMergeConflicts: pr.mergeStatus === 2,
     status: pr.status,

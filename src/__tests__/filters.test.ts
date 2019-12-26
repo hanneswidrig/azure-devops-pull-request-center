@@ -16,6 +16,21 @@ describe('Filters for Pull Request Table', () => {
   test('filterByTitle()', () => {
     const pullRequest: PR = {
       title: 'Title',
+      pullRequestId: 1,
+      repositoryId: '1',
+      repository: {
+        name: 'Repository',
+      },
+      sourceBranch: {
+        name: 'Source Branch',
+      },
+      targetBranch: {
+        name: 'Target Branch',
+      },
+      createdBy: {
+        id: '1',
+        displayName: 'Display Name',
+      },
     } as PR;
     expect(filterByTitle(pullRequest, ['Title'])).toBeTruthy();
     expect(filterByTitle(pullRequest, ['Not'])).toBeFalsy();
@@ -87,7 +102,11 @@ describe('Filters for Pull Request Table', () => {
     const pullRequests: PR[] = [
       {
         title: 'Title',
+        pullRequestId: 1,
         repositoryId: '1',
+        repository: {
+          name: 'Repository',
+        },
         sourceBranch: {
           name: 'Source Branch',
         },
@@ -96,6 +115,7 @@ describe('Filters for Pull Request Table', () => {
         },
         createdBy: {
           id: '1',
+          displayName: 'Display Name',
         },
         reviewers: [{ id: '1' }],
         myApprovalStatus: '10',
@@ -103,7 +123,11 @@ describe('Filters for Pull Request Table', () => {
       },
       {
         title: 'Hello World',
+        pullRequestId: 1,
         repositoryId: '1',
+        repository: {
+          name: 'Repository',
+        },
         sourceBranch: {
           name: 'Source Branch',
         },
@@ -112,6 +136,7 @@ describe('Filters for Pull Request Table', () => {
         },
         createdBy: {
           id: '1',
+          displayName: 'Display Name',
         },
         reviewers: [{ id: '1' }],
         myApprovalStatus: '10',

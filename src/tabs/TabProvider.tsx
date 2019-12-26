@@ -5,34 +5,39 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Draft } from './Draft';
 import { Active } from './Active';
 import { Page } from 'azure-devops-ui/Page';
-import { Panel } from 'azure-devops-ui/Panel';
 import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
+import { RecentlyCompleted } from './RecentlyCompleted';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
-import { FILTER_CHANGE_EVENT } from 'azure-devops-ui/Utilities/Filter';
+import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
 
 import { filter } from '..';
 import { applyFilter } from '../lib/filters';
-import { PrHubState, PR } from '../state/types';
+import { PrHubState, PR, TabOptions } from '../state/types';
+import { SettingsPanel } from '../components/SettingsPanel';
 import { fromPRToFilterItems } from '../state/transformData';
 import {
   setSelectedTab,
   setPullRequests,
   toggleSettingsPanel,
   toggleSortDirection,
-  toggleFullScreenMode,
   triggerSortDirection,
 } from '../state/actions';
-import {
-  ITab,
-  TabOptions,
-  ActiveItemProvider,
-  FilterItemsDictionary,
-  FilterDictionary,
-  FilterOptions,
-} from './TabTypes';
+import { ITab, ActiveItemProvider, FilterItemsDictionary, FilterDictionary, FilterOptions } from './TabTypes';
+
+const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
+  return {
+    searchString: filter.getFilterItemValue<string>(FilterOptions.searchString),
+    repositories: filter.getFilterItemValue<string[]>(FilterOptions.repositories),
+    sourceBranch: filter.getFilterItemValue<string[]>(FilterOptions.sourceBranch),
+    targetBranch: filter.getFilterItemValue<string[]>(FilterOptions.targetBranch),
+    author: filter.getFilterItemValue<string[]>(FilterOptions.author),
+    reviewer: filter.getFilterItemValue<string[]>(FilterOptions.reviewer),
+    myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus),
+  };
+};
 
 const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
   return [
@@ -50,25 +55,13 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
     },
     {
       id: 'open-prefs',
-      text: 'Open Preferences',
-      important: false,
+      important: true,
+      subtle: true,
       onActivate: () => {
         dispatch(toggleSettingsPanel());
       },
       iconProps: {
         iconName: 'fabric-icon ms-Icon--Settings',
-      },
-    },
-    {
-      id: 'full-screen',
-      text: 'Full Screen Mode',
-      important: false,
-      onActivate: () => {
-        dispatch(toggleFullScreenMode());
-      },
-      iconProps: {
-        title: 'Visually hide or show Azure DevOps UI Shell',
-        iconName: 'fabric-icon ms-Icon--FullScreen',
       },
     },
   ];
@@ -99,6 +92,7 @@ const getPageContent = ({ newSelectedTab, filter, filterItems, store }: { newSel
   const tabs: Record<TabOptions, JSX.Element> = {
     active: <Active filter={filter} filterItems={filterItems} store={store} />,
     draft: <Draft filter={filter} filterItems={filterItems} store={store} />,
+    recentlyCompleted: <RecentlyCompleted filter={filter} filterItems={filterItems} store={store} />,
   };
   return tabs[newSelectedTab];
 };
@@ -112,13 +106,18 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
   }
 
   if (selectedTab === 'active') {
-    const activePrsCount = pullRequests.filter(v => !v.isDraft).length;
+    const activePrsCount = pullRequests.filter(v => v.isActive).length;
     return activePrsCount > 0 ? activePrsCount : undefined;
   }
 
   if (selectedTab === 'draft') {
     const draftPrsCount = pullRequests.filter(v => v.isDraft).length;
     return draftPrsCount > 0 ? draftPrsCount : undefined;
+  }
+
+  if (selectedTab === 'recentlyCompleted') {
+    const completedPrsCount = pullRequests.filter(v => v.isCompleted).length;
+    return completedPrsCount > 0 ? completedPrsCount : undefined;
   }
 };
 
@@ -138,21 +137,16 @@ export const TabProvider: React.FC = () => {
 
   React.useEffect(() => {
     pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-    pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, {}, store.ui.selectedTab));
+    pullRequestItemProvider$.push(
+      ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
+    );
     setFilterItems(fromPRToFilterItems(store.data.pullRequests));
 
     filter.subscribe(() => {
-      const filterValues: FilterDictionary = {
-        searchString: filter.getFilterItemValue<string>(FilterOptions.searchString),
-        repositories: filter.getFilterItemValue<string[]>(FilterOptions.repositories),
-        sourceBranch: filter.getFilterItemValue<string[]>(FilterOptions.sourceBranch),
-        targetBranch: filter.getFilterItemValue<string[]>(FilterOptions.targetBranch),
-        author: filter.getFilterItemValue<string[]>(FilterOptions.author),
-        reviewer: filter.getFilterItemValue<string[]>(FilterOptions.reviewer),
-        myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus),
-      };
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-      pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, filterValues, store.ui.selectedTab));
+      pullRequestItemProvider$.push(
+        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
+      );
       dispatch(triggerSortDirection());
     }, FILTER_CHANGE_EVENT);
     return () => filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);
@@ -180,25 +174,17 @@ export const TabProvider: React.FC = () => {
         >
           <Tab name="Active" id="active" badgeCount={badgeCount(store.data.pullRequests, 'active')} />
           <Tab name="Draft" id="draft" badgeCount={badgeCount(store.data.pullRequests, 'draft')} />
+          <Tab
+            name="Completed"
+            id="recentlyCompleted"
+            badgeCount={badgeCount(store.data.pullRequests, 'recentlyCompleted')}
+          />
         </TabBar>
         <div className="page-content-left page-content-right page-content-top page-content-bottom">
           {getPageContent({ newSelectedTab: store.ui.selectedTab, filter, filterItems, store })}
         </div>
       </Page>
-      {store.settings.settingsPanelOpen && (
-        <Panel
-          showSeparator
-          onDismiss={() => dispatch(toggleSettingsPanel())}
-          titleProps={{
-            text: 'Extension Preferences',
-          }}
-          description={'Pull Requests Center 1.0.5'}
-          footerButtonProps={[
-            { text: 'Save Changes', primary: true },
-            { text: 'Cancel', onClick: () => dispatch(toggleSettingsPanel()) },
-          ]}
-        />
-      )}
+      {store.settings.settingsPanelOpen && <SettingsPanel />}
     </Surface>
   );
 };
