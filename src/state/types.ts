@@ -5,6 +5,7 @@ import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTr
 import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
 
 import { ReviewerVoteNumber } from '../lib/enums';
+import { FilterItemsDictionary } from '../tabs/TabTypes';
 
 const GET_SETTINGS = 'getSettings';
 const SET_SETTINGS = 'setSettings';
@@ -53,6 +54,8 @@ export type DefaultSettings = {
   isFullScreenMode: boolean;
   selectedTab: TabOptions;
   sortDirection: SortDirection;
+  isSavingFilterItems: boolean;
+  filterItems: FilterItemsDictionary | undefined;
 };
 
 export type Settings = {

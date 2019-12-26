@@ -29,6 +29,8 @@ export const initialState: PrHubState = {
       isFullScreenMode: false,
       selectedTab: 'active',
       sortDirection: 'desc',
+      isSavingFilterItems: false,
+      filterItems: undefined,
     },
   },
 };
@@ -84,10 +86,13 @@ const setState: SplitReducer = (state, action) => [
           draft.ui.isFullScreenMode = savedSettings.isFullScreenMode;
           draft.ui.selectedTab = savedSettings.selectedTab;
           draft.ui.sortDirection = savedSettings.sortDirection;
+
           draft.settings.defaults.isFilterVisible = savedSettings.isFilterVisible;
           draft.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode;
           draft.settings.defaults.selectedTab = savedSettings.selectedTab;
           draft.settings.defaults.sortDirection = savedSettings.sortDirection;
+          draft.settings.defaults.isSavingFilterItems = savedSettings.isSavingFilterItems;
+          draft.settings.defaults.filterItems = savedSettings.filterItems;
         });
       }
       return state;

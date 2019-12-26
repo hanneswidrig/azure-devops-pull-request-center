@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Dispatch } from 'redux';
 import { Panel } from 'azure-devops-ui/Panel';
 import { useDispatch, useSelector } from 'react-redux';
-import { ChoiceGroup, IChoiceGroupOption, Stack, Toggle } from 'office-ui-fabric-react';
+import { ChoiceGroup, IChoiceGroupOption, Stack, Toggle, Label, CompoundButton } from 'office-ui-fabric-react';
 
 import {
   toggleSettingsPanel,
@@ -20,6 +20,8 @@ const defaultSettingValues: DefaultSettings = {
   isFullScreenMode: false,
   selectedTab: 'active',
   sortDirection: 'desc',
+  isSavingFilterItems: false,
+  filterItems: undefined,
 };
 
 export const SettingsPanel: React.FC = () => {
@@ -30,11 +32,13 @@ export const SettingsPanel: React.FC = () => {
     isFullScreenMode: store.settings.defaults.isFullScreenMode,
     selectedTab: store.settings.defaults.selectedTab,
     sortDirection: store.settings.defaults.sortDirection,
+    isSavingFilterItems: store.settings.defaults.isSavingFilterItems,
+    filterItems: store.settings.defaults.filterItems,
   });
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    setIsDirty(JSON.stringify(settingValues) !== JSON.stringify(store.settings.defaults));
+    setIsDirty(defaultSettingsEquality(settingValues, store.settings.defaults));
   }, [settingValues, store.settings.defaults]);
 
   return (
@@ -65,12 +69,29 @@ export const SettingsPanel: React.FC = () => {
         />
         <div style={{ marginTop: 36 }}></div>
         <Toggle
-          label={'Default Filter Bar Visible'}
+          label={'Filter Bar Visible by Default'}
           onText="On"
           offText="Off"
           checked={settingValues.isFilterVisible}
           onChange={(_, o) => isFilterVisibleChanged(o, setSettingValues)}
         />
+        <Label>Currently Selected Filtering Options</Label>
+        <CompoundButton
+          iconProps={{ iconName: 'Save' }}
+          secondaryText={`Default to currently selected options.`}
+          onClick={() => isSavingFilterItemsChanged('save', setSettingValues)}
+          checked={settingValues.isSavingFilterItems}
+        >
+          Save
+        </CompoundButton>
+        <CompoundButton
+          iconProps={{ iconName: 'ClearFilter' }}
+          secondaryText={`Remove existing defaults saving selected options.`}
+          onClick={() => isSavingFilterItemsChanged('clear', setSettingValues)}
+          disabled={!settingValues.isSavingFilterItems}
+        >
+          Clear
+        </CompoundButton>
         <ChoiceGroup
           label={'Default Selected Tab'}
           selectedKey={settingValues.selectedTab}
@@ -110,6 +131,11 @@ type ChoiceGroupChanged = (
   dispatch?: Dispatch<any>,
 ) => void;
 
+type CompoundButtonChanged = (
+  decision: 'save' | 'clear',
+  setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
+) => void;
+
 type ToggleChanged = (
   selectedOption: boolean | undefined,
   setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
@@ -121,6 +147,10 @@ const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingV
   if (dispatch) {
     dispatch(setFullScreenMode(isFullScreenMode));
   }
+};
+
+const isSavingFilterItemsChanged: CompoundButtonChanged = (decision, setSettingValues) => {
+  setSettingValues(values => ({ ...values, isSavingFilterItems: decision === 'save' }));
 };
 
 const isFilterVisibleChanged: ToggleChanged = (selectedOption, setSettingValues) => {
@@ -153,4 +183,33 @@ const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
   dispatch(setSortDirection(defaultSettings.sortDirection));
   dispatch(saveSettings(defaultSettings));
   dispatch(toggleSettingsPanel());
+};
+
+const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings): boolean => {
+  const isFilterVisibleNotEqual =
+    (left.isFilterVisible ?? defaultSettingValues.isFilterVisible) !==
+    (right.isFilterVisible ?? defaultSettingValues.isFilterVisible);
+
+  const isFullScreenModeNotEqual =
+    (left.isFullScreenMode ?? defaultSettingValues.isFullScreenMode) !==
+    (right.isFullScreenMode ?? defaultSettingValues.isFullScreenMode);
+
+  const isSavingFilterItemsNotEqual =
+    (left.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems) !==
+    (right.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems);
+
+  const selectedTabNotEqual =
+    (left.selectedTab ?? defaultSettingValues.selectedTab) !== (right.selectedTab ?? defaultSettingValues.selectedTab);
+
+  const sortDirectionNotEqual =
+    (left.sortDirection ?? defaultSettingValues.sortDirection) !==
+    (right.sortDirection ?? defaultSettingValues.sortDirection);
+
+  return (
+    isFilterVisibleNotEqual ||
+    isFullScreenModeNotEqual ||
+    isSavingFilterItemsNotEqual ||
+    selectedTabNotEqual ||
+    sortDirectionNotEqual
+  );
 };
