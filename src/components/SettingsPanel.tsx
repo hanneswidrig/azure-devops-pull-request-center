@@ -56,14 +56,14 @@ export const SettingsPanel: React.FC = () => {
         },
       ]}
     >
-      <Stack tokens={{ childrenGap: 8 }}>
+      <Stack tokens={{ childrenGap: 12 }}>
         <ChoiceGroup
           label={'Full Screen Mode'}
           selectedKey={`${settingValues.isFullScreenMode}`}
           options={isFullScreenModeItems}
           onChange={(_, o) => isFullScreenModeChanged(o, setSettingValues, dispatch)}
         />
-        <div style={{ marginTop: 32 }}></div>
+        <div style={{ marginTop: 36 }}></div>
         <Toggle
           label={'Default Filter Bar Visible'}
           onText="On"
