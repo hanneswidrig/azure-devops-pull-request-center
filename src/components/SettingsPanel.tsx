@@ -45,7 +45,7 @@ export const SettingsPanel: React.FC = () => {
       titleProps={{
         text: 'Extension Preferences',
       }}
-      description={'Pull Requests Center 1.1.0'}
+      description={'Pull Requests Center 1.1.1'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => resetChanges(setSettingValues, dispatch) },
         {
@@ -96,6 +96,7 @@ const isFullScreenModeItems: IChoiceGroupOption[] = [
 const selectedTabItems: IChoiceGroupOption[] = [
   { key: 'active', text: 'Active' },
   { key: 'draft', text: 'Draft' },
+  { key: 'recentlyCompleted', text: 'Completed (10 Most Recent)' },
 ];
 
 const sortDirectionItems: IChoiceGroupOption[] = [
