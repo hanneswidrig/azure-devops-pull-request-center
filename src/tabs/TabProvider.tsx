@@ -41,13 +41,15 @@ const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
 };
 
 const setCurrentFilterValues = (filter: Filter, savedFilterItems: FilterDictionary | undefined) => {
-  filter.setFilterItemState(FilterOptions.searchString, { value: savedFilterItems?.searchString });
-  filter.setFilterItemState(FilterOptions.repositories, { value: savedFilterItems?.repositories });
-  filter.setFilterItemState(FilterOptions.sourceBranch, { value: savedFilterItems?.sourceBranch });
-  filter.setFilterItemState(FilterOptions.targetBranch, { value: savedFilterItems?.targetBranch });
-  filter.setFilterItemState(FilterOptions.author, { value: savedFilterItems?.author });
-  filter.setFilterItemState(FilterOptions.reviewer, { value: savedFilterItems?.reviewer });
-  filter.setFilterItemState(FilterOptions.myApprovalStatus, { value: savedFilterItems?.myApprovalStatus });
+  filter.setState({
+    [FilterOptions.searchString]: { value: savedFilterItems?.searchString },
+    [FilterOptions.repositories]: { value: savedFilterItems?.repositories },
+    [FilterOptions.sourceBranch]: { value: savedFilterItems?.sourceBranch },
+    [FilterOptions.targetBranch]: { value: savedFilterItems?.targetBranch },
+    [FilterOptions.author]: { value: savedFilterItems?.author },
+    [FilterOptions.reviewer]: { value: savedFilterItems?.reviewer },
+    [FilterOptions.myApprovalStatus]: { value: savedFilterItems?.myApprovalStatus },
+  });
 };
 
 const onFilterChanges = (store: PrHubState, dispatch: Dispatch<any>) => {
@@ -111,11 +113,11 @@ const getFilterCommandBarItems = (dispatch: Dispatch<any>, store: PrHubState): I
   ];
 };
 
-const getPageContent = ({ newSelectedTab, filter, filterItems, store }: { newSelectedTab: TabOptions } & ITab) => {
+const getPageContent = ({ newSelectedTab, filterItems, store }: { newSelectedTab: TabOptions } & ITab) => {
   const tabs: Record<TabOptions, JSX.Element> = {
-    active: <Active filter={filter} filterItems={filterItems} store={store} />,
-    draft: <Draft filter={filter} filterItems={filterItems} store={store} />,
-    recentlyCompleted: <RecentlyCompleted filter={filter} filterItems={filterItems} store={store} />,
+    active: <Active filterItems={filterItems} store={store} />,
+    draft: <Draft filterItems={filterItems} store={store} />,
+    recentlyCompleted: <RecentlyCompleted filterItems={filterItems} store={store} />,
   };
   return tabs[newSelectedTab];
 };
@@ -201,7 +203,7 @@ export const TabProvider: React.FC = () => {
           />
         </TabBar>
         <div className="page-content-left page-content-right page-content-top page-content-bottom">
-          {getPageContent({ newSelectedTab: store.ui.selectedTab, filter, filterItems, store })}
+          {getPageContent({ newSelectedTab: store.ui.selectedTab, filterItems, store })}
         </div>
       </Page>
       {store.settings.settingsPanelOpen && <SettingsPanel />}
