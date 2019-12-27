@@ -30,7 +30,7 @@ export const initialState: PrHubState = {
       selectedTab: 'active',
       sortDirection: 'desc',
       isSavingFilterItems: false,
-      filterItems: undefined,
+      filterValues: undefined,
     },
   },
 };
@@ -92,7 +92,7 @@ const setState: SplitReducer = (state, action) => [
           draft.settings.defaults.selectedTab = savedSettings.selectedTab;
           draft.settings.defaults.sortDirection = savedSettings.sortDirection;
           draft.settings.defaults.isSavingFilterItems = savedSettings.isSavingFilterItems;
-          draft.settings.defaults.filterItems = savedSettings.filterItems;
+          draft.settings.defaults.filterValues = savedSettings.filterValues;
         });
       }
       return state;

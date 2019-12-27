@@ -26,6 +26,7 @@ import {
   triggerSortDirection,
 } from '../state/actions';
 import { ITab, ActiveItemProvider, FilterItemsDictionary, FilterDictionary, FilterOptions } from './TabTypes';
+import { useUnmount } from '../lib/utils';
 
 const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
   return {
@@ -37,6 +38,28 @@ const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
     reviewer: filter.getFilterItemValue<string[]>(FilterOptions.reviewer),
     myApprovalStatus: filter.getFilterItemValue<string[]>(FilterOptions.myApprovalStatus),
   };
+};
+
+const setCurrentFilterValues = (filter: Filter, savedFilterItems: FilterDictionary | undefined) => {
+  filter.setFilterItemState(FilterOptions.searchString, { value: savedFilterItems?.searchString });
+  filter.setFilterItemState(FilterOptions.repositories, { value: savedFilterItems?.repositories });
+  filter.setFilterItemState(FilterOptions.sourceBranch, { value: savedFilterItems?.sourceBranch });
+  filter.setFilterItemState(FilterOptions.targetBranch, { value: savedFilterItems?.targetBranch });
+  filter.setFilterItemState(FilterOptions.author, { value: savedFilterItems?.author });
+  filter.setFilterItemState(FilterOptions.reviewer, { value: savedFilterItems?.reviewer });
+  filter.setFilterItemState(FilterOptions.myApprovalStatus, { value: savedFilterItems?.myApprovalStatus });
+};
+
+const onFilterChanges = (store: PrHubState, dispatch: Dispatch<any>) => {
+  filter.subscribe(() => {
+    if (store.data.pullRequests.length > 0) {
+      pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
+      pullRequestItemProvider$.push(
+        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
+      );
+      dispatch(triggerSortDirection());
+    }
+  }, FILTER_CHANGE_EVENT);
 };
 
 const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
@@ -125,7 +148,6 @@ export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>(
 export const TabProvider: React.FC = () => {
   const store = useSelector((store: PrHubState) => store);
   const dispatch = useDispatch();
-
   const [filterItems, setFilterItems] = React.useState<FilterItemsDictionary>({
     repositories: [],
     sourceBranch: [],
@@ -134,6 +156,7 @@ export const TabProvider: React.FC = () => {
     reviewer: [],
     myApprovalStatus: [],
   });
+  onFilterChanges(store, dispatch);
 
   React.useEffect(() => {
     if (store.data.pullRequests.length > 0) {
@@ -144,21 +167,14 @@ export const TabProvider: React.FC = () => {
       setFilterItems(
         fromPRToFilterItems(applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab)),
       );
-    }
-
-    filter.subscribe(() => {
-      pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-      pullRequestItemProvider$.push(
-        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
-      );
+      setCurrentFilterValues(filter, store.settings.defaults.filterValues);
       dispatch(triggerSortDirection());
-    }, FILTER_CHANGE_EVENT);
-    return () => filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);
-  }, [store.data.pullRequests, store.ui.selectedTab, dispatch]);
+    }
+  }, [store.data.pullRequests, store.ui.selectedTab, store.settings.defaults.filterValues, dispatch]);
 
-  React.useEffect(() => {
-    dispatch(triggerSortDirection());
-  }, [store.ui.selectedTab, dispatch]);
+  useUnmount(() => {
+    filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);
+  });
 
   return (
     <Surface background={1}>

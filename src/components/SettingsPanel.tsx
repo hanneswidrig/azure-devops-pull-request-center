@@ -21,7 +21,7 @@ const defaultSettingValues: DefaultSettings = {
   selectedTab: 'active',
   sortDirection: 'desc',
   isSavingFilterItems: false,
-  filterItems: undefined,
+  filterValues: undefined,
 };
 
 export const SettingsPanel: React.FC = () => {
@@ -33,7 +33,7 @@ export const SettingsPanel: React.FC = () => {
     selectedTab: store.settings.defaults.selectedTab,
     sortDirection: store.settings.defaults.sortDirection,
     isSavingFilterItems: store.settings.defaults.isSavingFilterItems,
-    filterItems: store.settings.defaults.filterItems,
+    filterValues: store.settings.defaults.filterValues,
   });
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
 
@@ -75,10 +75,10 @@ export const SettingsPanel: React.FC = () => {
           checked={settingValues.isFilterVisible}
           onChange={(_, o) => isFilterVisibleChanged(o, setSettingValues)}
         />
-        <Label>Currently Selected Filtering Options</Label>
+        <Label>Currently Selected Filter Values</Label>
         <CompoundButton
           iconProps={{ iconName: 'Save' }}
-          secondaryText={`Default to currently selected options.`}
+          secondaryText={`Default to currently selected values.`}
           onClick={() => isSavingFilterItemsChanged('save', setSettingValues)}
           primary={settingValues.isSavingFilterItems}
         >
@@ -86,7 +86,7 @@ export const SettingsPanel: React.FC = () => {
         </CompoundButton>
         <CompoundButton
           iconProps={{ iconName: 'ClearFilter' }}
-          secondaryText={`Remove existing defaults saving selected options.`}
+          secondaryText={`Remove default selected values.`}
           onClick={() => isSavingFilterItemsChanged('clear', setSettingValues)}
           disabled={!settingValues.isSavingFilterItems}
         >

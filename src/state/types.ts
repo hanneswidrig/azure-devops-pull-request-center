@@ -5,7 +5,7 @@ import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTr
 import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
 
 import { ReviewerVoteNumber } from '../lib/enums';
-import { FilterItemsDictionary } from '../tabs/TabTypes';
+import { FilterDictionary } from '../tabs/TabTypes';
 
 const GET_SETTINGS = 'getSettings';
 const SET_SETTINGS = 'setSettings';
@@ -55,7 +55,7 @@ export type DefaultSettings = {
   selectedTab: TabOptions;
   sortDirection: SortDirection;
   isSavingFilterItems: boolean;
-  filterItems: FilterItemsDictionary | undefined;
+  filterValues: FilterDictionary | undefined;
 };
 
 export type Settings = {
