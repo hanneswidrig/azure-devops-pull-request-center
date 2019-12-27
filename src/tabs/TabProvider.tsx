@@ -136,11 +136,15 @@ export const TabProvider: React.FC = () => {
   });
 
   React.useEffect(() => {
-    pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-    pullRequestItemProvider$.push(
-      ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
-    );
-    setFilterItems(fromPRToFilterItems(store.data.pullRequests));
+    if (store.data.pullRequests.length > 0) {
+      pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
+      pullRequestItemProvider$.push(
+        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
+      );
+      setFilterItems(
+        fromPRToFilterItems(applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab)),
+      );
+    }
 
     filter.subscribe(() => {
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
