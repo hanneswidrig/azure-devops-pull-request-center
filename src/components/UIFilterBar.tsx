@@ -17,8 +17,6 @@ const _author = new DropdownMultiSelection();
 const _reviewer = new DropdownMultiSelection();
 const _myApprovalStatus = new DropdownMultiSelection();
 
-_repositories.subscribe(console.log);
-
 type Props = { filterItems: FilterItemsDictionary };
 export const UIFilterBar: React.FC<Props> = ({ filterItems }: Props) => {
   const dispatch = useDispatch();
