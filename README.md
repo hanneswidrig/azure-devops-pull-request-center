@@ -14,6 +14,10 @@ A centralized location for your Azure DevOps Pull Requests.
   <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-2.png?raw=true" />
 </p>
 
+<p align="center">
+  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-3.png?raw=true" />
+</p>
+
 ## 📐 Features
 
 ✅ Modern UI based on Azure DevOps Design System.
@@ -36,7 +40,7 @@ I built this extension for Azure DevOps Services 2019. If someone wanted to expl
 
 ## 📣 Changelog
 
-[View recent changes to my extension.](https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/CHANGELOG.md)
+[View recent changes to my extension here.](https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/CHANGELOG.md)
 
 ## 👥 Contribution Guide
 
