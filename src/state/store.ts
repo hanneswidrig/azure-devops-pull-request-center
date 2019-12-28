@@ -2,10 +2,7 @@ import produce from 'immer';
 import { Reducer } from 'redux';
 import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 
-import { FetchAction } from './actions';
-import { sortByPullRequestId } from '../lib/utils';
-import { Enum, SplitReducer } from '../lib/typings';
-import { pullRequestItemProvider$ } from '../tabs/TabProvider';
+import { Enum, SplitReducer, FetchAction } from '../lib/typings';
 import { ActionTypes, PrHubState, DefaultSettings } from './types';
 
 export const initialState: PrHubState = {

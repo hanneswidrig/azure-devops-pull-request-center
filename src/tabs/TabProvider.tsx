@@ -184,7 +184,7 @@ export const TabProvider: React.FC = () => {
         <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch)} />
         <TabBar
           selectedTabId={store.ui.selectedTab}
-          onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab(newSelectedTab))}
+          onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab({ newSelectedTab: newSelectedTab }))}
           tabSize={'tall' as any}
           renderAdditionalContent={() => (
             <HeaderCommandBarWithFilter
