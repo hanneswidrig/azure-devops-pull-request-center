@@ -16,9 +16,13 @@ A centralized location for your Azure DevOps Pull Requests.
 
 ## 📐 Features
 
-- Modern UI based on Azure DevOps Design System.
-- At a quick glance information about pull request across all your repositories.
-- Advanced filtering and full screen experience with preservation of settings.
+✅ Modern UI based on Azure DevOps Design System.
+
+✅ At a glance information associated with pull requests across all your repositories.
+
+✅ Advanced filtering of pull requests based off view filter.
+
+✅ Save your preferred filters with a settings experience that allows you to set defaults for nearly every customizable aspect.
 
 ## 🧩 Compatibility
 
@@ -29,6 +33,16 @@ I built this extension for Azure DevOps Services 2019. If someone wanted to expl
 ✖ View work items/comments associated with PR.
 
 ✖ Auto-updating options for close monitoring of pull requests.
+
+## 📣 Changelog
+
+[View recent changes to my extension.](https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/CHANGELOG.md)
+
+## 👥 Contribution Guide
+
+Help make this extension better by reporting bugs you find. 😊
+
+Reporting bugs is the best way you can help improve my extension at this time. I am not accepting pull requests while I work on stablizing the codebase and feature set.
 
 ## ⛅ Inspiration
 

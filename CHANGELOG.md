@@ -1,6 +1,10 @@
 # [Unreleased]
 
-# 1.1.0 (December 31, 2019)
+# 1.1.1 (TBH)
+
+✔ You can set default filter options to be selected.
+
+# 1.1.0 (December 25, 2019)
 
 ✔ Set extension defaults with new settings experience.
 
