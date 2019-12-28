@@ -134,13 +134,9 @@ const updateState: SplitReducer = state => [
   [
     ActionTypes.TOGGLE_SORT_DIRECTION,
     () => {
-      const nextState = produce(state, draft => {
-        draft.ui.sortDirection = draft.ui.sortDirection === 'desc' ? 'asc' : 'desc';
+      return produce(state, draft => {
+        draft.ui.sortDirection = state.ui.sortDirection === 'desc' ? 'asc' : 'desc';
       });
-      pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
-        sortByPullRequestId(a, b, nextState),
-      );
-      return nextState;
     },
   ],
   [
