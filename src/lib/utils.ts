@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
+import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { GitRepository } from 'azure-devops-extension-api/Git/Git';
 import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 
-import { ReviewerVoteNumber, ReviewerVoteLabel } from './enums';
-import { ActiveItemProvider } from '../tabs/TabTypes';
 import { PrHubState, PR } from '../state/types';
+import { ActiveItemProvider } from '../tabs/TabTypes';
+import { ReviewerVoteNumber, ReviewerVoteLabel } from './enums';
 
 export const sortByRepositoryName = (a: GitRepository, b: GitRepository) => {
   if (a.name < b.name) {
@@ -42,6 +43,8 @@ export const getVoteDescription = (vote: number): string => {
   };
   return votes[vote.toString()];
 };
+
+export const useTypedSelector: TypedUseSelectorHook<PrHubState> = useSelector;
 
 export const useUnmount = (fn: () => any): void => {
   const fnRef = useRef(fn);
