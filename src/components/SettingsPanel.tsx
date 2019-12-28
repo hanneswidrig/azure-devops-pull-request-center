@@ -122,6 +122,14 @@ const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings):
     (left.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems) !==
     (right.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems);
 
+  const filterValuesNotEqual =
+    left.filterValues?.repositories?.length !== right.filterValues?.repositories?.length ||
+    left.filterValues?.sourceBranch?.length !== right.filterValues?.sourceBranch?.length ||
+    left.filterValues?.targetBranch?.length !== right.filterValues?.targetBranch?.length ||
+    left.filterValues?.author?.length !== right.filterValues?.author?.length ||
+    left.filterValues?.reviewer?.length !== right.filterValues?.reviewer?.length ||
+    left.filterValues?.myApprovalStatus?.length !== right.filterValues?.myApprovalStatus?.length;
+
   const selectedTabNotEqual =
     (left.selectedTab ?? defaultSettingValues.selectedTab) !== (right.selectedTab ?? defaultSettingValues.selectedTab);
 
@@ -133,6 +141,7 @@ const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings):
     isFilterVisibleNotEqual ||
     isFullScreenModeNotEqual ||
     isSavingFilterItemsNotEqual ||
+    filterValuesNotEqual ||
     selectedTabNotEqual ||
     sortDirectionNotEqual
   );
@@ -147,7 +156,7 @@ export const SettingsPanel: React.FC = () => {
     selectedTab: store.settings.defaults.selectedTab,
     sortDirection: store.settings.defaults.sortDirection,
     isSavingFilterItems: store.settings.defaults.isSavingFilterItems,
-    filterValues: store.settings.defaults.filterValues,
+    filterValues: store.settings.defaults.isSavingFilterItems ? getCurrentFilterValues(filter) : undefined,
   });
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
 
