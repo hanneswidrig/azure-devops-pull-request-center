@@ -22,7 +22,6 @@ export const initialState: PrHubState = {
     sortDirection: 'desc',
   },
   settings: {
-    settingsLastSaved: new Date(0).toISOString(),
     settingsPanelOpen: false,
     defaults: {
       isFilterVisible: false,
