@@ -160,7 +160,6 @@ export const restoreSettings = () => async (dispatch: Dispatch<FetchAction>) => 
 export const saveSettings = (defaultSettings: DefaultSettings) => async (dispatch: Dispatch<FetchAction>) => {
   const settings = await setSettings(defaultSettings);
   dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
-  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
 };
 
 export const onInitialLoad = () => {
@@ -179,13 +178,13 @@ const getDataManagementContext = async (): Promise<IExtensionDataManager> => {
   return extensionDataService.getExtensionDataManager(extensionId, accessToken);
 };
 
-export const getSettings = async (): Promise<DefaultSettings> => {
+const getSettings = async (): Promise<DefaultSettings> => {
   const dbKey = `prc-ext-data-default`;
   const context = await getDataManagementContext();
   return context.getValue(dbKey, { defaultValue: null });
 };
 
-export const setSettings = async (data: DefaultSettings): Promise<DefaultSettings> => {
+const setSettings = async (data: DefaultSettings): Promise<DefaultSettings> => {
   const dbKey = `prc-ext-data-default`;
   const context = await getDataManagementContext();
   return context.setValue(dbKey, data);

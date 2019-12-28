@@ -5,9 +5,8 @@ import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTr
 import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
 
 import { ReviewerVoteNumber } from '../lib/enums';
+import { FilterDictionary } from '../tabs/TabTypes';
 
-const GET_SETTINGS = 'getSettings';
-const SET_SETTINGS = 'setSettings';
 const ADD_ASYNC_TASK = 'addAsyncTask';
 const SET_FILTER_BAR = 'setFilterBar';
 const SET_CURRENT_USER = 'setCurrentUser';
@@ -27,8 +26,6 @@ const TOGGLE_SORT_DIRECTION = 'toggleSortDirection';
 const TRIGGER_SORT_DIRECTION = 'triggerSortDirection';
 
 export const ActionTypes = {
-  GET_SETTINGS,
-  SET_SETTINGS,
   ADD_ASYNC_TASK,
   SET_FILTER_BAR,
   SET_CURRENT_USER,
@@ -53,10 +50,11 @@ export type DefaultSettings = {
   isFullScreenMode: boolean;
   selectedTab: TabOptions;
   sortDirection: SortDirection;
+  isSavingFilterItems: boolean;
+  filterValues: FilterDictionary | undefined;
 };
 
 export type Settings = {
-  settingsLastSaved: string;
   settingsPanelOpen: boolean;
   defaults: DefaultSettings;
 };

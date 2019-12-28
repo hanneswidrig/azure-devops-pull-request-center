@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { GitRepository } from 'azure-devops-extension-api/Git/Git';
 import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 
@@ -40,4 +41,10 @@ export const getVoteDescription = (vote: number): string => {
     [ReviewerVoteNumber.Rejected]: ReviewerVoteLabel.Rejected,
   };
   return votes[vote.toString()];
+};
+
+export const useUnmount = (fn: () => any): void => {
+  const fnRef = useRef(fn);
+  fnRef.current = fn;
+  useEffect(() => fnRef.current(), []);
 };

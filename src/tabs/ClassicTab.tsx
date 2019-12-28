@@ -42,11 +42,11 @@ export const columns: ITableColumn<PR>[] = [
   // }),
 ];
 
-export const ClassicTab: React.FC<ITab> = ({ filter, filterItems, store }: ITab) => {
+export const ClassicTab: React.FC<ITab> = ({ filterItems, store }: ITab) => {
   return (
     <div className="flex-column">
       <ConditionalChildren renderChildren={store.ui.isFilterVisible}>
-        <UIFilterBar filter={filter} filterItems={filterItems} />
+        <UIFilterBar filterItems={filterItems} />
       </ConditionalChildren>
       {store.data.asyncTaskCount === 0 ? (
         <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: false }}>
