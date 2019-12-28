@@ -28,7 +28,7 @@ import {
 import { ITab, ActiveItemProvider, FilterItemsDictionary, FilterDictionary, FilterOptions } from './TabTypes';
 import { useUnmount } from '../lib/utils';
 
-const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
+export const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
   return {
     searchString: filter.getFilterItemValue<string>(FilterOptions.searchString),
     repositories: filter.getFilterItemValue<string[]>(FilterOptions.repositories),

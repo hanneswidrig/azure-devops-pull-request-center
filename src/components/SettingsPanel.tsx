@@ -12,6 +12,8 @@ import {
   setFilterBar,
   saveSettings,
 } from '../state/actions';
+import { filter } from '..';
+import { getCurrentFilterValues } from '../tabs/TabProvider';
 import { DefaultSettings, TabOptions, SortDirection, PrHubState } from '../state/types';
 import './SettingsPanel.scss';
 
@@ -72,7 +74,12 @@ const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingV
 };
 
 const isSavingFilterItemsChanged: CompoundButtonChanged = (decision, setSettingValues) => {
-  setSettingValues(values => ({ ...values, isSavingFilterItems: decision === 'save' }));
+  const isSavingFilterItems = decision === 'save';
+  setSettingValues(values => ({ ...values, isSavingFilterItems: isSavingFilterItems }));
+  setSettingValues(values => ({
+    ...values,
+    filterValues: isSavingFilterItems ? getCurrentFilterValues(filter) : undefined,
+  }));
 };
 
 const isFilterVisibleChanged: ToggleChanged = (selectedOption, setSettingValues) => {
