@@ -52,14 +52,14 @@ const setCurrentFilterValues = (filter: Filter, savedFilterItems: FilterDictiona
   });
 };
 
-const onFilterChanges = (store: PrHubState, dispatch: Dispatch<any>) => {
+const onFilterChanges = (store: PrHubState) => {
   filter.subscribe(() => {
     if (store.data.pullRequests.length > 0) {
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(
         ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
       );
-      dispatch(triggerSortDirection());
+      triggerSortDirection();
     }
   }, FILTER_CHANGE_EVENT);
 };
@@ -158,7 +158,7 @@ export const TabProvider: React.FC = () => {
     reviewer: [],
     myApprovalStatus: [],
   });
-  onFilterChanges(store, dispatch);
+  onFilterChanges(store);
 
   React.useEffect(() => {
     if (store.data.pullRequests.length > 0) {
@@ -170,7 +170,7 @@ export const TabProvider: React.FC = () => {
         fromPRToFilterItems(applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab)),
       );
       setCurrentFilterValues(filter, store.settings.defaults.filterValues);
-      dispatch(triggerSortDirection());
+      triggerSortDirection();
     }
   }, [store.data.pullRequests, store.ui.selectedTab, store.settings.defaults.filterValues, dispatch]);
 

@@ -3,8 +3,8 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { GitRepository } from 'azure-devops-extension-api/Git/Git';
 import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 
-import { PrHubState, PR } from '../state/types';
 import { ActiveItemProvider } from '../tabs/TabTypes';
+import { PrHubState, PR, SortDirection } from '../state/types';
 import { ReviewerVoteNumber, ReviewerVoteLabel } from './enums';
 
 export const sortByRepositoryName = (a: GitRepository, b: GitRepository) => {
@@ -27,8 +27,8 @@ export const sortByDisplayName = (a: IdentityRef, b: IdentityRef) => {
   return 0;
 };
 
-export const sortByPullRequestId = (a: ActiveItemProvider, b: ActiveItemProvider, store: PrHubState) => {
-  return store.ui.sortDirection === 'desc'
+export const sortByPullRequestId = (a: ActiveItemProvider, b: ActiveItemProvider, sortDirection: SortDirection) => {
+  return sortDirection === 'desc'
     ? (b as PR).pullRequestId - (a as PR).pullRequestId
     : (a as PR).pullRequestId - (b as PR).pullRequestId;
 };

@@ -1,4 +1,5 @@
-import { Action, Dispatch } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import { Action, Dispatch, AnyAction } from 'redux';
 
 // azure-devops-extension-sdk
 import { getService, getUser, getExtensionContext, getAccessToken } from 'azure-devops-extension-sdk';
@@ -17,12 +18,13 @@ import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemT
 
 import { FilterDictionary } from '../tabs/TabTypes';
 import { fromPullRequestToPR } from './transformData';
-import { ActionTypes, DefaultSettings, SortDirection } from './types';
+import { pullRequestItemProvider$ } from '../tabs/TabProvider';
 import { sortByRepositoryName, sortByPullRequestId } from '../lib/utils';
+import { ActionTypes, DefaultSettings, SortDirection, PrHubState } from './types';
+import { store } from '..';
 
-export interface FetchAction extends Action {
-  payload?: any;
-}
+export type Task<T = {}, ReturnType = void> = (args?: T) => ThunkAction<ReturnType, PrHubState, null, AnyAction>;
+export type FetchAction = Action & { payload?: any };
 
 export const activePrCriteria: GitPullRequestSearchCriteria = {
   repositoryId: '',
@@ -75,14 +77,22 @@ const setFullScreenModeState = async (isFullScreenMode: boolean): Promise<boolea
 export const setCurrentUser = () => (dispatch: Dispatch<FetchAction>) =>
   dispatch({ type: ActionTypes.SET_CURRENT_USER, payload: getUser() });
 
-export const toggleSortDirection = () => (dispatch: Dispatch<FetchAction>) =>
+export const toggleSortDirection: Task = () => (dispatch, getState) => {
+  const nextSortDirection = getState().ui.sortDirection === 'desc' ? 'asc' : 'desc';
+  pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
+    sortByPullRequestId(a, b, nextSortDirection),
+  );
   dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
+};
 
 export const setSortDirection = (sortDirection: SortDirection) => (dispatch: Dispatch<FetchAction>) =>
   dispatch({ type: ActionTypes.SET_SORT_DIRECTION, payload: sortDirection });
 
-export const triggerSortDirection = () => (dispatch: Dispatch<FetchAction>) =>
-  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+export const triggerSortDirection = () => {
+  pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
+    sortByPullRequestId(a, b, store.getState().ui.sortDirection),
+  );
+};
 
 export const setFilterValues = (filterValues: FilterDictionary) => (dispatch: Dispatch<FetchAction>) =>
   dispatch({ type: ActionTypes.SET_FILTER_VALUES, payload: filterValues });
@@ -134,7 +144,7 @@ export const setPullRequests = () => async (dispatch: Dispatch<FetchAction>) => 
       sortByPullRequestId(a, b, { ui: { sortDirection: 'desc' } } as any),
     ),
   });
-  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+  triggerSortDirection();
   dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
 };
 
@@ -154,7 +164,7 @@ export const restoreSettings = () => async (dispatch: Dispatch<FetchAction>) => 
   const settings = await getSettings();
   await setFullScreenModeState(settings.isFullScreenMode);
   dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
-  dispatch({ type: ActionTypes.TRIGGER_SORT_DIRECTION });
+  triggerSortDirection();
 };
 
 export const saveSettings = (defaultSettings: DefaultSettings) => async (dispatch: Dispatch<FetchAction>) => {
@@ -168,6 +178,7 @@ export const onInitialLoad = () => {
     dispatch(setRepositories());
     dispatch(setPullRequests());
     dispatch(restoreSettings());
+    triggerSortDirection();
   };
 };
 

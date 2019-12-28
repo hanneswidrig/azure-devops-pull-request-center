@@ -16,7 +16,7 @@ import { reducer } from './state/store';
 import { onInitialLoad } from './state/actions';
 import { TabProvider } from './tabs/TabProvider';
 
-const store = createStore(reducer, applyMiddleware(thunk));
+export const store = createStore(reducer, applyMiddleware(thunk));
 export const filter: Filter = new Filter();
 initializeIcons();
 
