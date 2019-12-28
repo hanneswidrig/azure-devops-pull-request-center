@@ -161,20 +161,6 @@ const modifyObservables: SplitReducer = state => [
       return state;
     },
   ],
-  [
-    ActionTypes.TOGGLE_FILTER_BAR,
-    () => {
-      state.ui.isFilterVisible.value = !state.ui.isFilterVisible.value;
-      return state;
-    },
-  ],
-  [
-    ActionTypes.TRIGGER_SORT_DIRECTION,
-    () => {
-      pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) => sortByPullRequestId(a, b, state));
-      return state;
-    },
-  ],
 ];
 
 export const reducer: Reducer<PrHubState, any> = (state: PrHubState = initialState, action: FetchAction) => {
