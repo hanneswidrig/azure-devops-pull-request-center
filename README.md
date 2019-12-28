@@ -7,15 +7,15 @@
 A centralized location for your Azure DevOps Pull Requests.
 
 <p align="center">
-  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-1.png?raw=true" />
+  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/111/marketplace/screenshot-1.png?raw=true" />
 </p>
 
 <p align="center">
-  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-2.png?raw=true" />
+  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/111/marketplace/screenshot-2.png?raw=true" />
 </p>
 
 <p align="center">
-  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-3.png?raw=true" />
+  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/111/marketplace/screenshot-3.png?raw=true" />
 </p>
 
 ## 📐 Features
