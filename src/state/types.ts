@@ -43,6 +43,7 @@ export const ActionTypes = {
   TOGGLE_SORT_DIRECTION,
 } as const;
 
+export type RefreshDuration = 'off' | '60' | '300' | '900' | '3600';
 export type DefaultSettings = {
   isFilterVisible: boolean;
   isFullScreenMode: boolean;
@@ -50,6 +51,7 @@ export type DefaultSettings = {
   sortDirection: SortDirection;
   isSavingFilterItems: boolean;
   filterValues: FilterDictionary | undefined;
+  autoRefreshDuration: RefreshDuration;
 };
 
 export type Settings = {

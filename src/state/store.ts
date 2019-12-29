@@ -27,6 +27,7 @@ export const initialState: PrHubState = {
       sortDirection: 'desc',
       isSavingFilterItems: false,
       filterValues: undefined,
+      autoRefreshDuration: 'off',
     },
   },
 };
