@@ -172,7 +172,7 @@ export const SettingsPanel: React.FC = () => {
       titleProps={{
         text: 'Extension Preferences',
       }}
-      description={'Pull Requests Center 1.1.1'}
+      description={'Pull Requests Center 1.1.4'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => resetChanges(setSettingValues, dispatch) },
         {
