@@ -1,5 +1,9 @@
 # [Unreleased]
 
+# 1.1.2 (December 28, 2019)
+
+...
+
 # 1.1.1 (December 27, 2019)
 
 ✔ You can set default filter options to be selected.
