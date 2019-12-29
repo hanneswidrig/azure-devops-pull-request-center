@@ -87,7 +87,6 @@ export const setSortDirection: Task<{ sortDirection: SortDirection }> = ({ sortD
 };
 
 export const triggerSortDirection = () => {
-  console.count(`triggerSortDirection`);
   pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
     sortByPullRequestId(a, b, store.getState().ui.sortDirection),
   );
