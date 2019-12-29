@@ -90,6 +90,7 @@ const setState: SplitReducer = (state, action) => [
           draft.settings.defaults.sortDirection = savedSettings.sortDirection;
           draft.settings.defaults.isSavingFilterItems = savedSettings.isSavingFilterItems;
           draft.settings.defaults.filterValues = savedSettings.filterValues;
+          draft.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration;
         });
       }
       return state;

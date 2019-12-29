@@ -210,7 +210,6 @@ export const SettingsPanel: React.FC = () => {
   return (
     <Panel
       size={0}
-      showSeparator
       onDismiss={() => dispatch(toggleSettingsPanel())}
       titleProps={{
         text: 'Extension Preferences',
