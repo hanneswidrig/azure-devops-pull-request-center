@@ -1,6 +1,6 @@
 # [Unreleased]
 
-# 1.1.2 (December 28, 2019)
+# 1.1.{2,3} (December 28, 2019)
 
 🐛 assorted bug fixes
 
