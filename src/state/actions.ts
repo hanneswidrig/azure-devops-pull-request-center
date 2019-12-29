@@ -78,6 +78,10 @@ export const toggleSortDirection: Task = () => (dispatch, getState) => {
   dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
 };
 
+export const toggleFilterBar: Task = () => dispatch => {
+  dispatch({ type: ActionTypes.TOGGLE_FILTER_BAR });
+};
+
 export const setSortDirection: Task<{ sortDirection: SortDirection }> = ({ sortDirection }) => dispatch => {
   dispatch({ type: ActionTypes.SET_SORT_DIRECTION, payload: sortDirection });
 };

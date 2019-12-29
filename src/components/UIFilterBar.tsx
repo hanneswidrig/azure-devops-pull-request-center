@@ -7,7 +7,7 @@ import { KeywordFilterBarItem } from 'azure-devops-ui/TextFilterBarItem';
 import { DropdownMultiSelection } from 'azure-devops-ui/Utilities/DropdownSelection';
 
 import { filter } from '..';
-import { ActionTypes } from '../state/types';
+import { toggleFilterBar } from '../state/actions';
 import { ApprovalStatusItem } from './ApprovalStatusItem';
 import { FilterOptions, FilterItemsDictionary, FilterDictionaryNonNullable } from '../tabs/TabTypes';
 
@@ -38,7 +38,7 @@ export const UIFilterBar: React.FC<Props> = ({ filterItems }: Props) => {
 
   return (
     <div className={'margin-bottom-16'}>
-      <FilterBar filter={filter} onDismissClicked={() => dispatch({ type: ActionTypes.TOGGLE_FILTER_BAR })}>
+      <FilterBar filter={filter} onDismissClicked={() => dispatch(toggleFilterBar())}>
         <KeywordFilterBarItem
           filterItemKey={FilterOptions.searchString}
           placeholder={'Search Across Pull Requests'}
