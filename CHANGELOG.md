@@ -1,5 +1,9 @@
 # [Unreleased]
 
+# 1.1.2 (December 28, 2019)
+
+🐛 assorted bug fixes
+
 # 1.1.1 (December 27, 2019)
 
 ✔ You can set default filter options to be selected.
@@ -10,7 +14,7 @@
 
 ✔ Show 10 most recently completed PRs.
 
-- Filter by pull request author added to string filter.
+✔ Filter by pull request author added to string filter.
 
 🐛 Reloading Pull Requests now preserving previously filtered values being applied.
 
@@ -26,8 +30,8 @@
 
 # 1.0.1 (November 26, 2019)
 
-- Add no fallback image when no pull requests are found for a given view.
+✔ Add no fallback image when no pull requests are found for a given view.
 
 # 1.0.0 (November 25, 2019)
 
-- Initial public release
+✔ Initial public release

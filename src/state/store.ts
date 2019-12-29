@@ -2,10 +2,7 @@ import produce from 'immer';
 import { Reducer } from 'redux';
 import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 
-import { FetchAction } from './actions';
-import { sortByPullRequestId } from '../lib/utils';
-import { Enum, SplitReducer } from '../lib/typings';
-import { pullRequestItemProvider$ } from '../tabs/TabProvider';
+import { Enum, SplitReducer, FetchAction } from '../lib/typings';
 import { ActionTypes, PrHubState, DefaultSettings } from './types';
 
 export const initialState: PrHubState = {
@@ -134,13 +131,9 @@ const updateState: SplitReducer = state => [
   [
     ActionTypes.TOGGLE_SORT_DIRECTION,
     () => {
-      const nextState = produce(state, draft => {
-        draft.ui.sortDirection = draft.ui.sortDirection === 'desc' ? 'asc' : 'desc';
+      return produce(state, draft => {
+        draft.ui.sortDirection = state.ui.sortDirection === 'desc' ? 'asc' : 'desc';
       });
-      pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
-        sortByPullRequestId(a, b, nextState),
-      );
-      return nextState;
     },
   ],
   [
@@ -158,20 +151,6 @@ const modifyObservables: SplitReducer = state => [
     ActionTypes.TOGGLE_FILTER_BAR,
     () => {
       state.ui.isFilterVisible.value = !state.ui.isFilterVisible.value;
-      return state;
-    },
-  ],
-  [
-    ActionTypes.TOGGLE_FILTER_BAR,
-    () => {
-      state.ui.isFilterVisible.value = !state.ui.isFilterVisible.value;
-      return state;
-    },
-  ],
-  [
-    ActionTypes.TRIGGER_SORT_DIRECTION,
-    () => {
-      pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) => sortByPullRequestId(a, b, state));
       return state;
     },
   ],

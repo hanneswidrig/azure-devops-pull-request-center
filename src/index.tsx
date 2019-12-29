@@ -15,8 +15,14 @@ import './index.scss';
 import { reducer } from './state/store';
 import { onInitialLoad } from './state/actions';
 import { TabProvider } from './tabs/TabProvider';
+// import { composeWithDevTools } from 'remote-redux-devtools';
 
-const store = createStore(reducer, applyMiddleware(thunk));
+// const composeEnhancers = composeWithDevTools({ name: 'PRC', realtime: true, port: 8000 });
+// remotedev --port 8000
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+//@ts-ignore
+// export const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)));
+export const store = createStore(reducer, applyMiddleware(thunk));
 export const filter: Filter = new Filter();
 initializeIcons();
 

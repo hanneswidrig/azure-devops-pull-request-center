@@ -23,7 +23,6 @@ const SET_FULL_SCREEN_MODE = 'setFullScreenMode';
 const TOGGLE_SETTINGS_PANEL = 'toggleSettingsPanel';
 const REFRESH_PULL_REQUESTS = 'refreshPullRequests';
 const TOGGLE_SORT_DIRECTION = 'toggleSortDirection';
-const TRIGGER_SORT_DIRECTION = 'triggerSortDirection';
 
 export const ActionTypes = {
   ADD_ASYNC_TASK,
@@ -42,7 +41,6 @@ export const ActionTypes = {
   TOGGLE_SETTINGS_PANEL,
   REFRESH_PULL_REQUESTS,
   TOGGLE_SORT_DIRECTION,
-  TRIGGER_SORT_DIRECTION,
 } as const;
 
 export type DefaultSettings = {

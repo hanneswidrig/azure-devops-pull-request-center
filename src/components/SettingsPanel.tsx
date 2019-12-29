@@ -69,7 +69,7 @@ const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingV
   const isFullScreenMode = selectedOption?.key === 'true' ?? false;
   setSettingValues(values => ({ ...values, isFullScreenMode: isFullScreenMode }));
   if (dispatch) {
-    dispatch(setFullScreenMode(isFullScreenMode));
+    dispatch(setFullScreenMode({ isFullScreenMode: isFullScreenMode }));
   }
 };
 
@@ -98,14 +98,14 @@ const sortDirectionChanged: ChoiceGroupChanged = (selectedOption, setSettingValu
 
 const resetChanges: ResetChanges = (setSettingValues, dispatch) => {
   setSettingValues(defaultSettingValues);
-  dispatch(setFullScreenMode(defaultSettingValues.isFullScreenMode));
+  dispatch(setFullScreenMode({ isFullScreenMode: defaultSettingValues.isFullScreenMode }));
 };
 
 const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
-  dispatch(setFilterBar(defaultSettings.isFilterVisible));
-  dispatch(setSelectedTab(defaultSettings.selectedTab));
-  dispatch(setSortDirection(defaultSettings.sortDirection));
-  dispatch(saveSettings(defaultSettings));
+  dispatch(setFilterBar({ isFilterVisible: defaultSettings.isFilterVisible }));
+  dispatch(setSelectedTab({ newSelectedTab: defaultSettings.selectedTab }));
+  dispatch(setSortDirection({ sortDirection: defaultSettings.sortDirection }));
+  dispatch(saveSettings({ defaultSettings: defaultSettings }));
   dispatch(toggleSettingsPanel());
 };
 
