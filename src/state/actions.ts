@@ -87,6 +87,7 @@ export const setSortDirection: Task<{ sortDirection: SortDirection }> = ({ sortD
 };
 
 export const triggerSortDirection = () => {
+  console.count(`triggerSortDirection`);
   pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
     sortByPullRequestId(a, b, store.getState().ui.sortDirection),
   );
@@ -100,8 +101,9 @@ export const setSelectedTab: Task<{ newSelectedTab: string }> = ({ newSelectedTa
   dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
 };
 
-export const setFilterBar: Task<{ isFilterVisible: boolean }> = ({ isFilterVisible }) => dispatch =>
+export const setFilterBar: Task<{ isFilterVisible: boolean }> = ({ isFilterVisible }) => dispatch => {
   dispatch({ type: ActionTypes.SET_FILTER_BAR, payload: isFilterVisible });
+};
 
 export const toggleSettingsPanel: Task = () => dispatch => dispatch({ type: ActionTypes.TOGGLE_SETTINGS_PANEL });
 
@@ -139,9 +141,7 @@ export const setPullRequests: Task = () => async dispatch => {
   );
   dispatch({
     type: ActionTypes.SET_PULL_REQUESTS,
-    payload: transformedPopulatedPullRequests.sort((a, b) =>
-      sortByPullRequestId(a, b, { ui: { sortDirection: 'desc' } } as any),
-    ),
+    payload: transformedPopulatedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
   });
   triggerSortDirection();
   dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
@@ -160,10 +160,12 @@ export const setFullScreenMode: Task<{ isFullScreenMode: boolean }> = ({ isFullS
 };
 
 export const restoreSettings: Task = () => async dispatch => {
+  dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
   const settings = await getSettings();
   await setFullScreenModeState(settings.isFullScreenMode);
   dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
   triggerSortDirection();
+  dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
 };
 
 export const saveSettings: Task<{ defaultSettings: DefaultSettings }> = ({ defaultSettings }) => async dispatch => {
@@ -177,7 +179,6 @@ export const onInitialLoad: Task = () => {
     dispatch(setRepositories());
     dispatch(setPullRequests());
     dispatch(restoreSettings());
-    triggerSortDirection();
   };
 };
 
