@@ -1,5 +1,9 @@
 # [Unreleased]
 
+# 1.2.0 (December 29, 2019)
+
+✔ Auto-refreshing of pull requests center
+
 # 1.1.{2,3,4,5} (December 28, 2019)
 
 🐛 assorted bug fixes
