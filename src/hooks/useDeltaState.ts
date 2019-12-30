@@ -36,7 +36,7 @@ const defaultDeltaState: DeltaStateWrapper = {
   areEqual: true,
 };
 
-export const useUpdates = () => {
+export const useDeltaUpdate = () => {
   const pullRequests = useTypedSelector(store => store.data.pullRequests);
   const asyncTaskCount = useTypedSelector(store => store.data.asyncTaskCount);
   const [local, setLocal] = useLocalStorage<State>('prc-history-pull-requests');
@@ -48,11 +48,11 @@ export const useUpdates = () => {
     const deltaState = getDeltaState(newState, state);
     const changesRequired = asyncTaskCount === 0 && !deltaState.areEqual;
     if (pullRequests.length > 0 && changesRequired) {
-      setState(pullRequests.length > 0 ? newState : defaultState);
-      setLocal(pullRequests.length > 0 ? newState : defaultState);
-      setDelta(deltaState);
+      setLocal(newState);
+      setState(newState);
+      setDelta(local !== undefined ? deltaState : defaultDeltaState);
     }
-  }, [state, pullRequests, asyncTaskCount, setLocal]);
+  }, [asyncTaskCount, local, pullRequests, setLocal, state]);
 
   return { deltaUpdate: delta };
 };
@@ -98,3 +98,20 @@ const getStateOrganized: (pullRequests: PR[]) => State = pullRequests => {
     draft: pullRequests.filter(pr => pr.isDraft).map(pr => pr.pullRequestId),
   };
 };
+
+/**
+ * Debugging collection for handling restore/save correctly
+ */
+// console.group(`🛢 state will be modified`);
+// console.groupCollapsed(`🏞`);
+// console.log('asyncTaskCount', asyncTaskCount);
+// console.log('pullRequests', pullRequests);
+// console.log('local', local);
+// console.log('state', state);
+// console.groupEnd();
+// console.group(`⚙`);
+// console.log('newState', newState);
+// console.log('deltaState', local !== undefined ? deltaState : defaultDeltaState);
+// console.log('changesRequired', changesRequired);
+// console.groupEnd();
+// console.groupEnd();

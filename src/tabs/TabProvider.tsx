@@ -15,7 +15,7 @@ import { IHeaderCommandBarItem, HeaderCommandBarWithFilter, HeaderCommandBar } f
 
 import { filter } from '..';
 import { applyFilter } from '../lib/filters';
-import { useUpdates } from '../hooks/useUpdates';
+import { useDeltaUpdate } from '../hooks/useDeltaState';
 import { useUnmount, useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { PrHubState, PR, TabOptions } from '../state/types';
@@ -159,10 +159,8 @@ export const TabProvider: React.FC = () => {
     myApprovalStatus: [],
   });
   const { timeUntil } = useRefreshTicker(store.settings.autoRefreshDuration);
-  const { deltaUpdate } = useUpdates();
+  const { deltaUpdate } = useDeltaUpdate();
   onFilterChanges(store);
-
-  React.useEffect(() => console.log(deltaUpdate), [deltaUpdate]);
 
   React.useEffect(() => {
     if (store.data.pullRequests.length > 0) {
