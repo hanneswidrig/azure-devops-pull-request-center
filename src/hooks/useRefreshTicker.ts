@@ -29,6 +29,8 @@ export const useRefreshTicker = (refreshDuration: RefreshDuration) => {
 const relativeFormatter = (timeUntil: number) => {
   const minutesLeft = Math.floor(timeUntil / 60);
   const secondsLeft = timeUntil % 60;
-  const formatForZero = secondsLeft % 60 === 0 ? '0' : '';
-  return `${minutesLeft}:${secondsLeft}${formatForZero}`;
+  const modSeconds = secondsLeft % 60;
+  const addZeroLeft = modSeconds > 0 && modSeconds < 10 ? '0' : '';
+  const addZeroRight = modSeconds === 0 ? '0' : '';
+  return `${minutesLeft}:${addZeroLeft}${secondsLeft}${addZeroRight}`;
 };
