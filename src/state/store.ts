@@ -19,6 +19,7 @@ export const initialState: PrHubState = {
     sortDirection: 'desc',
   },
   settings: {
+    autoRefreshDuration: 'off',
     settingsPanelOpen: false,
     defaults: {
       isFilterVisible: false,
@@ -84,6 +85,8 @@ const setState: SplitReducer = (state, action) => [
           draft.ui.selectedTab = savedSettings.selectedTab;
           draft.ui.sortDirection = savedSettings.sortDirection;
 
+          draft.settings.autoRefreshDuration = savedSettings.autoRefreshDuration;
+
           draft.settings.defaults.isFilterVisible = savedSettings.isFilterVisible;
           draft.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode;
           draft.settings.defaults.selectedTab = savedSettings.selectedTab;
@@ -109,6 +112,14 @@ const setState: SplitReducer = (state, action) => [
     () => {
       state.ui.isFilterVisible.value = action.payload;
       return state;
+    },
+  ],
+  [
+    ActionTypes.SET_REFRESH_DURATION,
+    () => {
+      return produce(state, draft => {
+        draft.settings.autoRefreshDuration = action.payload;
+      });
     },
   ],
 ];

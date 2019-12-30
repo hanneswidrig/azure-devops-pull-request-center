@@ -20,6 +20,7 @@ import {
   setSortDirection,
   setFilterBar,
   saveSettings,
+  setRefreshDuration,
 } from '../state/actions';
 import { filter } from '..';
 import './SettingsPanel.scss';
@@ -55,28 +56,52 @@ const sortDirectionItems: IChoiceGroupOption[] = [
   { key: 'asc', text: 'Oldest First', iconProps: { iconName: 'SortUp' } },
 ];
 
+const autoRefreshItems: Record<RefreshDuration, string> = {
+  off: 'Turn off',
+  '60': '1 minute',
+  '300': '5 minutes',
+  '900': '15 minutes',
+  '3600': '1 hour',
+};
+
+export const getDurationText = (refreshDuration: RefreshDuration) => {
+  return autoRefreshItems[refreshDuration];
+};
+
 const autoRefreshMenuItems: (
   settingValues: DefaultSettings,
   setSettingValues: SetSettingValuesCallback,
-) => IContextualMenuProps = (settingValues, setSettingValues) => ({
+  dispatch: Dispatch<any>,
+) => IContextualMenuProps = (settingValues, setSettingValues, dispatch) => ({
   items: [
     {
       key: 'off' as RefreshDuration,
-      text: 'Turn off',
-      onClick: () => autoReloadChanged('off', setSettingValues),
+      text: autoRefreshItems['off'],
+      onClick: () => autoRefreshDurationChanged('off', setSettingValues, dispatch),
       disabled: settingValues.autoRefreshDuration === 'off',
     },
-    { key: '60' as RefreshDuration, text: '1 minute', onClick: () => autoReloadChanged('60', setSettingValues) },
-    { key: '300' as RefreshDuration, text: '5 minutes', onClick: () => autoReloadChanged('300', setSettingValues) },
-    { key: '900' as RefreshDuration, text: '15 minutes', onClick: () => autoReloadChanged('900', setSettingValues) },
-    { key: '3600' as RefreshDuration, text: '1 hour', onClick: () => autoReloadChanged('3600', setSettingValues) },
+    {
+      key: '60' as RefreshDuration,
+      text: autoRefreshItems['60'],
+      onClick: () => autoRefreshDurationChanged('60', setSettingValues, dispatch),
+    },
+    {
+      key: '300' as RefreshDuration,
+      text: autoRefreshItems['300'],
+      onClick: () => autoRefreshDurationChanged('300', setSettingValues, dispatch),
+    },
+    {
+      key: '900' as RefreshDuration,
+      text: autoRefreshItems['900'],
+      onClick: () => autoRefreshDurationChanged('900', setSettingValues, dispatch),
+    },
+    {
+      key: '3600' as RefreshDuration,
+      text: autoRefreshItems['3600'],
+      onClick: () => autoRefreshDurationChanged('3600', setSettingValues, dispatch),
+    },
   ],
 });
-
-const getDurationText = (settingValues: DefaultSettings, setSettingValues: SetSettingValuesCallback) => {
-  const menuItems = autoRefreshMenuItems(settingValues, setSettingValues).items;
-  return menuItems.find(item => item.key === settingValues.autoRefreshDuration)?.text;
-};
 
 type ChoiceGroupChanged = (
   selectedOption: IChoiceGroupOption | undefined,
@@ -88,7 +113,11 @@ type CompoundButtonChanged = (decision: 'save' | 'clear', setSettingValues: SetS
 
 type ToggleChanged = (selectedOption: boolean | undefined, setSettingValues: SetSettingValuesCallback) => void;
 
-type AutoReloadChanged = (duration: RefreshDuration, setSettingValues: SetSettingValuesCallback) => void;
+type AutoRefreshDurationChanged = (
+  duration: RefreshDuration,
+  setSettingValues: SetSettingValuesCallback,
+  dispatch: Dispatch<any>,
+) => void;
 
 type ResetChanges = (setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
 
@@ -125,12 +154,9 @@ const sortDirectionChanged: ChoiceGroupChanged = (selectedOption, setSettingValu
   setSettingValues(values => ({ ...values, sortDirection: option.key as SortDirection }));
 };
 
-const autoReloadChanged: AutoReloadChanged = (duration, setSettingValues) => {
-  setSettingValues(values => ({
-    ...values,
-    autoRefreshDuration: duration,
-    isAutoRefreshEnabled: duration !== 'off' || false,
-  }));
+const autoRefreshDurationChanged: AutoRefreshDurationChanged = (duration, setSettingValues, dispatch) => {
+  setSettingValues(values => ({ ...values, autoRefreshDuration: duration }));
+  dispatch(setRefreshDuration({ refreshDuration: duration }));
 };
 
 const resetChanges: ResetChanges = (setSettingValues, dispatch) => {
@@ -191,6 +217,7 @@ const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings):
 
 export const SettingsPanel: React.FC = () => {
   const store = useTypedSelector(store => store);
+  const defaultDuration = useTypedSelector(store => store.settings.defaults.autoRefreshDuration);
   const dispatch = useDispatch();
   const [settingValues, setSettingValues] = React.useState<DefaultSettings>({
     isFilterVisible: store.settings.defaults.isFilterVisible,
@@ -199,7 +226,7 @@ export const SettingsPanel: React.FC = () => {
     sortDirection: store.settings.defaults.sortDirection,
     isSavingFilterItems: store.settings.defaults.isSavingFilterItems,
     filterValues: store.settings.defaults.isSavingFilterItems ? getCurrentFilterValues(filter) : undefined,
-    autoRefreshDuration: store.settings.defaults.autoRefreshDuration,
+    autoRefreshDuration: defaultDuration !== 'off' ? defaultDuration : store.settings.autoRefreshDuration,
   });
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
 
@@ -230,11 +257,11 @@ export const SettingsPanel: React.FC = () => {
           primary={settingValues.autoRefreshDuration !== 'off'}
           text={
             settingValues.autoRefreshDuration !== 'off'
-              ? `Enabled: ${getDurationText(settingValues, setSettingValues)}`
+              ? `Enabled: ${getDurationText(settingValues.autoRefreshDuration)}`
               : 'Auto Refresh Disabled'
           }
           iconProps={{ iconName: 'Timer' }}
-          menuProps={autoRefreshMenuItems(settingValues, setSettingValues)}
+          menuProps={autoRefreshMenuItems(settingValues, setSettingValues, dispatch)}
         ></DefaultButton>
         <ChoiceGroup
           label={'Full Screen Mode'}

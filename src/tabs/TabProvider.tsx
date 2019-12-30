@@ -5,19 +5,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Draft } from './Draft';
 import { Active } from './Active';
 import { Page } from 'azure-devops-ui/Page';
-import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
 import { RecentlyCompleted } from './RecentlyCompleted';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
-import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
+import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
+import { IHeaderCommandBarItem, HeaderCommandBarWithFilter, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 
 import { filter } from '..';
+import { useUnmount } from '../lib/utils';
 import { applyFilter } from '../lib/filters';
-import { PrHubState, PR, TabOptions } from '../state/types';
 import { SettingsPanel } from '../components/SettingsPanel';
+import { PrHubState, PR, TabOptions } from '../state/types';
 import { fromPRToFilterItems } from '../state/transformData';
+import { useRefreshTicker } from '../hooks/useRefreshTicker';
 import {
   setSelectedTab,
   setPullRequests,
@@ -26,7 +28,6 @@ import {
   triggerSortDirection,
 } from '../state/actions';
 import { ITab, ActiveItemProvider, FilterItemsDictionary, FilterDictionary, FilterOptions } from './TabTypes';
-import { useUnmount } from '../lib/utils';
 
 export const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
   return {
@@ -64,19 +65,17 @@ const onFilterChanges = (store: PrHubState) => {
   }, FILTER_CHANGE_EVENT);
 };
 
-const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
+const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: string): IHeaderCommandBarItem[] => {
   return [
     {
       id: 'refresh',
-      text: 'Refresh',
+      text: store.settings.autoRefreshDuration !== 'off' ? `Auto Refreshing (${timeUntil})` : 'Refresh',
       isPrimary: true,
       important: true,
       onActivate: () => {
         dispatch(setPullRequests());
       },
-      iconProps: {
-        iconName: 'fabric-icon ms-Icon--Refresh',
-      },
+      iconProps: { iconName: 'Refresh' },
     },
     {
       id: 'open-prefs',
@@ -85,9 +84,7 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
       onActivate: () => {
         dispatch(toggleSettingsPanel());
       },
-      iconProps: {
-        iconName: 'fabric-icon ms-Icon--Settings',
-      },
+      iconProps: { iconName: 'Settings' },
     },
   ];
 };
@@ -159,6 +156,7 @@ export const TabProvider: React.FC = () => {
     myApprovalStatus: [],
   });
   onFilterChanges(store);
+  const { timeUntil } = useRefreshTicker(store.settings.autoRefreshDuration);
 
   React.useEffect(() => {
     if (store.data.pullRequests.length > 0) {
@@ -181,7 +179,28 @@ export const TabProvider: React.FC = () => {
   return (
     <Surface background={1}>
       <Page className="azure-pull-request-hub flex-grow">
-        <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch)} />
+        <CustomHeader>
+          <HeaderTitleArea>
+            <HeaderTitleRow>
+              <HeaderTitle className="text-ellipsis" titleSize={1}>
+                Pull Requests Center
+              </HeaderTitle>
+            </HeaderTitleRow>
+          </HeaderTitleArea>
+          {/* {store.settings.autoRefreshDuration !== 'off' && (
+            <DefaultButton
+              iconProps={{ iconName: 'Timer' }}
+              text={timeUntil}
+              style={{
+                border: 'none',
+                height: '34px',
+                backgroundColor: 'transparent',
+                marginRight: '-16px',
+              }}
+            />
+          )} */}
+          <HeaderCommandBar items={commandBarItems(dispatch, store, timeUntil)} />
+        </CustomHeader>
         <TabBar
           selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab({ newSelectedTab: newSelectedTab }))}

@@ -19,6 +19,7 @@ const REMOVE_ASYNC_TASK = 'removeAsyncTask';
 const TOGGLE_FILTER_BAR = 'toggleFilterBar';
 const DISPLAY_WORK_ITEMS = 'displayWorkItems';
 const SET_SORT_DIRECTION = 'setSortDirection';
+const SET_REFRESH_DURATION = 'setRefreshDuration';
 const SET_FULL_SCREEN_MODE = 'setFullScreenMode';
 const TOGGLE_SETTINGS_PANEL = 'toggleSettingsPanel';
 const REFRESH_PULL_REQUESTS = 'refreshPullRequests';
@@ -37,6 +38,7 @@ export const ActionTypes = {
   TOGGLE_FILTER_BAR,
   DISPLAY_WORK_ITEMS,
   SET_SORT_DIRECTION,
+  SET_REFRESH_DURATION,
   SET_FULL_SCREEN_MODE,
   TOGGLE_SETTINGS_PANEL,
   REFRESH_PULL_REQUESTS,
@@ -55,6 +57,7 @@ export type DefaultSettings = {
 };
 
 export type Settings = {
+  autoRefreshDuration: RefreshDuration;
   settingsPanelOpen: boolean;
   defaults: DefaultSettings;
 };
