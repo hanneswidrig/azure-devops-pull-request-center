@@ -5,7 +5,7 @@ import { TabOptions, PR } from '../state/types';
 import { useTypedSelector } from '../lib/utils';
 
 type State = Record<TabOptions, number[]>;
-type DeltaState = Record<TabOptions, { items: number[]; count: number; isEqual: boolean }>;
+type DeltaState = Record<TabOptions, { items: { added: number[]; moved: number[] }; count: number; isEqual: boolean }>;
 type DeltaStateWrapper = { deltaState: DeltaState; areEqual: boolean };
 type StateDifferences = (prevState: State, nextState: State) => DeltaStateWrapper;
 
@@ -20,17 +20,26 @@ const defaultDeltaState: DeltaStateWrapper = {
     active: {
       count: 0,
       isEqual: true,
-      items: [],
+      items: {
+        added: [],
+        moved: [],
+      },
     },
     completed: {
       count: 0,
       isEqual: true,
-      items: [],
+      items: {
+        added: [],
+        moved: [],
+      },
     },
     draft: {
       count: 0,
       isEqual: true,
-      items: [],
+      items: {
+        added: [],
+        moved: [],
+      },
     },
   },
   areEqual: true,
@@ -54,10 +63,15 @@ export const useDeltaUpdate = () => {
     }
   }, [asyncTaskCount, local, pullRequests, setLocal, state]);
 
-  return { deltaUpdate: delta };
+  return {
+    deltaUpdate: delta,
+    acknowledge: () => setDelta(defaultDeltaState),
+  };
 };
 
 const xor = (val: number, prev: number[], next: number[]): boolean => !prev.includes(val) || !next.includes(val);
+const addedOr = (val: number, prev: number[], next: number[]): boolean => !(!prev.includes(val) && next.includes(val));
+const movedOr = (val: number, prev: number[], next: number[]): boolean => !(prev.includes(val) && !next.includes(val));
 
 const getDeltaState: StateDifferences = (prevState, nextState) => {
   const mergedActive = [...prevState.active, ...nextState.active];
@@ -70,17 +84,26 @@ const getDeltaState: StateDifferences = (prevState, nextState) => {
   };
   const difference: DeltaState = {
     active: {
-      items: mergedNextState.active,
+      items: {
+        added: mergedNextState.active.filter(val => addedOr(val, prevState.active, nextState.active)),
+        moved: mergedNextState.active.filter(val => movedOr(val, prevState.active, nextState.active)),
+      },
       count: mergedNextState.active.length,
       isEqual: mergedNextState.active.length === 0,
     },
     completed: {
-      items: mergedNextState.completed,
+      items: {
+        added: mergedNextState.completed.filter(val => addedOr(val, prevState.completed, nextState.completed)),
+        moved: mergedNextState.completed.filter(val => movedOr(val, prevState.completed, nextState.completed)),
+      },
       count: mergedNextState.completed.length,
       isEqual: mergedNextState.completed.length === 0,
     },
     draft: {
-      items: mergedNextState.draft,
+      items: {
+        added: mergedNextState.draft.filter(val => addedOr(val, prevState.draft, nextState.draft)),
+        moved: mergedNextState.draft.filter(val => movedOr(val, prevState.draft, nextState.draft)),
+      },
       count: mergedNextState.draft.length,
       isEqual: mergedNextState.draft.length === 0,
     },

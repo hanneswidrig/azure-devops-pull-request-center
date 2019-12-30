@@ -8,6 +8,7 @@ import { Page } from 'azure-devops-ui/Page';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
 import { RecentlyCompleted } from './RecentlyCompleted';
+import { MessageCard } from 'azure-devops-ui/MessageCard';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
 import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
@@ -191,20 +192,11 @@ export const TabProvider: React.FC = () => {
               </HeaderTitle>
             </HeaderTitleRow>
           </HeaderTitleArea>
-          {/* {store.settings.autoRefreshDuration !== 'off' && (
-            <DefaultButton
-              iconProps={{ iconName: 'Timer' }}
-              text={timeUntil}
-              style={{
-                border: 'none',
-                height: '34px',
-                backgroundColor: 'transparent',
-                marginRight: '-16px',
-              }}
-            />
-          )} */}
           <HeaderCommandBar items={commandBarItems(dispatch, store, timeUntil)} />
         </CustomHeader>
+        <div style={{ padding: '12px 32px 4px 32px' }}>
+          <MessageCard onDismiss={() => ({})}>{JSON.stringify(deltaUpdate.deltaState, null, 2)}</MessageCard>
+        </div>
         <TabBar
           selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab({ newSelectedTab: newSelectedTab }))}
