@@ -48,7 +48,7 @@ const isFullScreenModeItems: IChoiceGroupOption[] = [
 const selectedTabItems: IChoiceGroupOption[] = [
   { key: 'active', text: 'Active' },
   { key: 'draft', text: 'Draft' },
-  { key: 'completed', text: 'Completed (10 Most Recent)' },
+  { key: 'completed', text: 'Completed (10 Most Recent' },
 ];
 
 const sortDirectionItems: IChoiceGroupOption[] = [
@@ -263,21 +263,25 @@ export const SettingsPanel: React.FC = () => {
           iconProps={{ iconName: 'Timer' }}
           menuProps={autoRefreshMenuItems(settingValues, setSettingValues, dispatch)}
         ></DefaultButton>
-        <ChoiceGroup
-          label={'Full Screen Mode'}
-          selectedKey={`${settingValues.isFullScreenMode}`}
-          options={isFullScreenModeItems}
-          onChange={(_, o) => isFullScreenModeChanged(o, setSettingValues, dispatch)}
-        />
+        <div>
+          <Label className="light-dark-toggle">Full Screen Mode</Label>
+          <ChoiceGroup
+            selectedKey={`${settingValues.isFullScreenMode}`}
+            options={isFullScreenModeItems}
+            onChange={(_, o) => isFullScreenModeChanged(o, setSettingValues, dispatch)}
+          />
+        </div>
         <div style={{ marginTop: 8 }}></div>
-        <Toggle
-          label={'Filter Bar: Visible by Default'}
-          onText="On"
-          offText="Off"
-          checked={settingValues.isFilterVisible}
-          onChange={(_, o) => isFilterVisibleChanged(o, setSettingValues)}
-        />
-        <Label>Currently Selected Filter Values</Label>
+        <div>
+          <Label className="light-dark-toggle">Filter Bar: Visible by Default</Label>
+          <Toggle
+            onText="On"
+            offText="Off"
+            checked={settingValues.isFilterVisible}
+            onChange={(_, o) => isFilterVisibleChanged(o, setSettingValues)}
+          />
+        </div>
+        <Label className="light-dark-toggle">Currently Selected Filter Values</Label>
         <CompoundButton
           iconProps={{ iconName: 'Save' }}
           secondaryText={`Default to currently selected values.`}
@@ -294,18 +298,22 @@ export const SettingsPanel: React.FC = () => {
         >
           Clear
         </CompoundButton>
-        <ChoiceGroup
-          label={'Default Selected Tab'}
-          selectedKey={settingValues.selectedTab}
-          options={selectedTabItems}
-          onChange={(_, o) => selectedTabChanged(o, setSettingValues)}
-        />
-        <ChoiceGroup
-          label={'Default PR Sort Direction'}
-          selectedKey={settingValues.sortDirection}
-          options={sortDirectionItems}
-          onChange={(_, o) => sortDirectionChanged(o, setSettingValues)}
-        />
+        <div>
+          <Label className="light-dark-toggle">Default Selected Tab</Label>
+          <ChoiceGroup
+            selectedKey={settingValues.selectedTab}
+            options={selectedTabItems}
+            onChange={(_, o) => selectedTabChanged(o, setSettingValues)}
+          />
+        </div>
+        <div>
+          <Label className="light-dark-toggle">Default PR Sort Direction</Label>
+          <ChoiceGroup
+            selectedKey={settingValues.sortDirection}
+            options={sortDirectionItems}
+            onChange={(_, o) => sortDirectionChanged(o, setSettingValues)}
+          />
+        </div>
       </Stack>
     </Panel>
   );
