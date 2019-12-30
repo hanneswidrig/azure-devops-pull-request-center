@@ -10,7 +10,7 @@ export const initialState: PrHubState = {
     repositories: [],
     pullRequests: [],
     currentUser: { id: '', name: '', displayName: '', descriptor: '', imageUrl: '' },
-    asyncTaskCount: 0,
+    asyncTaskCount: -1,
   },
   ui: {
     isFilterVisible: new ObservableValue(false),
@@ -129,7 +129,7 @@ const updateState: SplitReducer = state => [
     ActionTypes.ADD_ASYNC_TASK,
     () => {
       return produce(state, draft => {
-        draft.data.asyncTaskCount = state.data.asyncTaskCount + 1;
+        draft.data.asyncTaskCount = state.data.asyncTaskCount === -1 ? 1 : state.data.asyncTaskCount + 1;
       });
     },
   ],

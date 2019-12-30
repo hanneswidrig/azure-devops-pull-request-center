@@ -159,8 +159,10 @@ export const TabProvider: React.FC = () => {
     myApprovalStatus: [],
   });
   const { timeUntil } = useRefreshTicker(store.settings.autoRefreshDuration);
-  useUpdates();
+  const { deltaUpdate } = useUpdates();
   onFilterChanges(store);
+
+  React.useEffect(() => console.log(deltaUpdate), [deltaUpdate]);
 
   React.useEffect(() => {
     if (store.data.pullRequests.length > 0) {
