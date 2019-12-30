@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { Draft } from './Draft';
 import { Active } from './Active';
@@ -14,8 +14,9 @@ import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azur
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 
 import { filter } from '..';
-import { useUnmount } from '../lib/utils';
 import { applyFilter } from '../lib/filters';
+import { useUpdates } from '../hooks/useUpdates';
+import { useUnmount, useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { PrHubState, PR, TabOptions } from '../state/types';
 import { fromPRToFilterItems } from '../state/transformData';
@@ -128,7 +129,7 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
   }
 
   if (selectedTab === 'active') {
-    const activePrsCount = pullRequests.filter(v => v.isActive).length;
+    const activePrsCount = pullRequests.filter(v => v.isActive && !v.isDraft).length;
     return activePrsCount > 0 ? activePrsCount : undefined;
   }
 
@@ -145,8 +146,10 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
 
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
 export const TabProvider: React.FC = () => {
-  const store = useSelector((store: PrHubState) => store);
+  const store = useTypedSelector(store => store);
+  const selectedTab = useTypedSelector(store => store.ui.selectedTab);
   const dispatch = useDispatch();
+
   const [filterItems, setFilterItems] = React.useState<FilterItemsDictionary>({
     repositories: [],
     sourceBranch: [],
@@ -155,22 +158,23 @@ export const TabProvider: React.FC = () => {
     reviewer: [],
     myApprovalStatus: [],
   });
-  onFilterChanges(store);
   const { timeUntil } = useRefreshTicker(store.settings.autoRefreshDuration);
+  useUpdates(selectedTab);
+  onFilterChanges(store);
 
   React.useEffect(() => {
     if (store.data.pullRequests.length > 0) {
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(
-        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
+        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), selectedTab),
       );
       setFilterItems(
-        fromPRToFilterItems(applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab)),
+        fromPRToFilterItems(applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), selectedTab)),
       );
       setCurrentFilterValues(filter, store.settings.defaults.filterValues);
       triggerSortDirection();
     }
-  }, [store.data.pullRequests, store.ui.selectedTab, store.settings.defaults.filterValues, dispatch]);
+  }, [store.data.pullRequests, selectedTab, store.settings.defaults.filterValues, dispatch]);
 
   useUnmount(() => {
     filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);

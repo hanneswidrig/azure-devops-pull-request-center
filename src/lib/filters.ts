@@ -37,7 +37,7 @@ export const filterByApprovalStatus: FilterFunc = (pullRequest, filterValue) =>
 
 export const filterByDraftStatus: FilterFunc = pullRequest => pullRequest.isDraft;
 
-export const filterByActiveStatus: FilterFunc = pullRequest => pullRequest.isActive;
+export const filterByActiveStatus: FilterFunc = pullRequest => pullRequest.isActive && !pullRequest.isDraft;
 
 export const filterByCompletedStatus: FilterFunc = pullRequest => pullRequest.isCompleted;
 
