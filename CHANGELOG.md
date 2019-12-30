@@ -1,8 +1,14 @@
 # [Unreleased]
 
-# 1.2.0 (December 29, 2019)
+# 1.2.0 (December 30, 2019)
 
 ✔ Auto-refreshing of pull requests center
+
+✔ Summary of changes since last refresh
+
+🐛 Fix dark mode in settings
+
+🐛 Active tab not filtering correctly.
 
 # 1.1.{2,3,4,5} (December 28, 2019)
 
