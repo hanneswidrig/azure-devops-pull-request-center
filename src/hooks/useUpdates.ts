@@ -4,10 +4,13 @@ import { useLocalStorage } from '@rehooks/local-storage';
 import { TabOptions, PR } from '../state/types';
 import { useTypedSelector } from '../lib/utils';
 
+type State = Record<TabOptions, number[]>;
+
 export const useUpdates = () => {
   const pullRequests = useTypedSelector(store => store.data.pullRequests);
-  const [local, setLocal] = useLocalStorage<Record<TabOptions, number[]> | undefined>('prc-history-pull-requests');
-  const [state, setState] = useState<Record<TabOptions, number[]>>(local ?? defaultState);
+  const [local, setLocal] = useLocalStorage<State | undefined>('prc-history-pull-requests');
+  const [state, setState] = useState<State>(local ?? defaultState);
+  const [diffs, setDiffs] = useState<State>(defaultState);
 
   useEffect(() => {
     const newState = getStateOrganized(pullRequests);
@@ -23,24 +26,24 @@ export const useUpdates = () => {
   }, [state, pullRequests, setLocal]);
 };
 
-const defaultState: Record<TabOptions, number[]> = {
+const defaultState: State = {
   active: [],
   draft: [],
-  recentlyCompleted: [],
+  completed: [],
 };
 
-const statesAreEqual = (prev: Record<TabOptions, number[]>, next: Record<TabOptions, number[]>) => {
+const statesAreEqual = (prev: State, next: State) => {
   return (
     JSON.stringify(prev.active.sort()) === JSON.stringify(next.active.sort()) &&
     JSON.stringify(prev.draft.sort()) === JSON.stringify(next.draft.sort()) &&
-    JSON.stringify(prev.recentlyCompleted.sort()) === JSON.stringify(next.recentlyCompleted.sort())
+    JSON.stringify(prev.completed.sort()) === JSON.stringify(next.completed.sort())
   );
 };
 
-const getStateOrganized: (pullRequests: PR[]) => Record<TabOptions, number[]> = pullRequests => {
+const getStateOrganized: (pullRequests: PR[]) => State = pullRequests => {
   return {
     active: pullRequests.filter(pr => pr.isActive && !pr.isDraft).map(pr => pr.pullRequestId),
     draft: pullRequests.filter(pr => pr.isDraft).map(pr => pr.pullRequestId),
-    recentlyCompleted: pullRequests.filter(pr => pr.isCompleted).map(pr => pr.pullRequestId),
+    completed: pullRequests.filter(pr => pr.isCompleted).map(pr => pr.pullRequestId),
   };
 };

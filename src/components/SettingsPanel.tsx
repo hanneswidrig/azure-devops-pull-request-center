@@ -48,7 +48,7 @@ const isFullScreenModeItems: IChoiceGroupOption[] = [
 const selectedTabItems: IChoiceGroupOption[] = [
   { key: 'active', text: 'Active' },
   { key: 'draft', text: 'Draft' },
-  { key: 'recentlyCompleted', text: 'Completed (10 Most Recent)' },
+  { key: 'completed', text: 'Completed (10 Most Recent)' },
 ];
 
 const sortDirectionItems: IChoiceGroupOption[] = [

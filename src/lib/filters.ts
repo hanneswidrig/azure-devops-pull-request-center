@@ -128,7 +128,7 @@ export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, ta
         isActive: true,
       },
     ],
-    recentlyCompleted: [
+    completed: [
       {
         func: filterByTitle,
         val: [searchString || ''],

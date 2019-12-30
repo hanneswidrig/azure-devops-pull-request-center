@@ -115,7 +115,7 @@ const getPageContent = ({ newSelectedTab, filterItems, store }: { newSelectedTab
   const tabs: Record<TabOptions, JSX.Element> = {
     active: <Active filterItems={filterItems} store={store} />,
     draft: <Draft filterItems={filterItems} store={store} />,
-    recentlyCompleted: <RecentlyCompleted filterItems={filterItems} store={store} />,
+    completed: <RecentlyCompleted filterItems={filterItems} store={store} />,
   };
   return tabs[newSelectedTab];
 };
@@ -138,7 +138,7 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
     return draftPrsCount > 0 ? draftPrsCount : undefined;
   }
 
-  if (selectedTab === 'recentlyCompleted') {
+  if (selectedTab === 'completed') {
     const completedPrsCount = pullRequests.filter(v => v.isCompleted).length;
     return completedPrsCount > 0 ? completedPrsCount : undefined;
   }
@@ -219,11 +219,7 @@ export const TabProvider: React.FC = () => {
         >
           <Tab name="Active" id="active" badgeCount={badgeCount(store.data.pullRequests, 'active')} />
           <Tab name="Draft" id="draft" badgeCount={badgeCount(store.data.pullRequests, 'draft')} />
-          <Tab
-            name="Completed"
-            id="recentlyCompleted"
-            badgeCount={badgeCount(store.data.pullRequests, 'recentlyCompleted')}
-          />
+          <Tab name="Completed" id="completed" badgeCount={badgeCount(store.data.pullRequests, 'completed')} />
         </TabBar>
         <div className="page-content-left page-content-right page-content-top page-content-bottom">
           {getPageContent({ newSelectedTab: store.ui.selectedTab, filterItems, store })}
