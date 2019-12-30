@@ -4,7 +4,7 @@ import { useLocalStorage } from '@rehooks/local-storage';
 import { TabOptions, PR } from '../state/types';
 import { useTypedSelector } from '../lib/utils';
 
-export const useUpdates = (selectedTab: TabOptions) => {
+export const useUpdates = () => {
   const pullRequests = useTypedSelector(store => store.data.pullRequests);
   const [local, setLocal] = useLocalStorage<Record<TabOptions, number[]> | undefined>('prc-history-pull-requests');
   const [state, setState] = useState<Record<TabOptions, number[]>>(local ?? defaultState);

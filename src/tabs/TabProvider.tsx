@@ -159,7 +159,7 @@ export const TabProvider: React.FC = () => {
     myApprovalStatus: [],
   });
   const { timeUntil } = useRefreshTicker(store.settings.autoRefreshDuration);
-  useUpdates(selectedTab);
+  useUpdates();
   onFilterChanges(store);
 
   React.useEffect(() => {
