@@ -6,7 +6,7 @@ import { useTypedSelector } from '../lib/utils';
 
 type State = Record<TabOptions, number[]>;
 type Items = { added: number[]; moved: number[] };
-type Delta = { items: Items; count: number; isEqual: boolean };
+type Delta = { items: Items; itemsCount: { added: number; moved: number }; isEqual: boolean };
 type DeltaState = Record<TabOptions, Delta>;
 type DeltaStateWrapper = { deltaState: DeltaState; areEqual: boolean };
 type StateDifferences = (prevState: State, nextState: State) => DeltaStateWrapper;
@@ -21,7 +21,10 @@ const defaultState: State = {
 const defaultDeltaState: DeltaStateWrapper = {
   deltaState: {
     active: {
-      count: 0,
+      itemsCount: {
+        added: 0,
+        moved: 0,
+      },
       isEqual: true,
       items: {
         added: [],
@@ -29,7 +32,10 @@ const defaultDeltaState: DeltaStateWrapper = {
       },
     },
     completed: {
-      count: 0,
+      itemsCount: {
+        added: 0,
+        moved: 0,
+      },
       isEqual: true,
       items: {
         added: [],
@@ -37,7 +43,10 @@ const defaultDeltaState: DeltaStateWrapper = {
       },
     },
     draft: {
-      count: 0,
+      itemsCount: {
+        added: 0,
+        moved: 0,
+      },
       isEqual: true,
       items: {
         added: [],
@@ -96,7 +105,10 @@ const getDeltaState: StateDifferences = (prevState, nextState) => {
         added: mergedNextState.active.filter(val => addedOr(val, prevState.active, nextState.active)),
         moved: mergedNextState.active.filter(val => movedOr(val, prevState.active, nextState.active)),
       },
-      count: mergedNextState.active.length,
+      itemsCount: {
+        added: mergedNextState.active.filter(val => addedOr(val, prevState.active, nextState.active)).length,
+        moved: mergedNextState.active.filter(val => movedOr(val, prevState.active, nextState.active)).length,
+      },
       isEqual: mergedNextState.active.length === 0,
     },
     completed: {
@@ -104,7 +116,10 @@ const getDeltaState: StateDifferences = (prevState, nextState) => {
         added: mergedNextState.completed.filter(val => addedOr(val, prevState.completed, nextState.completed)),
         moved: mergedNextState.completed.filter(val => movedOr(val, prevState.completed, nextState.completed)),
       },
-      count: mergedNextState.completed.length,
+      itemsCount: {
+        added: mergedNextState.completed.filter(val => addedOr(val, prevState.completed, nextState.completed)).length,
+        moved: mergedNextState.completed.filter(val => movedOr(val, prevState.completed, nextState.completed)).length,
+      },
       isEqual: mergedNextState.completed.length === 0,
     },
     draft: {
@@ -112,7 +127,10 @@ const getDeltaState: StateDifferences = (prevState, nextState) => {
         added: mergedNextState.draft.filter(val => addedOr(val, prevState.draft, nextState.draft)),
         moved: mergedNextState.draft.filter(val => movedOr(val, prevState.draft, nextState.draft)),
       },
-      count: mergedNextState.draft.length,
+      itemsCount: {
+        added: mergedNextState.draft.filter(val => addedOr(val, prevState.draft, nextState.draft)).length,
+        moved: mergedNextState.draft.filter(val => movedOr(val, prevState.draft, nextState.draft)).length,
+      },
       isEqual: mergedNextState.draft.length === 0,
     },
   };
@@ -133,25 +151,41 @@ const getStateOrganized: (pullRequests: PR[]) => State = pullRequests => {
 const mergeDeltaStates: DeltaStateMerge = (prevDelta, nextDelta) => {
   return {
     active: {
-      count: getCount(prevDelta.active, nextDelta.active),
+      itemsCount: {
+        added: getCount(prevDelta.active, nextDelta.active, 'added'),
+        moved: getCount(prevDelta.active, nextDelta.active, 'moved'),
+      },
       isEqual: getIsEqual(prevDelta.active, nextDelta.active),
       items: getItems(prevDelta.active.items, nextDelta.active.items),
     },
     completed: {
-      count: getCount(prevDelta.completed, nextDelta.completed),
+      itemsCount: {
+        added: getCount(prevDelta.completed, nextDelta.completed, 'added'),
+        moved: getCount(prevDelta.completed, nextDelta.completed, 'moved'),
+      },
       isEqual: getIsEqual(prevDelta.completed, nextDelta.completed),
       items: getItems(prevDelta.completed.items, nextDelta.completed.items),
     },
     draft: {
-      count: getCount(prevDelta.draft, nextDelta.draft),
+      itemsCount: {
+        added: getCount(prevDelta.draft, nextDelta.draft, 'added'),
+        moved: getCount(prevDelta.draft, nextDelta.draft, 'moved'),
+      },
       isEqual: getIsEqual(prevDelta.draft, nextDelta.draft),
       items: getItems(prevDelta.draft.items, nextDelta.draft.items),
     },
   };
 };
 
-const getCount: (prevDelta: Delta, nextDelta: Delta) => number = (prevDelta, nextDelta) => {
-  return prevDelta.count + nextDelta.count;
+const getCount: (prevDelta: Delta, nextDelta: Delta, countType: 'added' | 'moved') => number = (
+  prevDelta,
+  nextDelta,
+  countType,
+) => {
+  if (countType === 'added') {
+    return prevDelta.itemsCount.added + nextDelta.itemsCount.added;
+  }
+  return prevDelta.itemsCount.moved + nextDelta.itemsCount.moved;
 };
 
 const getIsEqual: (prevDelta: Delta, nextDelta: Delta) => boolean = (prevDelta, nextDelta) => {
