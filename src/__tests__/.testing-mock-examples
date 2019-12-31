@@ -1,10 +1,8 @@
-import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import { render, cleanup } from '@testing-library/react';
+import { cleanup } from '@testing-library/react';
 import { setIconOptions } from 'office-ui-fabric-react/lib/Styling';
 
 import { PrHubState } from '../state/types';
-import { SettingsPanel } from '../components/SettingsPanel';
 
 afterEach(cleanup);
 
@@ -25,6 +23,9 @@ jest.mock('react-redux', () => {
               sortDirection: 'desc',
             },
           },
+          ui: {
+            isFullScreenMode: false,
+          },
         } as PrHubState),
     ),
     useDispatch: jest.fn(),
@@ -35,7 +36,12 @@ jest.mock('azure-devops-extension-api', () => {
     getClient: jest.fn(),
   };
 });
-jest.mock('azure-devops-extension-sdk', () => jest.fn());
+jest.mock('azure-devops-extension-sdk', () => {
+  return {
+    init: jest.fn(),
+    ready: jest.fn().mockResolvedValue(() => Promise.resolve()),
+  };
+});
 jest.mock('azure-devops-extension-api/Git/Git', () => {
   return {
     PullRequestStatus: {
@@ -49,10 +55,3 @@ jest.mock('azure-devops-extension-api/Git/Git', () => {
 });
 jest.mock('azure-devops-extension-api/Git/GitClient', () => jest.fn());
 jest.mock('azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient', () => jest.fn());
-
-describe('<SettingsPanel />', () => {
-  test('renders successfully', () => {
-    const { findByText } = render(<SettingsPanel />);
-    expect(findByText('Extension Preferences')).toBeTruthy();
-  });
-});

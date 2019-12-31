@@ -15,8 +15,8 @@ import { Task } from '../lib/typings';
 import { FilterDictionary } from '../tabs/TabTypes';
 import { fromPullRequestToPR } from './transformData';
 import { pullRequestItemProvider$ } from '../tabs/TabProvider';
-import { ActionTypes, DefaultSettings, SortDirection, RefreshDuration } from './types';
 import { sortByRepositoryName, sortByPullRequestId } from '../lib/utils';
+import { ActionTypes, DefaultSettings, SortDirection, RefreshDuration } from './types';
 
 export const activePrCriteria: GitPullRequestSearchCriteria = {
   repositoryId: '',
