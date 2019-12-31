@@ -23,7 +23,7 @@ export const useRefreshTicker = (refreshDuration: RefreshDuration) => {
     }
   }, [ticker, refreshDuration, dispatch]);
 
-  return { timeUntil: relativeFormatter(ticker) };
+  return { timeUntil: refreshDuration !== 'off' ? relativeFormatter(ticker) : '' };
 };
 
 const relativeFormatter = (timeUntil: number) => {
