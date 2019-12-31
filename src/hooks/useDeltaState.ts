@@ -5,9 +5,12 @@ import { TabOptions, PR } from '../state/types';
 import { useTypedSelector } from '../lib/utils';
 
 type State = Record<TabOptions, number[]>;
-type DeltaState = Record<TabOptions, { items: { added: number[]; moved: number[] }; count: number; isEqual: boolean }>;
+type Items = { added: number[]; moved: number[] };
+type Delta = { items: Items; count: number; isEqual: boolean };
+type DeltaState = Record<TabOptions, Delta>;
 type DeltaStateWrapper = { deltaState: DeltaState; areEqual: boolean };
 type StateDifferences = (prevState: State, nextState: State) => DeltaStateWrapper;
+type DeltaStateMerge = (prevDeltaState: DeltaState, nextDeltaState: DeltaState) => DeltaState;
 
 const defaultState: State = {
   active: [],
@@ -48,9 +51,10 @@ const defaultDeltaState: DeltaStateWrapper = {
 export const useDeltaUpdate = () => {
   const pullRequests = useTypedSelector(store => store.data.pullRequests);
   const asyncTaskCount = useTypedSelector(store => store.data.asyncTaskCount);
-  const [local, setLocal] = useLocalStorage<State>('prc-history-pull-requests');
+  const [local, setLocal] = useLocalStorage<State>('cHJjLWxhc3QtcHVsbC1yZXF1ZXN0');
   const [state, setState] = useState<State>(local ?? defaultState);
   const [delta, setDelta] = useState<DeltaStateWrapper>(defaultDeltaState);
+  const [localDelta, setLocalDelta] = useLocalStorage<DeltaState>('cHJjLWxhc3QtYWNrbm93bGVkZ2Vk');
 
   useEffect(() => {
     const newState = getStateOrganized(pullRequests);
@@ -60,12 +64,23 @@ export const useDeltaUpdate = () => {
       setLocal(newState);
       setState(newState);
       setDelta(local !== undefined ? deltaState : defaultDeltaState);
+      setLocalDelta(mergeDeltaStates(localDelta ?? defaultDeltaState.deltaState, deltaState.deltaState));
     }
-  }, [asyncTaskCount, local, pullRequests, setLocal, state]);
+  }, [asyncTaskCount, local, pullRequests, setLocal, setLocalDelta, localDelta, state]);
+
+  useEffect(() => {
+    console.group(`🔎`);
+    console.log('delta', delta);
+    console.log('localDelta', localDelta);
+    console.groupEnd();
+  }, [delta, localDelta]);
 
   return {
     deltaUpdate: delta,
-    acknowledge: () => setDelta(defaultDeltaState),
+    acknowledge: () => {
+      setDelta(defaultDeltaState);
+      setLocalDelta(defaultDeltaState.deltaState);
+    },
   };
 };
 
@@ -119,6 +134,41 @@ const getStateOrganized: (pullRequests: PR[]) => State = pullRequests => {
     active: pullRequests.filter(pr => pr.isActive && !pr.isDraft).map(pr => pr.pullRequestId),
     completed: pullRequests.filter(pr => pr.isCompleted).map(pr => pr.pullRequestId),
     draft: pullRequests.filter(pr => pr.isDraft).map(pr => pr.pullRequestId),
+  };
+};
+
+const mergeDeltaStates: DeltaStateMerge = (prevDelta, nextDelta) => {
+  return {
+    active: {
+      count: getCount(prevDelta.active, nextDelta.active),
+      isEqual: getIsEqual(prevDelta.active, nextDelta.active),
+      items: getItems(prevDelta.active.items, nextDelta.active.items),
+    },
+    completed: {
+      count: getCount(prevDelta.completed, nextDelta.completed),
+      isEqual: getIsEqual(prevDelta.completed, nextDelta.completed),
+      items: getItems(prevDelta.completed.items, nextDelta.completed.items),
+    },
+    draft: {
+      count: getCount(prevDelta.draft, nextDelta.draft),
+      isEqual: getIsEqual(prevDelta.draft, nextDelta.draft),
+      items: getItems(prevDelta.draft.items, nextDelta.draft.items),
+    },
+  };
+};
+
+const getCount: (prevDelta: Delta, nextDelta: Delta) => number = (prevDelta, nextDelta) => {
+  return prevDelta.count + nextDelta.count;
+};
+
+const getIsEqual: (prevDelta: Delta, nextDelta: Delta) => boolean = (prevDelta, nextDelta) => {
+  return prevDelta.isEqual && nextDelta.isEqual;
+};
+
+const getItems: (prevItems: Items, nextItems: Items) => Items = (prevItems, nextItems) => {
+  return {
+    added: [...prevItems.added, ...nextItems.added],
+    moved: [...prevItems.moved, ...nextItems.moved],
   };
 };
 

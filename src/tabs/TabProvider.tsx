@@ -160,7 +160,7 @@ export const TabProvider: React.FC = () => {
     myApprovalStatus: [],
   });
   const { timeUntil } = useRefreshTicker(store.settings.autoRefreshDuration);
-  const { deltaUpdate } = useDeltaUpdate();
+  const { deltaUpdate, acknowledge } = useDeltaUpdate();
   onFilterChanges(store);
 
   React.useEffect(() => {
@@ -194,9 +194,13 @@ export const TabProvider: React.FC = () => {
           </HeaderTitleArea>
           <HeaderCommandBar items={commandBarItems(dispatch, store, timeUntil)} />
         </CustomHeader>
-        <div style={{ padding: '12px 32px 4px 32px' }}>
-          <MessageCard onDismiss={() => ({})}>{JSON.stringify(deltaUpdate.deltaState, null, 2)}</MessageCard>
-        </div>
+        {!deltaUpdate.areEqual && (
+          <div style={{ padding: '12px 32px 4px 32px' }}>
+            <MessageCard onDismiss={() => acknowledge()}>
+              {JSON.stringify(deltaUpdate.deltaState.active, null, 2)}
+            </MessageCard>
+          </div>
+        )}
         <TabBar
           selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab({ newSelectedTab: newSelectedTab }))}
