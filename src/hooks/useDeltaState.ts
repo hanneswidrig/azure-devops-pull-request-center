@@ -68,13 +68,6 @@ export const useDeltaUpdate = () => {
     }
   }, [asyncTaskCount, local, pullRequests, setLocal, setLocalDelta, localDelta, state]);
 
-  useEffect(() => {
-    console.group(`🔎`);
-    console.log('delta', delta);
-    console.log('localDelta', localDelta);
-    console.groupEnd();
-  }, [delta, localDelta]);
-
   return {
     deltaUpdate: delta,
     acknowledge: () => {
@@ -188,3 +181,10 @@ const getItems: (prevItems: Items, nextItems: Items) => Items = (prevItems, next
 // console.log('changesRequired', changesRequired);
 // console.groupEnd();
 // console.groupEnd();
+
+// useEffect(() => {
+// 	console.group(`🔎`);
+// 	console.log('delta', delta);
+// 	console.log('localDelta', localDelta);
+// 	console.groupEnd();
+// }, [delta, localDelta]);
