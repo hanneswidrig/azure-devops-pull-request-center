@@ -18,7 +18,7 @@ const defaultState: State = {
   draft: [],
 };
 
-const defaultDeltaState: DeltaStateWrapper = {
+export const defaultDeltaState: DeltaStateWrapper = {
   deltaState: {
     active: {
       itemsCount: {
@@ -57,7 +57,7 @@ const defaultDeltaState: DeltaStateWrapper = {
   areEqual: true,
 };
 
-export const useDeltaUpdate = () => {
+export const useDeltaState = () => {
   const pullRequests = useTypedSelector(store => store.data.pullRequests);
   const asyncTaskCount = useTypedSelector(store => store.data.asyncTaskCount);
   const [local, setLocal] = useLocalStorage<State>('cHJjLWxhc3QtcHVsbC1yZXF1ZXN0');
