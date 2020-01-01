@@ -16,16 +16,15 @@ afterEach(cleanup);
 describe('useDeltaState', () => {
   it('initalizes successfully', () => {
     const store = createStore(reducer);
-    const { result, unmount } = renderHook(() => useDeltaState(), {
+    const { result } = renderHook(() => useDeltaState(), {
       wrapper: ({ children }: WrapperType) => <Provider store={store}>{children}</Provider>,
     });
     expect(result.current.deltaUpdate).toEqual(defaultDeltaState);
-    unmount();
   });
 
-  it('accurately delta initial and updated list of pull requests', async () => {
+  it('accurately delta initial and updated list of pull requests', () => {
     const store = createStore(reducer);
-    const { result, unmount } = renderHook(() => useDeltaState(), {
+    const { result } = renderHook(() => useDeltaState(), {
       wrapper: ({ children }: WrapperType) => <Provider store={store}>{children}</Provider>,
     });
     const nextPrs: MockPR[] = [
@@ -56,6 +55,5 @@ describe('useDeltaState', () => {
       store.dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload: nextPrs });
       store.dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
     });
-    unmount();
   });
 });
