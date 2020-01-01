@@ -8,6 +8,8 @@
 
 🐛 Fix dark mode in settings
 
+# 1.1.6 (December 31, 2019)
+
 🐛 Active tab not filtering correctly.
 
 # 1.1.{2,3,4,5} (December 28, 2019)
