@@ -131,7 +131,7 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
   }
 
   if (selectedTab === 'active') {
-    const activePrsCount = pullRequests.filter(v => v.isActive).length;
+    const activePrsCount = pullRequests.filter(v => v.isActive && !v.isDraft).length;
     return activePrsCount > 0 ? activePrsCount : undefined;
   }
 
