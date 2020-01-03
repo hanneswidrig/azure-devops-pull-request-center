@@ -193,3 +193,13 @@ export const applyFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>
 
   return valArray;
 };
+
+export const defaultFilterValues: Record<FilterTypes, any> = {
+  searchString: undefined,
+  repositories: undefined,
+  sourceBranch: undefined,
+  targetBranch: undefined,
+  author: undefined,
+  reviewer: undefined,
+  myApprovalStatus: undefined,
+};

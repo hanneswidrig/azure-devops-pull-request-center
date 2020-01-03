@@ -15,7 +15,6 @@ import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azur
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 
 import { filter } from '..';
-import { applyFilter } from '../lib/filters';
 import { useDeltaState } from '../hooks/useDeltaState';
 import { useUnmount, useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from '../components/SettingsPanel';
@@ -29,6 +28,7 @@ import {
   toggleSortDirection,
   triggerSortDirection,
 } from '../state/actions';
+import { applyFilter, defaultFilterValues } from '../lib/filters';
 import { ITab, ActiveItemProvider, FilterItemsDictionary, FilterDictionary, FilterOptions } from './TabTypes';
 
 export const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
@@ -164,18 +164,19 @@ export const TabProvider: React.FC = () => {
   onFilterChanges(store);
 
   React.useEffect(() => {
+    setCurrentFilterValues(filter, store.settings.defaults.filterValues);
+  }, [store.settings.defaults.filterValues]);
+
+  React.useEffect(() => {
     if (store.data.pullRequests.length > 0) {
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(
         ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), selectedTab),
       );
-      setFilterItems(
-        fromPRToFilterItems(applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), selectedTab)),
-      );
-      setCurrentFilterValues(filter, store.settings.defaults.filterValues);
+      setFilterItems(fromPRToFilterItems(applyFilter(store.data.pullRequests, defaultFilterValues, selectedTab)));
       triggerSortDirection();
     }
-  }, [store.data.pullRequests, selectedTab, store.settings.defaults.filterValues, dispatch]);
+  }, [selectedTab, store.data.pullRequests]);
 
   useUnmount(() => {
     filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);
