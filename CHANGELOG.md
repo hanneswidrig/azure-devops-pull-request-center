@@ -1,12 +1,14 @@
 # [Unreleased]
 
-# 1.2.0 (December 30, 2019)
+# 1.2.0 (January 7, 2019)
 
 ✔ Auto-refreshing of pull requests center
 
 ✔ Summary of changes since last refresh
 
 🐛 Fix dark mode in settings
+
+🐛 Fix refresh causing stale filter items
 
 # 1.1.6 (December 31, 2019)
 
