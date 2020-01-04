@@ -1,8 +1,17 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
+import { useDispatch } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
-import { useDispatch, useSelector } from 'react-redux';
-import { ChoiceGroup, IChoiceGroupOption, Stack, Toggle, Label, CompoundButton } from 'office-ui-fabric-react';
+import {
+  ChoiceGroup,
+  IChoiceGroupOption,
+  Stack,
+  Toggle,
+  Label,
+  CompoundButton,
+  DefaultButton,
+  IContextualMenuProps,
+} from 'office-ui-fabric-react';
 
 import {
   toggleSettingsPanel,
@@ -11,11 +20,15 @@ import {
   setSortDirection,
   setFilterBar,
   saveSettings,
+  setRefreshDuration,
 } from '../state/actions';
 import { filter } from '..';
-import { getCurrentFilterValues } from '../tabs/TabProvider';
-import { DefaultSettings, TabOptions, SortDirection, PrHubState } from '../state/types';
 import './SettingsPanel.scss';
+import { useTypedSelector } from '../lib/utils';
+import { getCurrentFilterValues } from '../tabs/TabProvider';
+import { DefaultSettings, TabOptions, SortDirection, RefreshDuration } from '../state/types';
+
+type SetSettingValuesCallback = React.Dispatch<React.SetStateAction<DefaultSettings>>;
 
 const defaultSettingValues: DefaultSettings = {
   isFilterVisible: false,
@@ -24,6 +37,7 @@ const defaultSettingValues: DefaultSettings = {
   sortDirection: 'desc',
   isSavingFilterItems: false,
   filterValues: undefined,
+  autoRefreshDuration: 'off',
 };
 
 const isFullScreenModeItems: IChoiceGroupOption[] = [
@@ -34,7 +48,7 @@ const isFullScreenModeItems: IChoiceGroupOption[] = [
 const selectedTabItems: IChoiceGroupOption[] = [
   { key: 'active', text: 'Active' },
   { key: 'draft', text: 'Draft' },
-  { key: 'recentlyCompleted', text: 'Completed (10 Most Recent)' },
+  { key: 'completed', text: 'Completed (10 Most Recent' },
 ];
 
 const sortDirectionItems: IChoiceGroupOption[] = [
@@ -42,26 +56,70 @@ const sortDirectionItems: IChoiceGroupOption[] = [
   { key: 'asc', text: 'Oldest First', iconProps: { iconName: 'SortUp' } },
 ];
 
+const autoRefreshItems: Record<RefreshDuration, string> = {
+  off: 'Turn off',
+  '60': '1 minute',
+  '300': '5 minutes',
+  '900': '15 minutes',
+  '3600': '1 hour',
+};
+
+export const getDurationText = (refreshDuration: RefreshDuration) => {
+  return autoRefreshItems[refreshDuration];
+};
+
+const autoRefreshMenuItems: (
+  settingValues: DefaultSettings,
+  setSettingValues: SetSettingValuesCallback,
+  dispatch: Dispatch<any>,
+) => IContextualMenuProps = (settingValues, setSettingValues, dispatch) => ({
+  items: [
+    {
+      key: 'off' as RefreshDuration,
+      text: autoRefreshItems['off'],
+      onClick: () => autoRefreshDurationChanged('off', setSettingValues, dispatch),
+      disabled: settingValues.autoRefreshDuration === 'off',
+    },
+    {
+      key: '60' as RefreshDuration,
+      text: autoRefreshItems['60'],
+      onClick: () => autoRefreshDurationChanged('60', setSettingValues, dispatch),
+    },
+    {
+      key: '300' as RefreshDuration,
+      text: autoRefreshItems['300'],
+      onClick: () => autoRefreshDurationChanged('300', setSettingValues, dispatch),
+    },
+    {
+      key: '900' as RefreshDuration,
+      text: autoRefreshItems['900'],
+      onClick: () => autoRefreshDurationChanged('900', setSettingValues, dispatch),
+    },
+    {
+      key: '3600' as RefreshDuration,
+      text: autoRefreshItems['3600'],
+      onClick: () => autoRefreshDurationChanged('3600', setSettingValues, dispatch),
+    },
+  ],
+});
+
 type ChoiceGroupChanged = (
   selectedOption: IChoiceGroupOption | undefined,
-  setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
+  setSettingValues: SetSettingValuesCallback,
   dispatch?: Dispatch<any>,
 ) => void;
 
-type CompoundButtonChanged = (
-  decision: 'save' | 'clear',
-  setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
-) => void;
+type CompoundButtonChanged = (decision: 'save' | 'clear', setSettingValues: SetSettingValuesCallback) => void;
 
-type ToggleChanged = (
-  selectedOption: boolean | undefined,
-  setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
-) => void;
+type ToggleChanged = (selectedOption: boolean | undefined, setSettingValues: SetSettingValuesCallback) => void;
 
-type ResetChanges = (
-  setSettingValues: React.Dispatch<React.SetStateAction<DefaultSettings>>,
+type AutoRefreshDurationChanged = (
+  duration: RefreshDuration,
+  setSettingValues: SetSettingValuesCallback,
   dispatch: Dispatch<any>,
 ) => void;
+
+type ResetChanges = (setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
 
 type ApplyChanges = (defaultSettings: DefaultSettings, dispatch: Dispatch<any>) => void;
 
@@ -94,6 +152,11 @@ const selectedTabChanged: ChoiceGroupChanged = (selectedOption, setSettingValues
 const sortDirectionChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
   const option = sortDirectionItems.find(option => option.key === selectedOption?.key) ?? sortDirectionItems[0];
   setSettingValues(values => ({ ...values, sortDirection: option.key as SortDirection }));
+};
+
+const autoRefreshDurationChanged: AutoRefreshDurationChanged = (duration, setSettingValues, dispatch) => {
+  setSettingValues(values => ({ ...values, autoRefreshDuration: duration }));
+  dispatch(setRefreshDuration({ refreshDuration: duration }));
 };
 
 const resetChanges: ResetChanges = (setSettingValues, dispatch) => {
@@ -137,18 +200,24 @@ const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings):
     (left.sortDirection ?? defaultSettingValues.sortDirection) !==
     (right.sortDirection ?? defaultSettingValues.sortDirection);
 
+  const autoRefreshDurationNotEqual =
+    (left.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration) !==
+    (right.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration);
+
   return (
     isFilterVisibleNotEqual ||
     isFullScreenModeNotEqual ||
     isSavingFilterItemsNotEqual ||
     filterValuesNotEqual ||
     selectedTabNotEqual ||
-    sortDirectionNotEqual
+    sortDirectionNotEqual ||
+    autoRefreshDurationNotEqual
   );
 };
 
 export const SettingsPanel: React.FC = () => {
-  const store = useSelector((store: PrHubState) => store);
+  const store = useTypedSelector(store => store);
+  const defaultDuration = useTypedSelector(store => store.settings.defaults.autoRefreshDuration);
   const dispatch = useDispatch();
   const [settingValues, setSettingValues] = React.useState<DefaultSettings>({
     isFilterVisible: store.settings.defaults.isFilterVisible,
@@ -157,6 +226,7 @@ export const SettingsPanel: React.FC = () => {
     sortDirection: store.settings.defaults.sortDirection,
     isSavingFilterItems: store.settings.defaults.isSavingFilterItems,
     filterValues: store.settings.defaults.isSavingFilterItems ? getCurrentFilterValues(filter) : undefined,
+    autoRefreshDuration: defaultDuration !== 'off' ? defaultDuration : store.settings.autoRefreshDuration,
   });
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
 
@@ -167,12 +237,11 @@ export const SettingsPanel: React.FC = () => {
   return (
     <Panel
       size={0}
-      showSeparator
       onDismiss={() => dispatch(toggleSettingsPanel())}
       titleProps={{
         text: 'Extension Preferences',
       }}
-      description={'Pull Requests Center 1.1.6'}
+      description={'Pull Requests Center 1.2.0'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => resetChanges(setSettingValues, dispatch) },
         {
@@ -183,22 +252,36 @@ export const SettingsPanel: React.FC = () => {
         },
       ]}
     >
-      <Stack tokens={{ childrenGap: 12 }}>
-        <ChoiceGroup
-          label={'Full Screen Mode'}
-          selectedKey={`${settingValues.isFullScreenMode}`}
-          options={isFullScreenModeItems}
-          onChange={(_, o) => isFullScreenModeChanged(o, setSettingValues, dispatch)}
-        />
-        <div style={{ marginTop: 36 }}></div>
-        <Toggle
-          label={'Filter Bar Visible by Default'}
-          onText="On"
-          offText="Off"
-          checked={settingValues.isFilterVisible}
-          onChange={(_, o) => isFilterVisibleChanged(o, setSettingValues)}
-        />
-        <Label>Currently Selected Filter Values</Label>
+      <Stack tokens={{ childrenGap: 8 }}>
+        <DefaultButton
+          primary={settingValues.autoRefreshDuration !== 'off'}
+          text={
+            settingValues.autoRefreshDuration !== 'off'
+              ? `Enabled: ${getDurationText(settingValues.autoRefreshDuration)}`
+              : 'Auto Refresh Disabled'
+          }
+          iconProps={{ iconName: 'Timer' }}
+          menuProps={autoRefreshMenuItems(settingValues, setSettingValues, dispatch)}
+        ></DefaultButton>
+        <div>
+          <Label className="light-dark-toggle">Full Screen Mode</Label>
+          <ChoiceGroup
+            selectedKey={`${settingValues.isFullScreenMode}`}
+            options={isFullScreenModeItems}
+            onChange={(_, o) => isFullScreenModeChanged(o, setSettingValues, dispatch)}
+          />
+        </div>
+        <div style={{ marginTop: 8 }}></div>
+        <div>
+          <Label className="light-dark-toggle">Filter Bar: Visible by Default</Label>
+          <Toggle
+            onText="On"
+            offText="Off"
+            checked={settingValues.isFilterVisible}
+            onChange={(_, o) => isFilterVisibleChanged(o, setSettingValues)}
+          />
+        </div>
+        <Label className="light-dark-toggle">Currently Selected Filter Values</Label>
         <CompoundButton
           iconProps={{ iconName: 'Save' }}
           secondaryText={`Default to currently selected values.`}
@@ -215,18 +298,22 @@ export const SettingsPanel: React.FC = () => {
         >
           Clear
         </CompoundButton>
-        <ChoiceGroup
-          label={'Default Selected Tab'}
-          selectedKey={settingValues.selectedTab}
-          options={selectedTabItems}
-          onChange={(_, o) => selectedTabChanged(o, setSettingValues)}
-        />
-        <ChoiceGroup
-          label={'Default PR Sort Direction'}
-          selectedKey={settingValues.sortDirection}
-          options={sortDirectionItems}
-          onChange={(_, o) => sortDirectionChanged(o, setSettingValues)}
-        />
+        <div>
+          <Label className="light-dark-toggle">Default Selected Tab</Label>
+          <ChoiceGroup
+            selectedKey={settingValues.selectedTab}
+            options={selectedTabItems}
+            onChange={(_, o) => selectedTabChanged(o, setSettingValues)}
+          />
+        </div>
+        <div>
+          <Label className="light-dark-toggle">Default PR Sort Direction</Label>
+          <ChoiceGroup
+            selectedKey={settingValues.sortDirection}
+            options={sortDirectionItems}
+            onChange={(_, o) => sortDirectionChanged(o, setSettingValues)}
+          />
+        </div>
       </Stack>
     </Panel>
   );

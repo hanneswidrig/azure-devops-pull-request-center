@@ -19,6 +19,7 @@ const REMOVE_ASYNC_TASK = 'removeAsyncTask';
 const TOGGLE_FILTER_BAR = 'toggleFilterBar';
 const DISPLAY_WORK_ITEMS = 'displayWorkItems';
 const SET_SORT_DIRECTION = 'setSortDirection';
+const SET_REFRESH_DURATION = 'setRefreshDuration';
 const SET_FULL_SCREEN_MODE = 'setFullScreenMode';
 const TOGGLE_SETTINGS_PANEL = 'toggleSettingsPanel';
 const REFRESH_PULL_REQUESTS = 'refreshPullRequests';
@@ -37,12 +38,14 @@ export const ActionTypes = {
   TOGGLE_FILTER_BAR,
   DISPLAY_WORK_ITEMS,
   SET_SORT_DIRECTION,
+  SET_REFRESH_DURATION,
   SET_FULL_SCREEN_MODE,
   TOGGLE_SETTINGS_PANEL,
   REFRESH_PULL_REQUESTS,
   TOGGLE_SORT_DIRECTION,
 } as const;
 
+export type RefreshDuration = 'off' | '60' | '300' | '900' | '3600';
 export type DefaultSettings = {
   isFilterVisible: boolean;
   isFullScreenMode: boolean;
@@ -50,9 +53,11 @@ export type DefaultSettings = {
   sortDirection: SortDirection;
   isSavingFilterItems: boolean;
   filterValues: FilterDictionary | undefined;
+  autoRefreshDuration: RefreshDuration;
 };
 
 export type Settings = {
+  autoRefreshDuration: RefreshDuration;
   settingsPanelOpen: boolean;
   defaults: DefaultSettings;
 };
@@ -92,7 +97,7 @@ export type Data = {
 };
 
 export type SortDirection = 'desc' | 'asc';
-export type TabOptions = 'active' | 'draft' | 'recentlyCompleted';
+export type TabOptions = 'active' | 'draft' | 'completed';
 export type UI = {
   isFilterVisible: ObservableValue<boolean>;
   isFullScreenMode: boolean;

@@ -1,23 +1,26 @@
 import * as React from 'react';
 import { Dispatch } from 'redux';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { Draft } from './Draft';
 import { Active } from './Active';
 import { Page } from 'azure-devops-ui/Page';
-import { Header } from 'azure-devops-ui/Header';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
 import { RecentlyCompleted } from './RecentlyCompleted';
+// import { MessageCard } from 'azure-devops-ui/MessageCard';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
-import { IHeaderCommandBarItem, HeaderCommandBarWithFilter } from 'azure-devops-ui/HeaderCommandBar';
+import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
+import { IHeaderCommandBarItem, HeaderCommandBarWithFilter, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 
 import { filter } from '..';
-import { applyFilter } from '../lib/filters';
-import { PrHubState, PR, TabOptions } from '../state/types';
+// import { useDeltaState } from '../hooks/useDeltaState';
+import { useUnmount, useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from '../components/SettingsPanel';
+import { PrHubState, PR, TabOptions } from '../state/types';
 import { fromPRToFilterItems } from '../state/transformData';
+import { useRefreshTicker } from '../hooks/useRefreshTicker';
 import {
   setSelectedTab,
   setPullRequests,
@@ -25,8 +28,8 @@ import {
   toggleSortDirection,
   triggerSortDirection,
 } from '../state/actions';
+import { applyFilter, defaultFilterValues } from '../lib/filters';
 import { ITab, ActiveItemProvider, FilterItemsDictionary, FilterDictionary, FilterOptions } from './TabTypes';
-import { useUnmount } from '../lib/utils';
 
 export const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
   return {
@@ -64,19 +67,17 @@ const onFilterChanges = (store: PrHubState) => {
   }, FILTER_CHANGE_EVENT);
 };
 
-const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] => {
+const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: string): IHeaderCommandBarItem[] => {
   return [
     {
       id: 'refresh',
-      text: 'Refresh',
+      text: store.settings.autoRefreshDuration !== 'off' ? `Auto Refreshing (${timeUntil})` : 'Refresh',
       isPrimary: true,
       important: true,
       onActivate: () => {
         dispatch(setPullRequests());
       },
-      iconProps: {
-        iconName: 'fabric-icon ms-Icon--Refresh',
-      },
+      iconProps: { iconName: 'Refresh' },
     },
     {
       id: 'open-prefs',
@@ -85,9 +86,7 @@ const getCommandBarItems = (dispatch: Dispatch<any>): IHeaderCommandBarItem[] =>
       onActivate: () => {
         dispatch(toggleSettingsPanel());
       },
-      iconProps: {
-        iconName: 'fabric-icon ms-Icon--Settings',
-      },
+      iconProps: { iconName: 'Settings' },
     },
   ];
 };
@@ -117,7 +116,7 @@ const getPageContent = ({ newSelectedTab, filterItems, store }: { newSelectedTab
   const tabs: Record<TabOptions, JSX.Element> = {
     active: <Active filterItems={filterItems} store={store} />,
     draft: <Draft filterItems={filterItems} store={store} />,
-    recentlyCompleted: <RecentlyCompleted filterItems={filterItems} store={store} />,
+    completed: <RecentlyCompleted filterItems={filterItems} store={store} />,
   };
   return tabs[newSelectedTab];
 };
@@ -140,7 +139,7 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
     return draftPrsCount > 0 ? draftPrsCount : undefined;
   }
 
-  if (selectedTab === 'recentlyCompleted') {
+  if (selectedTab === 'completed') {
     const completedPrsCount = pullRequests.filter(v => v.isCompleted).length;
     return completedPrsCount > 0 ? completedPrsCount : undefined;
   }
@@ -148,8 +147,10 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
 
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
 export const TabProvider: React.FC = () => {
-  const store = useSelector((store: PrHubState) => store);
+  const store = useTypedSelector(store => store);
+  const selectedTab = useTypedSelector(store => store.ui.selectedTab);
   const dispatch = useDispatch();
+
   const [filterItems, setFilterItems] = React.useState<FilterItemsDictionary>({
     repositories: [],
     sourceBranch: [],
@@ -158,21 +159,24 @@ export const TabProvider: React.FC = () => {
     reviewer: [],
     myApprovalStatus: [],
   });
+  const { timeUntil } = useRefreshTicker(store.settings.autoRefreshDuration);
+  // const { deltaUpdate, acknowledge } = useDeltaState();
   onFilterChanges(store);
+
+  React.useEffect(() => {
+    setCurrentFilterValues(filter, store.settings.defaults.filterValues);
+  }, [store.settings.defaults.filterValues]);
 
   React.useEffect(() => {
     if (store.data.pullRequests.length > 0) {
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(
-        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
+        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), selectedTab),
       );
-      setFilterItems(
-        fromPRToFilterItems(applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab)),
-      );
-      setCurrentFilterValues(filter, store.settings.defaults.filterValues);
+      setFilterItems(fromPRToFilterItems(applyFilter(store.data.pullRequests, defaultFilterValues, selectedTab)));
       triggerSortDirection();
     }
-  }, [store.data.pullRequests, store.ui.selectedTab, store.settings.defaults.filterValues, dispatch]);
+  }, [selectedTab, store.data.pullRequests]);
 
   useUnmount(() => {
     filter.unsubscribe(() => ({}), FILTER_CHANGE_EVENT);
@@ -181,7 +185,23 @@ export const TabProvider: React.FC = () => {
   return (
     <Surface background={1}>
       <Page className="azure-pull-request-hub flex-grow">
-        <Header title={'Pull Requests Center'} titleSize={1} commandBarItems={getCommandBarItems(dispatch)} />
+        <CustomHeader>
+          <HeaderTitleArea>
+            <HeaderTitleRow>
+              <HeaderTitle className="text-ellipsis" titleSize={1}>
+                Pull Requests Center
+              </HeaderTitle>
+            </HeaderTitleRow>
+          </HeaderTitleArea>
+          <HeaderCommandBar items={commandBarItems(dispatch, store, timeUntil)} />
+        </CustomHeader>
+        {/* {!deltaUpdate.areEqual && (
+          <div style={{ padding: '12px 32px 4px 32px' }}>
+            <MessageCard onDismiss={() => acknowledge()}>
+              {JSON.stringify(deltaUpdate.deltaState.active, null, 2)}
+            </MessageCard>
+          </div>
+        )} */}
         <TabBar
           selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab({ newSelectedTab: newSelectedTab }))}
@@ -196,11 +216,7 @@ export const TabProvider: React.FC = () => {
         >
           <Tab name="Active" id="active" badgeCount={badgeCount(store.data.pullRequests, 'active')} />
           <Tab name="Draft" id="draft" badgeCount={badgeCount(store.data.pullRequests, 'draft')} />
-          <Tab
-            name="Completed"
-            id="recentlyCompleted"
-            badgeCount={badgeCount(store.data.pullRequests, 'recentlyCompleted')}
-          />
+          <Tab name="Completed" id="completed" badgeCount={badgeCount(store.data.pullRequests, 'completed')} />
         </TabBar>
         <div className="page-content-left page-content-right page-content-top page-content-bottom">
           {getPageContent({ newSelectedTab: store.ui.selectedTab, filterItems, store })}

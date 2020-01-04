@@ -2,6 +2,7 @@ import { FilterTypes } from '../tabs/TabTypes';
 import { PR, TabOptions } from '../state/types';
 
 export type FilterFunc = (pullRequest: PR, filterValue: string[]) => boolean;
+type TabFilterFunc = (pullRequest: PR) => boolean;
 
 type IFilterSetup = {
   func: FilterFunc;
@@ -35,11 +36,11 @@ export const filterByReviewers: FilterFunc = (pullRequest, filterValue) =>
 export const filterByApprovalStatus: FilterFunc = (pullRequest, filterValue) =>
   pullRequest.myApprovalStatus.toString() === filterValue[0].toString();
 
-export const filterByDraftStatus: FilterFunc = pullRequest => pullRequest.isDraft;
+export const filterByDraftStatus: TabFilterFunc = pullRequest => pullRequest.isDraft;
 
-export const filterByActiveStatus: FilterFunc = pullRequest => pullRequest.isActive && !pullRequest.isDraft;
+export const filterByActiveStatus: TabFilterFunc = pullRequest => pullRequest.isActive && !pullRequest.isDraft;
 
-export const filterByCompletedStatus: FilterFunc = pullRequest => pullRequest.isCompleted;
+export const filterByCompletedStatus: TabFilterFunc = pullRequest => pullRequest.isCompleted;
 
 export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, tab: TabOptions) => {
   const { searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus } = filterValues;
@@ -128,7 +129,7 @@ export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, ta
         isActive: true,
       },
     ],
-    recentlyCompleted: [
+    completed: [
       {
         func: filterByTitle,
         val: [searchString || ''],
@@ -191,4 +192,14 @@ export const applyFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>
   }
 
   return valArray;
+};
+
+export const defaultFilterValues: Record<FilterTypes, any> = {
+  searchString: undefined,
+  repositories: undefined,
+  sourceBranch: undefined,
+  targetBranch: undefined,
+  author: undefined,
+  reviewer: undefined,
+  myApprovalStatus: undefined,
 };

@@ -10,7 +10,7 @@ export const initialState: PrHubState = {
     repositories: [],
     pullRequests: [],
     currentUser: { id: '', name: '', displayName: '', descriptor: '', imageUrl: '' },
-    asyncTaskCount: 0,
+    asyncTaskCount: -1,
   },
   ui: {
     isFilterVisible: new ObservableValue(false),
@@ -19,6 +19,7 @@ export const initialState: PrHubState = {
     sortDirection: 'desc',
   },
   settings: {
+    autoRefreshDuration: 'off',
     settingsPanelOpen: false,
     defaults: {
       isFilterVisible: false,
@@ -27,6 +28,7 @@ export const initialState: PrHubState = {
       sortDirection: 'desc',
       isSavingFilterItems: false,
       filterValues: undefined,
+      autoRefreshDuration: 'off',
     },
   },
 };
@@ -83,12 +85,15 @@ const setState: SplitReducer = (state, action) => [
           draft.ui.selectedTab = savedSettings.selectedTab;
           draft.ui.sortDirection = savedSettings.sortDirection;
 
+          draft.settings.autoRefreshDuration = savedSettings.autoRefreshDuration;
+
           draft.settings.defaults.isFilterVisible = savedSettings.isFilterVisible;
           draft.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode;
           draft.settings.defaults.selectedTab = savedSettings.selectedTab;
           draft.settings.defaults.sortDirection = savedSettings.sortDirection;
           draft.settings.defaults.isSavingFilterItems = savedSettings.isSavingFilterItems;
           draft.settings.defaults.filterValues = savedSettings.filterValues;
+          draft.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration;
         });
       }
       return state;
@@ -109,6 +114,14 @@ const setState: SplitReducer = (state, action) => [
       return state;
     },
   ],
+  [
+    ActionTypes.SET_REFRESH_DURATION,
+    () => {
+      return produce(state, draft => {
+        draft.settings.autoRefreshDuration = action.payload;
+      });
+    },
+  ],
 ];
 
 const updateState: SplitReducer = state => [
@@ -116,7 +129,7 @@ const updateState: SplitReducer = state => [
     ActionTypes.ADD_ASYNC_TASK,
     () => {
       return produce(state, draft => {
-        draft.data.asyncTaskCount = state.data.asyncTaskCount + 1;
+        draft.data.asyncTaskCount = state.data.asyncTaskCount === -1 ? 1 : state.data.asyncTaskCount + 1;
       });
     },
   ],

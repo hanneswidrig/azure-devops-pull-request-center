@@ -10,6 +10,8 @@ import {
   filterByApprovalStatus,
   filterByDraftStatus,
   applyFilter,
+  filterByActiveStatus,
+  filterByCompletedStatus,
 } from '../lib/filters';
 
 describe('Filters for Pull Request Table', () => {
@@ -91,11 +93,18 @@ describe('Filters for Pull Request Table', () => {
   });
 
   test('filterByDraftStatus()', () => {
-    const pullRequest: PR = {
-      isDraft: true,
-    } as PR;
-    expect(filterByDraftStatus(pullRequest, ['true'])).toBeTruthy();
-    expect(filterByDraftStatus(pullRequest, ['false'])).toBeFalsy();
+    expect(filterByDraftStatus({ isDraft: true } as PR)).toBeTruthy();
+    expect(filterByDraftStatus({ isDraft: false } as PR)).toBeFalsy();
+  });
+
+  test('filterByActiveStatus()', () => {
+    expect(filterByActiveStatus({ isActive: true, isDraft: false } as PR)).toBeTruthy();
+    expect(filterByActiveStatus({ isActive: false, isDraft: true } as PR)).toBeFalsy();
+  });
+
+  test('filterByCompletedStatus()', () => {
+    expect(filterByCompletedStatus({ isCompleted: true } as PR)).toBeTruthy();
+    expect(filterByCompletedStatus({ isCompleted: false } as PR)).toBeFalsy();
   });
 
   test('applyFilter()', () => {
@@ -140,6 +149,7 @@ describe('Filters for Pull Request Table', () => {
         },
         reviewers: [{ id: '1' }],
         myApprovalStatus: '10',
+        isActive: true,
         isDraft: false,
       },
     ] as PR[];

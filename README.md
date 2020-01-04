@@ -36,8 +36,6 @@ I built this extension for Azure DevOps Services 2019. If someone wanted to expl
 
 ✖ View work items/comments associated with PR.
 
-✖ Auto-updating options for close monitoring of pull requests.
-
 ## 📣 Changelog
 
 [View recent changes to my extension here.](https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/CHANGELOG.md)

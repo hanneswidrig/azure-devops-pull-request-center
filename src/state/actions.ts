@@ -15,8 +15,8 @@ import { Task } from '../lib/typings';
 import { FilterDictionary } from '../tabs/TabTypes';
 import { fromPullRequestToPR } from './transformData';
 import { pullRequestItemProvider$ } from '../tabs/TabProvider';
-import { ActionTypes, DefaultSettings, SortDirection } from './types';
 import { sortByRepositoryName, sortByPullRequestId } from '../lib/utils';
+import { ActionTypes, DefaultSettings, SortDirection, RefreshDuration } from './types';
 
 export const activePrCriteria: GitPullRequestSearchCriteria = {
   repositoryId: '',
@@ -98,6 +98,10 @@ export const setFilterValues: Task<{ filterValues: FilterDictionary }> = ({ filt
 
 export const setSelectedTab: Task<{ newSelectedTab: string }> = ({ newSelectedTab }) => dispatch => {
   dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
+};
+
+export const setRefreshDuration: Task<{ refreshDuration: RefreshDuration }> = ({ refreshDuration }) => dispatch => {
+  dispatch({ type: ActionTypes.SET_REFRESH_DURATION, payload: refreshDuration });
 };
 
 export const setFilterBar: Task<{ isFilterVisible: boolean }> = ({ isFilterVisible }) => dispatch => {
