@@ -8,14 +8,14 @@ import { Page } from 'azure-devops-ui/Page';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
 import { RecentlyCompleted } from './RecentlyCompleted';
-import { MessageCard } from 'azure-devops-ui/MessageCard';
+// import { MessageCard } from 'azure-devops-ui/MessageCard';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
 import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 
 import { filter } from '..';
-import { useDeltaState } from '../hooks/useDeltaState';
+// import { useDeltaState } from '../hooks/useDeltaState';
 import { useUnmount, useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { PrHubState, PR, TabOptions } from '../state/types';
@@ -160,7 +160,7 @@ export const TabProvider: React.FC = () => {
     myApprovalStatus: [],
   });
   const { timeUntil } = useRefreshTicker(store.settings.autoRefreshDuration);
-  const { deltaUpdate, acknowledge } = useDeltaState();
+  // const { deltaUpdate, acknowledge } = useDeltaState();
   onFilterChanges(store);
 
   React.useEffect(() => {
@@ -195,13 +195,13 @@ export const TabProvider: React.FC = () => {
           </HeaderTitleArea>
           <HeaderCommandBar items={commandBarItems(dispatch, store, timeUntil)} />
         </CustomHeader>
-        {!deltaUpdate.areEqual && (
+        {/* {!deltaUpdate.areEqual && (
           <div style={{ padding: '12px 32px 4px 32px' }}>
             <MessageCard onDismiss={() => acknowledge()}>
               {JSON.stringify(deltaUpdate.deltaState.active, null, 2)}
             </MessageCard>
           </div>
-        )}
+        )} */}
         <TabBar
           selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab({ newSelectedTab: newSelectedTab }))}

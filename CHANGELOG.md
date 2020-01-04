@@ -1,10 +1,8 @@
 # [Unreleased]
 
-# 1.2.0 (January 7, 2019)
+# 1.2.0 (January 4, 2019)
 
 ✔ Auto-refreshing of pull requests center
-
-✔ Summary of changes since last refresh
 
 🐛 Fix dark mode in settings
 

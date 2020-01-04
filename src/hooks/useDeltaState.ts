@@ -77,17 +77,17 @@ export const useDeltaState = () => {
     }
   }, [asyncTaskCount, local, pullRequests, setLocal, setLocalDelta, localDelta, state]);
 
-  useEffect(() => {
-    if (local !== undefined) {
-      console.log(`============================`);
-      console.log('local', JSON.stringify(local));
-    }
-    if (localDelta !== undefined) {
-      console.log('active', JSON.stringify(localDelta?.active.items));
-      console.log('completed', JSON.stringify(localDelta?.completed.items));
-      console.log('draft', JSON.stringify(localDelta?.draft.items));
-    }
-  }, [local, localDelta]);
+  // useEffect(() => {
+  //   if (local !== undefined) {
+  //     console.log(`============================`);
+  //     console.log('local', JSON.stringify(local));
+  //   }
+  //   if (localDelta !== undefined) {
+  //     console.log('active', JSON.stringify(localDelta?.active.items));
+  //     console.log('completed', JSON.stringify(localDelta?.completed.items));
+  //     console.log('draft', JSON.stringify(localDelta?.draft.items));
+  //   }
+  // }, [local, localDelta]);
 
   return {
     deltaUpdate: delta,
