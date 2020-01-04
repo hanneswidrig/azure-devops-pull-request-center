@@ -1,5 +1,9 @@
 # [Unreleased]
 
+# 1.2.1 (January 4, 2019)
+
+🐛 Bad default auto refresh value
+
 # 1.2.0 (January 4, 2019)
 
 ✔ Auto-refreshing of pull requests center

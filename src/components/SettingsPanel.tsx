@@ -30,7 +30,7 @@ import { DefaultSettings, TabOptions, SortDirection, RefreshDuration } from '../
 
 type SetSettingValuesCallback = React.Dispatch<React.SetStateAction<DefaultSettings>>;
 
-const defaultSettingValues: DefaultSettings = {
+export const defaultSettingValues: DefaultSettings = {
   isFilterVisible: false,
   isFullScreenMode: false,
   selectedTab: 'active',
@@ -241,7 +241,7 @@ export const SettingsPanel: React.FC = () => {
       titleProps={{
         text: 'Extension Preferences',
       }}
-      description={'Pull Requests Center 1.2.0'}
+      description={'Pull Requests Center 1.2.1'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => resetChanges(setSettingValues, dispatch) },
         {

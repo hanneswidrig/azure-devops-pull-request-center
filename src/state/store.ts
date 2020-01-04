@@ -4,6 +4,7 @@ import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 
 import { Enum, SplitReducer, FetchAction } from '../lib/typings';
 import { ActionTypes, PrHubState, DefaultSettings } from './types';
+import { defaultSettingValues } from '../components/SettingsPanel';
 
 export const initialState: PrHubState = {
   data: {
@@ -78,22 +79,26 @@ const setState: SplitReducer = (state, action) => [
     ActionTypes.RESTORE_SETTINGS,
     () => {
       if (action.payload) {
-        const savedSettings: DefaultSettings = action.payload;
+        const savedSettings: Partial<DefaultSettings> = action.payload;
         return produce(state, draft => {
-          draft.ui.isFilterVisible.value = savedSettings.isFilterVisible;
-          draft.ui.isFullScreenMode = savedSettings.isFullScreenMode;
-          draft.ui.selectedTab = savedSettings.selectedTab;
-          draft.ui.sortDirection = savedSettings.sortDirection;
+          draft.ui.isFilterVisible.value = savedSettings.isFilterVisible ?? defaultSettingValues.isFilterVisible;
+          draft.ui.isFullScreenMode = savedSettings.isFullScreenMode ?? defaultSettingValues.isFullScreenMode;
+          draft.ui.selectedTab = savedSettings.selectedTab ?? defaultSettingValues.selectedTab;
+          draft.ui.sortDirection = savedSettings.sortDirection ?? defaultSettingValues.sortDirection;
+          draft.settings.autoRefreshDuration =
+            savedSettings.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration;
 
-          draft.settings.autoRefreshDuration = savedSettings.autoRefreshDuration;
-
-          draft.settings.defaults.isFilterVisible = savedSettings.isFilterVisible;
-          draft.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode;
-          draft.settings.defaults.selectedTab = savedSettings.selectedTab;
-          draft.settings.defaults.sortDirection = savedSettings.sortDirection;
-          draft.settings.defaults.isSavingFilterItems = savedSettings.isSavingFilterItems;
+          draft.settings.defaults.isFilterVisible =
+            savedSettings.isFilterVisible ?? defaultSettingValues.isFilterVisible;
+          draft.settings.defaults.isFullScreenMode =
+            savedSettings.isFullScreenMode ?? defaultSettingValues.isFullScreenMode;
+          draft.settings.defaults.selectedTab = savedSettings.selectedTab ?? defaultSettingValues.selectedTab;
+          draft.settings.defaults.sortDirection = savedSettings.sortDirection ?? defaultSettingValues.sortDirection;
+          draft.settings.defaults.isSavingFilterItems =
+            savedSettings.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems;
           draft.settings.defaults.filterValues = savedSettings.filterValues;
-          draft.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration;
+          draft.settings.defaults.autoRefreshDuration =
+            savedSettings.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration;
         });
       }
       return state;
