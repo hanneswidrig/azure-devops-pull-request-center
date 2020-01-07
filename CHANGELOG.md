@@ -1,5 +1,9 @@
 # [Unreleased]
 
+# 1.2.2 (January 8, 2019)
+
+🐛 Minor bug fixes to settings
+
 # 1.2.1 (January 4, 2019)
 
 🐛 Bad default auto refresh value

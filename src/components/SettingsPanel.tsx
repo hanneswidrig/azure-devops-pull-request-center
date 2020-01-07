@@ -48,7 +48,7 @@ const isFullScreenModeItems: IChoiceGroupOption[] = [
 const selectedTabItems: IChoiceGroupOption[] = [
   { key: 'active', text: 'Active' },
   { key: 'draft', text: 'Draft' },
-  { key: 'completed', text: 'Completed (10 Most Recent' },
+  { key: 'completed', text: 'Completed (10 Most Recent)' },
 ];
 
 const sortDirectionItems: IChoiceGroupOption[] = [
@@ -161,6 +161,7 @@ const autoRefreshDurationChanged: AutoRefreshDurationChanged = (duration, setSet
 
 const resetChanges: ResetChanges = (setSettingValues, dispatch) => {
   setSettingValues(defaultSettingValues);
+  dispatch(setRefreshDuration({ refreshDuration: 'off' }));
   dispatch(setFullScreenMode({ isFullScreenMode: defaultSettingValues.isFullScreenMode }));
 };
 
@@ -241,7 +242,7 @@ export const SettingsPanel: React.FC = () => {
       titleProps={{
         text: 'Extension Preferences',
       }}
-      description={'Pull Requests Center 1.2.1'}
+      description={'Pull Requests Center 1.2.2'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => resetChanges(setSettingValues, dispatch) },
         {

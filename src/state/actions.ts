@@ -4,6 +4,7 @@ import {
   IHostPageLayoutService,
   IExtensionDataService,
   IExtensionDataManager,
+  IGlobalMessagesService,
 } from 'azure-devops-extension-api';
 import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
 import { GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
@@ -117,44 +118,63 @@ export const toggleSettingsPanel: Task = () => dispatch => dispatch({ type: Acti
  * - Auto Complete status
  */
 export const setPullRequests: Task = () => async dispatch => {
-  dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
-  const repositories = await getRepositories();
-  const getAllRepositoryPullRequests = repositories.map(
-    async repo => await gitClient.getPullRequests(repo.id, activePrCriteria),
-  );
-  getAllRepositoryPullRequests.push(
-    ...repositories.map(
-      async repo => await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, undefined, 10),
-    ),
-  );
-  const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
-  const getCompletePullRequests = allRepositoryPullRequests.flatMap(prsForSingleRepo =>
-    prsForSingleRepo.map(async pr => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId)),
-  );
-  const allPullRequests = await Promise.all(getCompletePullRequests);
-  const transformedPopulatedPullRequests = await Promise.all(
-    allPullRequests.map(async pullRequest =>
-      fromPullRequestToPR({
-        pr: pullRequest,
-        workItems: [],
-        // workItems: await getWorkItemsForPr(pullRequest),
-        userContext: getUser(),
-      }),
-    ),
-  );
-  dispatch({
-    type: ActionTypes.SET_PULL_REQUESTS,
-    payload: transformedPopulatedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
-  });
-  triggerSortDirection();
-  dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
+  try {
+    dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
+    const repositories = await getRepositories();
+    const getAllRepositoryPullRequests = repositories.map(
+      async repo => await gitClient.getPullRequests(repo.id, activePrCriteria),
+    );
+    getAllRepositoryPullRequests.push(
+      ...repositories.map(
+        async repo =>
+          await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, undefined, 10),
+      ),
+    );
+    const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
+    const getCompletePullRequests = allRepositoryPullRequests.flatMap(prsForSingleRepo =>
+      prsForSingleRepo.map(async pr => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId)),
+    );
+    const allPullRequests = await Promise.all(getCompletePullRequests);
+    const transformedPopulatedPullRequests = await Promise.all(
+      allPullRequests.map(async pullRequest =>
+        fromPullRequestToPR({
+          pr: pullRequest,
+          workItems: [],
+          // workItems: await getWorkItemsForPr(pullRequest),
+          userContext: getUser(),
+        }),
+      ),
+    );
+    dispatch({
+      type: ActionTypes.SET_PULL_REQUESTS,
+      payload: transformedPopulatedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
+    });
+    triggerSortDirection();
+    dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
+  } catch {
+    const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
+    globalMessagesSvc.addToast({
+      duration: 5000,
+      message: 'An error occurred while fetching pull requests. Please reload or refresh the page.',
+      forceOverrideExisting: true,
+    });
+  }
 };
 
 export const setRepositories: Task = () => async dispatch => {
-  dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
-  const repositories = await getRepositories();
-  dispatch({ type: ActionTypes.SET_REPOSITORIES, payload: repositories });
-  dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
+  try {
+    dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
+    const repositories = await getRepositories();
+    dispatch({ type: ActionTypes.SET_REPOSITORIES, payload: repositories });
+    dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
+  } catch {
+    const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
+    globalMessagesSvc.addToast({
+      duration: 5000,
+      message: 'An error occurred while fetching pull requests. Please reload or refresh the page.',
+      forceOverrideExisting: true,
+    });
+  }
 };
 
 export const setFullScreenMode: Task<{ isFullScreenMode: boolean }> = ({ isFullScreenMode }) => async dispatch => {
@@ -163,12 +183,21 @@ export const setFullScreenMode: Task<{ isFullScreenMode: boolean }> = ({ isFullS
 };
 
 export const restoreSettings: Task = () => async dispatch => {
-  dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
-  const settings = await getSettings();
-  await setFullScreenModeState(settings.isFullScreenMode);
-  dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
-  triggerSortDirection();
-  dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
+  try {
+    dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
+    const settings = await getSettings();
+    await setFullScreenModeState(settings.isFullScreenMode);
+    dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
+    triggerSortDirection();
+    dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
+  } catch {
+    const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
+    globalMessagesSvc.addToast({
+      duration: 5000,
+      message: 'An error occurred while fetching pull requests. Please reload or refresh the page.',
+      forceOverrideExisting: true,
+    });
+  }
 };
 
 export const saveSettings: Task<{ defaultSettings: DefaultSettings }> = ({ defaultSettings }) => async dispatch => {
