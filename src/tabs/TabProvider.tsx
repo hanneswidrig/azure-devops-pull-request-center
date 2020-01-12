@@ -216,7 +216,7 @@ export const TabProvider: React.FC = () => {
         >
           <Tab name="Active" id="active" badgeCount={badgeCount(store.data.pullRequests, 'active')} />
           <Tab name="Draft" id="draft" badgeCount={badgeCount(store.data.pullRequests, 'draft')} />
-          <Tab name="Completed" id="completed" badgeCount={badgeCount(store.data.pullRequests, 'completed')} />
+          <Tab name="Recently Completed" id="completed" badgeCount={badgeCount(store.data.pullRequests, 'completed')} />
         </TabBar>
         <div className="page-content-left page-content-right page-content-top page-content-bottom">
           {getPageContent({ newSelectedTab: store.ui.selectedTab, filterItems, store })}

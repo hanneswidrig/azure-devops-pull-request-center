@@ -1,14 +1,18 @@
 # [Unreleased]
 
-# 1.2.2 (January 8, 2019)
+# 1.2.3 (January 12, 2020)
+
+🐛 Recently Completed bug fixes
+
+# 1.2.2 (January 8, 2020)
 
 🐛 Minor bug fixes to settings
 
-# 1.2.1 (January 4, 2019)
+# 1.2.1 (January 4, 2020)
 
 🐛 Bad default auto refresh value
 
-# 1.2.0 (January 4, 2019)
+# 1.2.0 (January 4, 2020)
 
 ✔ Auto-refreshing of pull requests center
 

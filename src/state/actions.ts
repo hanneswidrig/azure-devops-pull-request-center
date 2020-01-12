@@ -126,8 +126,7 @@ export const setPullRequests: Task = () => async dispatch => {
     );
     getAllRepositoryPullRequests.push(
       ...repositories.map(
-        async repo =>
-          await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, undefined, 10),
+        async repo => await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, 0, 25),
       ),
     );
     const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
