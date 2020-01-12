@@ -6,6 +6,7 @@ import {
   IExtensionDataManager,
   IGlobalMessagesService,
 } from 'azure-devops-extension-api';
+import { CoreRestClient } from 'azure-devops-extension-api/Core/CoreClient';
 import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
 import { GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 import { getService, getUser, getExtensionContext, getAccessToken } from 'azure-devops-extension-sdk';
@@ -42,13 +43,14 @@ export const completedPrCriteria: GitPullRequestSearchCriteria = {
 };
 
 // VSTS REST Clients
+export const coreClient: CoreRestClient = getClient(CoreRestClient);
 export const gitClient: GitRestClient = getClient(GitRestClient);
 export const workItemClient: WorkItemTrackingRestClient = getClient(WorkItemTrackingRestClient);
 
 const getRepositories = async () => {
   const projectService = await getService<IProjectPageService>('ms.vss-tfs-web.tfs-page-data-service');
   const currentProject = await projectService.getProject();
-  return (await gitClient.getRepositories(currentProject?.name, true)).sort(sortByRepositoryName);
+  return (await gitClient.getRepositories(currentProject?.id)).sort(sortByRepositoryName);
 };
 
 // const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
