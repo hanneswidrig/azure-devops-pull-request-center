@@ -6,9 +6,9 @@ import * as ReactDOM from 'react-dom';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
+import { init, ready } from 'azure-devops-extension-sdk';
 
 import { initializeIcons } from '@uifabric/icons';
-import * as DevOps from 'azure-devops-extension-sdk';
 import { Filter } from 'azure-devops-ui/Utilities/Filter';
 
 import './index.scss';
@@ -38,7 +38,7 @@ const App: React.FC = () => {
   );
 };
 
-DevOps.init();
-DevOps.ready().then(() => {
+init();
+ready().then(() => {
   ReactDOM.render(<App />, document.getElementById('root'));
 });
