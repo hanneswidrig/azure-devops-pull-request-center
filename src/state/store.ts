@@ -1,38 +1,10 @@
 import produce from 'immer';
 import { Reducer } from 'redux';
-import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 
+import { initialState } from './initialState';
 import { Enum, SplitReducer, FetchAction } from '../lib/typings';
 import { ActionTypes, PrHubState, DefaultSettings } from './types';
 import { defaultSettingValues } from '../components/SettingsPanel';
-
-export const initialState: PrHubState = {
-  data: {
-    repositories: [],
-    pullRequests: [],
-    currentUser: { id: '', name: '', displayName: '', descriptor: '', imageUrl: '' },
-    asyncTaskCount: -1,
-  },
-  ui: {
-    isFilterVisible: new ObservableValue(false),
-    isFullScreenMode: false,
-    selectedTab: 'active',
-    sortDirection: 'desc',
-  },
-  settings: {
-    autoRefreshDuration: 'off',
-    settingsPanelOpen: false,
-    defaults: {
-      isFilterVisible: false,
-      isFullScreenMode: false,
-      selectedTab: 'active',
-      sortDirection: 'desc',
-      isSavingFilterItems: false,
-      filterValues: undefined,
-      autoRefreshDuration: 'off',
-    },
-  },
-};
 
 const setState: SplitReducer = (state, action) => [
   [

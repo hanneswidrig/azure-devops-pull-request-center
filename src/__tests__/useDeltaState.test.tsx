@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
 import { renderHook, act, cleanup } from '@testing-library/react-hooks';
 
-import { reducer } from '../state/store';
 import { ActionTypes, PR } from '../state/types';
+import { initialState } from '../state/initialState';
 import { useDeltaState, defaultDeltaState } from '../hooks/useDeltaState';
 
 type WrapperType = { children?: React.ReactNode };
@@ -15,7 +15,7 @@ afterEach(cleanup);
 
 describe('useDeltaState', () => {
   it('initalizes successfully', () => {
-    const store = createStore(reducer);
+    const store = configureStore([])(initialState);
     const { result } = renderHook(() => useDeltaState(), {
       wrapper: ({ children }: WrapperType) => <Provider store={store}>{children}</Provider>,
     });
@@ -23,7 +23,7 @@ describe('useDeltaState', () => {
   });
 
   it('accurately delta initial and updated list of pull requests', () => {
-    const store = createStore(reducer);
+    const store = configureStore([])(initialState);
     const { result } = renderHook(() => useDeltaState(), {
       wrapper: ({ children }: WrapperType) => <Provider store={store}>{children}</Provider>,
     });
