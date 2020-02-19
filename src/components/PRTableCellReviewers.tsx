@@ -19,7 +19,7 @@ type Widths = {
 };
 
 type ReviewerOverflowProps = { reviewers: IdentityRefWithVote[]; hiddenReviewers: Widths[] };
-const ReviewerOverflow: React.FC<ReviewerOverflowProps> = ({ reviewers, hiddenReviewers }: ReviewerOverflowProps) => (
+const ReviewerOverflow = ({ reviewers, hiddenReviewers }: ReviewerOverflowProps) => (
   <Tooltip
     className="tooltip-overflow"
     renderContent={() => (
@@ -77,7 +77,7 @@ export const reviewerPill = (reviewer: IdentityRefWithVote) => (
 );
 
 type Props = { reviewers: IdentityRefWithVote[] };
-export const PRTableCellReviewers: React.FC<Props> = ({ reviewers }: Props) => {
+export const PRTableCellReviewers = ({ reviewers }: Props) => {
   const [widths, setWidths] = useState<Widths[]>([]);
 
   const measureTag = useCallback(

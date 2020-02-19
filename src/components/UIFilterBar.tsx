@@ -19,7 +19,7 @@ const _reviewer = new DropdownMultiSelection();
 const _myApprovalStatus = new DropdownMultiSelection();
 
 type Props = { filterItems: FilterItemsDictionary };
-export const UIFilterBar: React.FC<Props> = ({ filterItems }: Props) => {
+export const UIFilterBar = ({ filterItems }: Props) => {
   const dispatch = useDispatch();
 
   React.useEffect(() => {

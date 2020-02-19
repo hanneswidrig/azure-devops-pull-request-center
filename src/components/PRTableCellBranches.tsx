@@ -5,7 +5,7 @@ import './PRTableCellBranches.scss';
 import { PR } from '../state/types';
 
 type Props = { tableItem: PR };
-export const PRTableCellBranches: React.FC<Props> = ({ tableItem }: Props) => {
+export const PRTableCellBranches = ({ tableItem }: Props) => {
   const sourceBranch = tableItem.sourceBranch.name.replace('refs/heads/', '');
   const targetBranch = tableItem.targetBranch.name.replace('refs/heads/', '');
 

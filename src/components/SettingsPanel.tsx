@@ -216,7 +216,7 @@ const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings):
   );
 };
 
-export const SettingsPanel: React.FC = () => {
+export const SettingsPanel = () => {
   const store = useTypedSelector(store => store);
   const defaultDuration = useTypedSelector(store => store.settings.defaults.autoRefreshDuration);
   const dispatch = useDispatch();

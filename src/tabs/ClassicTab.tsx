@@ -42,7 +42,7 @@ export const columns: ITableColumn<PR>[] = [
   // }),
 ];
 
-export const ClassicTab: React.FC<ITab> = ({ filterItems, store }: ITab) => {
+export const ClassicTab = ({ filterItems, store }: ITab) => {
   return (
     <div className="flex-column">
       <ConditionalChildren renderChildren={store.ui.isFilterVisible}>

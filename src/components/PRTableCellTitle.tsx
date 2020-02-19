@@ -9,7 +9,7 @@ import './PRTableCellTitle.scss';
 import { PR } from '../state/types';
 import { PRTableCellBranches } from './PRTableCellBranches';
 
-export const PRTableCellTitle: React.FC<{ tableItem: PR }> = ({ tableItem }: { tableItem: PR }) => {
+export const PRTableCellTitle = ({ tableItem }: { tableItem: PR }) => {
   return (
     <div className="flex-column ui-container">
       <div className="flex-row line-one">
@@ -46,7 +46,7 @@ export const PRTableCellTitle: React.FC<{ tableItem: PR }> = ({ tableItem }: { t
   );
 };
 
-const PRAuthorPersona: React.FC<{ tableItem: PR }> = ({ tableItem }: { tableItem: PR }) => (
+const PRAuthorPersona = ({ tableItem }: { tableItem: PR }) => (
   <VssPersona
     className="margin-right-8"
     imageUrl={tableItem.createdBy._links['avatar'].href}

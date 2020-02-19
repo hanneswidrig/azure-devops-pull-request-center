@@ -26,7 +26,7 @@ export const store = createStore(reducer, applyMiddleware(thunk));
 export const filter: Filter = new Filter();
 initializeIcons();
 
-const App: React.FC = () => {
+const App = () => {
   React.useEffect(() => {
     store.dispatch(onInitialLoad());
   }, []);

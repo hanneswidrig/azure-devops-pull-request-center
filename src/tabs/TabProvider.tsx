@@ -146,7 +146,7 @@ const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | unde
 };
 
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
-export const TabProvider: React.FC = () => {
+export const TabProvider = () => {
   const store = useTypedSelector(store => store);
   const selectedTab = useTypedSelector(store => store.ui.selectedTab);
   const dispatch = useDispatch();
