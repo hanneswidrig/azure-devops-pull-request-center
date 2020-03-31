@@ -242,7 +242,7 @@ export const SettingsPanel = () => {
       titleProps={{
         text: 'Extension Preferences',
       }}
-      description={'Pull Requests Center 1.2.3'}
+      description={'Pull Requests Center 1.2.5'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => resetChanges(setSettingValues, dispatch) },
         {

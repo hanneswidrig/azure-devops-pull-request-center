@@ -1,6 +1,6 @@
 # [Unreleased]
 
-# 1.2.4 (March 30, 2020)
+# 1.2.{4, 5} (March 30, 2020)
 
 🐛 Critical settings fetch failure exploratory fix
 
