@@ -17,6 +17,7 @@ import { Task } from '../lib/typings';
 import { FilterDictionary } from '../tabs/TabTypes';
 import { fromPullRequestToPR } from './transformData';
 import { pullRequestItemProvider$ } from '../tabs/TabProvider';
+import { defaultSettingValues } from '../components/SettingsPanel';
 import { sortByRepositoryName, sortByPullRequestId } from '../lib/utils';
 import { ActionTypes, DefaultSettings, SortDirection, RefreshDuration } from './types';
 
@@ -187,9 +188,14 @@ export const restoreSettings: Task = () => async dispatch => {
   try {
     dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
     const settings = await getSettings();
-    await setFullScreenModeState(settings.isFullScreenMode);
-    dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
-    triggerSortDirection();
+    if (settings) {
+      await setFullScreenModeState(settings.isFullScreenMode);
+      dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
+      triggerSortDirection();
+    } else {
+      const defaultSettings = defaultSettingValues;
+      await setSettings(defaultSettings);
+    }
     dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');

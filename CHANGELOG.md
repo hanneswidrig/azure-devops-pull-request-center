@@ -1,5 +1,9 @@
 # [Unreleased]
 
+# 1.2.4 (March 30, 2020)
+
+🐛 Critical settings fetch failure exploratory fix
+
 # 1.2.3 (January 12, 2020)
 
 🐛 Recently Completed bug fixes
