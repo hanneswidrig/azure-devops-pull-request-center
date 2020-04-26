@@ -1,5 +1,9 @@
 # [Unreleased]
 
+# 1.2.6 (April 26, 2020)
+
+🐛 Fixed: Crashes when switching tabs when dropdown options are selected.
+
 # 1.2.{4, 5} (March 30, 2020)
 
 🐛 Critical settings fetch failure exploratory fix

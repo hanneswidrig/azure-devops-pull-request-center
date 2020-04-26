@@ -16,6 +16,7 @@ import { IHeaderCommandBarItem, HeaderCommandBarWithFilter, HeaderCommandBar } f
 
 import { filter } from '..';
 // import { useDeltaState } from '../hooks/useDeltaState';
+import { clearSelections } from '../components/UIFilterBar';
 import { useUnmount, useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { PrHubState, PR, TabOptions } from '../state/types';
@@ -169,6 +170,7 @@ export const TabProvider = () => {
 
   React.useEffect(() => {
     if (store.data.pullRequests.length > 0) {
+      clearSelections();
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(
         ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), selectedTab),

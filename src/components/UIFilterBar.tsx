@@ -18,6 +18,15 @@ const _author = new DropdownMultiSelection();
 const _reviewer = new DropdownMultiSelection();
 const _myApprovalStatus = new DropdownMultiSelection();
 
+export const clearSelections = (): void => {
+  _repositories.clear();
+  _sourceBranch.clear();
+  _targetBranch.clear();
+  _author.clear();
+  _reviewer.clear();
+  _myApprovalStatus.clear();
+};
+
 type Props = { filterItems: FilterItemsDictionary };
 export const UIFilterBar = ({ filterItems }: Props) => {
   const dispatch = useDispatch();
