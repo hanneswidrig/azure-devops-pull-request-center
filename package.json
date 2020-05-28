@@ -62,7 +62,7 @@
     "@typescript-eslint/eslint-plugin": "^3.0.2",
     "@typescript-eslint/parser": "^3.0.2",
     "@typescript-eslint/typescript-estree": "^3.0.2",
-    "azure-devops-extension-api": "^1.157.0",
+    "azure-devops-extension-api": "^1.153.2",
     "azure-devops-extension-sdk": "^2.0.11",
     "azure-devops-ui": "^1.160.4",
     "copy-webpack-plugin": "^5.1.1",

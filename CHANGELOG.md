@@ -1,5 +1,9 @@
 # [Unreleased]
 
+# 1.2.8 (May 28, 2020)
+
+✔ Accurate targeting of apiVersion/5.x
+
 # 1.2.7 (May 27, 2020)
 
 ✔ Support Azure Devops Server

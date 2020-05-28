@@ -2,12 +2,12 @@
   "manifestVersion": 1,
   "id": "pull-request-center",
   "publisher": "hannes-widrig",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "name": "Pull Requests Center",
   "description": "Manage your team's pull requests across all repositories.",
   "public": true,
   "categories": ["Azure Repos"],
-  "demands": ["api-version/3.0"],
+  "demands": ["api-version/5.1"],
   "scopes": ["vso.code", "vso.work", "vso.identity"],
   "targets": [
     {

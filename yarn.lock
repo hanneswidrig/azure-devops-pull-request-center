@@ -2547,7 +2547,7 @@ axobject-query@^2.0.2:
   resolved "https://registry.yarnpkg.com/axobject-query/-/axobject-query-2.1.2.tgz#2bdffc0371e643e5f03ba99065d5179b9ca79799"
   integrity sha512-ICt34ZmrVt8UQnvPl6TVyDTkmhXmAyAT4Jh5ugfGUX4MOrZ+U/ZY6/sdylRw3qGNr9Ub5AJsaHeDMzNLehRdOQ==
 
-azure-devops-extension-api@^1.157.0:
+azure-devops-extension-api@^1.153.2:
   version "1.157.0"
   resolved "https://registry.yarnpkg.com/azure-devops-extension-api/-/azure-devops-extension-api-1.157.0.tgz#df5429f00400975c7941e440785312b433a21a17"
   integrity sha512-CCN39A2VaRdi7MCeFWqhcv6dXOfSAf7W2jv1QWX1Hd9ac3n5PzguEPy+66SiPz5M+nDyMSP6aDTtwjEUX9D1kg==
