@@ -1,5 +1,9 @@
 # [Unreleased]
 
+# 1.2.7 (May 27, 2020)
+
+✔ Support Azure Devops Server
+
 # 1.2.6 (April 26, 2020)
 
 🐛 Fixed: Crashes when switching tabs when dropdown options are selected.
