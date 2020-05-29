@@ -1,4 +1,8 @@
-import { IColor } from 'azure-devops-extension-api';
+export interface IColor {
+  red: number;
+  blue: number;
+  green: number;
+}
 
 /**
  * My color system

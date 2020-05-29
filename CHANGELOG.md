@@ -1,6 +1,6 @@
 # [Unreleased]
 
-# 1.2.8 (May 28, 2020)
+# 1.2.{8, 9} (May 29, 2020)
 
 ✔ Accurate targeting of apiVersion/5.x
 
