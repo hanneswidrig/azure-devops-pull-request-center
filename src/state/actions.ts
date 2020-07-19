@@ -127,10 +127,42 @@ export const setPullRequests: Task = () => async dispatch => {
     const getAllRepositoryPullRequests = repositories.map(
       async repo => await gitClient.getPullRequests(repo.id, activePrCriteria),
     );
-    getAllRepositoryPullRequests.push(
-      ...repositories.map(
-        async repo => await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, 0, 25),
+    const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
+    const getCompletePullRequests = allRepositoryPullRequests.flatMap(prsForSingleRepo =>
+      prsForSingleRepo.map(async pr => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId)),
+    );
+    const allPullRequests = await Promise.all(getCompletePullRequests);
+    const transformedPopulatedPullRequests = await Promise.all(
+      allPullRequests.map(async pullRequest =>
+        fromPullRequestToPR({
+          pr: pullRequest,
+          workItems: [],
+          userContext: getUser(),
+        }),
       ),
+    );
+    dispatch({
+      type: ActionTypes.SET_PULL_REQUESTS,
+      payload: transformedPopulatedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
+    });
+    triggerSortDirection();
+    dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
+    dispatch(setCompletedPullRequests());
+  } catch {
+    const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
+    globalMessagesSvc.addToast({
+      duration: 5000,
+      message: 'An error occurred while fetching pull requests. Please reload or refresh the page.',
+      forceOverrideExisting: true,
+    });
+  }
+};
+
+export const setCompletedPullRequests: Task = () => async dispatch => {
+  try {
+    const repositories = await getRepositories();
+    const getAllRepositoryPullRequests = repositories.map(
+      async repo => await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, 0, 25),
     );
     const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
     const getCompletePullRequests = allRepositoryPullRequests.flatMap(prsForSingleRepo =>
@@ -142,17 +174,15 @@ export const setPullRequests: Task = () => async dispatch => {
         fromPullRequestToPR({
           pr: pullRequest,
           workItems: [],
-          // workItems: await getWorkItemsForPr(pullRequest),
           userContext: getUser(),
         }),
       ),
     );
     dispatch({
-      type: ActionTypes.SET_PULL_REQUESTS,
+      type: ActionTypes.PUSH_COMPLETED_PULL_REQUESTS,
       payload: transformedPopulatedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
     });
     triggerSortDirection();
-    dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
     globalMessagesSvc.addToast({

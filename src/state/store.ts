@@ -40,6 +40,15 @@ const setState: SplitReducer = (state, action) => [
     },
   ],
   [
+    ActionTypes.PUSH_COMPLETED_PULL_REQUESTS,
+    () => {
+      const existingNonCompletedPullRequests = state.data.pullRequests.filter(pr => !pr.isCompleted);
+      return produce(state, draft => {
+        draft.data.pullRequests = [...existingNonCompletedPullRequests, ...action.payload];
+      });
+    },
+  ],
+  [
     ActionTypes.SET_REPOSITORIES,
     () => {
       return produce(state, draft => {
