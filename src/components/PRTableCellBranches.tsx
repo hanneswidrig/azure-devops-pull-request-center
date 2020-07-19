@@ -11,34 +11,15 @@ export const PRTableCellBranches = ({ tableItem }: Props) => {
 
   return (
     <div className="flex-row flex-center rhythm-horizontal-4">
-      <Button
-        className="branch-button"
-        text={tableItem.repository.name}
-        iconProps={{ iconName: 'Repo' }}
-        onClick={() => {
-          navigator.clipboard.writeText(tableItem.repository.name);
-        }}
-        subtle
-      />
+      <Button className="branch-button" text={tableItem.repository.name} iconProps={{ iconName: 'Repo' }} subtle />
       <Button
         className="branch-button text-ellipsis"
         text={sourceBranch}
         iconProps={{ iconName: 'BranchCompare' }}
         tooltipProps={{ text: sourceBranch, delayMs: 500 }}
-        onClick={() => {
-          navigator.clipboard.writeText(sourceBranch);
-        }}
         subtle
       />
-      <Button
-        className="branch-button"
-        text={targetBranch}
-        iconProps={{ iconName: 'BranchMerge' }}
-        onClick={() => {
-          navigator.clipboard.writeText(targetBranch);
-        }}
-        subtle
-      />
+      <Button className="branch-button" text={targetBranch} iconProps={{ iconName: 'BranchMerge' }} subtle />
     </div>
   );
 };
