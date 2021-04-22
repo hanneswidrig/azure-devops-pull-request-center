@@ -19,10 +19,11 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "set HTTPS=true&&react-scripts start",
-    "build": "react-scripts build",
+    "start": "cross-env HTTPS=true react-scripts start",
+    "build": "cross-env NODE_ENV=production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "redux-devtools": "redux-devtools --hostname=localhost --port=8000",
     "package-release": "npm run build && npm run clean-build && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center.vsix",
     "package-dev": "npm run build && npm run clean-build && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center-develop.vsix --manifest-globs ./vss-extension.json --overrides-file ./vss-extension.dev.json --share-with hannes-widrig",
     "clean-build": "del-cli build/**/runtime~main*.map build/**/runtime~main*.js",
@@ -49,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@redux-devtools/cli": "^1.0.0-7",
     "@testing-library/jest-dom": "^5.11.1",
     "@testing-library/react": "^10.4.7",
     "@testing-library/react-hooks": "^3.3.0",
@@ -66,6 +68,7 @@
     "azure-devops-extension-sdk": "^2.0.11",
     "azure-devops-ui": "^1.160.4",
     "copy-webpack-plugin": "^5.1.1",
+    "cross-env": "^7.0.3",
     "del-cli": "^3.0.1",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
