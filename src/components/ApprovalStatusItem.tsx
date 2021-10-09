@@ -9,8 +9,8 @@ import { getReviewerVoteIconStatus } from './StatusIcon';
 export const ApprovalStatusItem = (
   rowIndex: number,
   columnIndex: number,
-  tableColumn: ITableColumn<IListBoxItem<{}>>,
-  tableItem: IListBoxItem<{}>,
+  tableColumn: ITableColumn<IListBoxItem<any>>,
+  tableItem: IListBoxItem<any>
 ) => {
   return (
     <td key={rowIndex} className="bolt-list-box-text bolt-list-box-text-multi-select asi-container">

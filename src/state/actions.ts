@@ -70,49 +70,59 @@ const setFullScreenModeState = async (isFullScreenMode: boolean): Promise<boolea
   return isFullScreenMode;
 };
 
-export const setCurrentUser: Task = () => dispatch => {
+export const setCurrentUser: Task = () => (dispatch) => {
   dispatch({ type: ActionTypes.SET_CURRENT_USER, payload: getUser() });
 };
 
 export const toggleSortDirection: Task = () => (dispatch, getState) => {
   const nextSortDirection = getState().ui.sortDirection === 'desc' ? 'asc' : 'desc';
   pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
-    sortByPullRequestId(a, b, nextSortDirection),
+    sortByPullRequestId(a, b, nextSortDirection)
   );
   dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
 };
 
-export const toggleFilterBar: Task = () => dispatch => {
+export const toggleFilterBar: Task = () => (dispatch) => {
   dispatch({ type: ActionTypes.TOGGLE_FILTER_BAR });
 };
 
-export const setSortDirection: Task<{ sortDirection: SortDirection }> = ({ sortDirection }) => dispatch => {
-  dispatch({ type: ActionTypes.SET_SORT_DIRECTION, payload: sortDirection });
-};
+export const setSortDirection: Task<{ sortDirection: SortDirection }> =
+  ({ sortDirection }) =>
+  (dispatch) => {
+    dispatch({ type: ActionTypes.SET_SORT_DIRECTION, payload: sortDirection });
+  };
 
 export const triggerSortDirection = () => {
   pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
-    sortByPullRequestId(a, b, store.getState().ui.sortDirection),
+    sortByPullRequestId(a, b, store.getState().ui.sortDirection)
   );
 };
 
-export const setFilterValues: Task<{ filterValues: FilterDictionary }> = ({ filterValues }) => dispatch => {
-  dispatch({ type: ActionTypes.SET_FILTER_VALUES, payload: filterValues });
-};
+export const setFilterValues: Task<{ filterValues: FilterDictionary }> =
+  ({ filterValues }) =>
+  (dispatch) => {
+    dispatch({ type: ActionTypes.SET_FILTER_VALUES, payload: filterValues });
+  };
 
-export const setSelectedTab: Task<{ newSelectedTab: string }> = ({ newSelectedTab }) => dispatch => {
-  dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
-};
+export const setSelectedTab: Task<{ newSelectedTab: string }> =
+  ({ newSelectedTab }) =>
+  (dispatch) => {
+    dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
+  };
 
-export const setRefreshDuration: Task<{ refreshDuration: RefreshDuration }> = ({ refreshDuration }) => dispatch => {
-  dispatch({ type: ActionTypes.SET_REFRESH_DURATION, payload: refreshDuration });
-};
+export const setRefreshDuration: Task<{ refreshDuration: RefreshDuration }> =
+  ({ refreshDuration }) =>
+  (dispatch) => {
+    dispatch({ type: ActionTypes.SET_REFRESH_DURATION, payload: refreshDuration });
+  };
 
-export const setFilterBar: Task<{ isFilterVisible: boolean }> = ({ isFilterVisible }) => dispatch => {
-  dispatch({ type: ActionTypes.SET_FILTER_BAR, payload: isFilterVisible });
-};
+export const setFilterBar: Task<{ isFilterVisible: boolean }> =
+  ({ isFilterVisible }) =>
+  (dispatch) => {
+    dispatch({ type: ActionTypes.SET_FILTER_BAR, payload: isFilterVisible });
+  };
 
-export const toggleSettingsPanel: Task = () => dispatch => dispatch({ type: ActionTypes.TOGGLE_SETTINGS_PANEL });
+export const toggleSettingsPanel: Task = () => (dispatch) => dispatch({ type: ActionTypes.TOGGLE_SETTINGS_PANEL });
 
 /**
  * @summary Asynchronously fetches all pull requests from all connected repositories in an Azure DevOps Project.
@@ -120,26 +130,26 @@ export const toggleSettingsPanel: Task = () => dispatch => dispatch({ type: Acti
  * - Work Items associated with the respective PR
  * - Auto Complete status
  */
-export const setPullRequests: Task = () => async dispatch => {
+export const setPullRequests: Task = () => async (dispatch) => {
   try {
     dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
     const repositories = await getRepositories();
     const getAllRepositoryPullRequests = repositories.map(
-      async repo => await gitClient.getPullRequests(repo.id, activePrCriteria),
+      async (repo) => await gitClient.getPullRequests(repo.id, activePrCriteria)
     );
     const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
-    const getCompletePullRequests = allRepositoryPullRequests.flatMap(prsForSingleRepo =>
-      prsForSingleRepo.map(async pr => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId)),
+    const getCompletePullRequests = allRepositoryPullRequests.flatMap((prsForSingleRepo) =>
+      prsForSingleRepo.map(async (pr) => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId))
     );
     const allPullRequests = await Promise.all(getCompletePullRequests);
     const transformedPopulatedPullRequests = await Promise.all(
-      allPullRequests.map(async pullRequest =>
+      allPullRequests.map(async (pullRequest) =>
         fromPullRequestToPR({
           pr: pullRequest,
           workItems: [],
           userContext: getUser(),
-        }),
-      ),
+        })
+      )
     );
     dispatch({
       type: ActionTypes.SET_PULL_REQUESTS,
@@ -158,25 +168,25 @@ export const setPullRequests: Task = () => async dispatch => {
   }
 };
 
-export const setCompletedPullRequests: Task = () => async dispatch => {
+export const setCompletedPullRequests: Task = () => async (dispatch) => {
   try {
     const repositories = await getRepositories();
     const getAllRepositoryPullRequests = repositories.map(
-      async repo => await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, 0, 25),
+      async (repo) => await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, 0, 25)
     );
     const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
-    const getCompletePullRequests = allRepositoryPullRequests.flatMap(prsForSingleRepo =>
-      prsForSingleRepo.map(async pr => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId)),
+    const getCompletePullRequests = allRepositoryPullRequests.flatMap((prsForSingleRepo) =>
+      prsForSingleRepo.map(async (pr) => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId))
     );
     const allPullRequests = await Promise.all(getCompletePullRequests);
     const transformedPopulatedPullRequests = await Promise.all(
-      allPullRequests.map(async pullRequest =>
+      allPullRequests.map(async (pullRequest) =>
         fromPullRequestToPR({
           pr: pullRequest,
           workItems: [],
           userContext: getUser(),
-        }),
-      ),
+        })
+      )
     );
     dispatch({
       type: ActionTypes.PUSH_COMPLETED_PULL_REQUESTS,
@@ -193,7 +203,7 @@ export const setCompletedPullRequests: Task = () => async dispatch => {
   }
 };
 
-export const setRepositories: Task = () => async dispatch => {
+export const setRepositories: Task = () => async (dispatch) => {
   try {
     dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
     const repositories = await getRepositories();
@@ -209,12 +219,14 @@ export const setRepositories: Task = () => async dispatch => {
   }
 };
 
-export const setFullScreenMode: Task<{ isFullScreenMode: boolean }> = ({ isFullScreenMode }) => async dispatch => {
-  const newFullScreenModeState = await setFullScreenModeState(isFullScreenMode);
-  dispatch({ type: ActionTypes.SET_FULL_SCREEN_MODE, payload: newFullScreenModeState });
-};
+export const setFullScreenMode: Task<{ isFullScreenMode: boolean }> =
+  ({ isFullScreenMode }) =>
+  async (dispatch) => {
+    const newFullScreenModeState = await setFullScreenModeState(isFullScreenMode);
+    dispatch({ type: ActionTypes.SET_FULL_SCREEN_MODE, payload: newFullScreenModeState });
+  };
 
-export const restoreSettings: Task = () => async dispatch => {
+export const restoreSettings: Task = () => async (dispatch) => {
   try {
     dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
     const settings = await getSettings();
@@ -237,13 +249,15 @@ export const restoreSettings: Task = () => async dispatch => {
   }
 };
 
-export const saveSettings: Task<{ defaultSettings: DefaultSettings }> = ({ defaultSettings }) => async dispatch => {
-  const settings = await setSettings(defaultSettings);
-  dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
-};
+export const saveSettings: Task<{ defaultSettings: DefaultSettings }> =
+  ({ defaultSettings }) =>
+  async (dispatch) => {
+    const settings = await setSettings(defaultSettings);
+    dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
+  };
 
 export const onInitialLoad: Task = () => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(setCurrentUser());
     dispatch(setRepositories());
     dispatch(setPullRequests());

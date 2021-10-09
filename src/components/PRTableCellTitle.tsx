@@ -21,8 +21,7 @@ export const PRTableCellTitle = ({ tableItem }: { tableItem: PR }) => {
                 className="font-size-m text-ellipsis bolt-table-inline-link bolt-table-link"
                 excludeTabStop
                 href={tableItem.href}
-                target="_blank"
-              >
+                target="_blank">
                 {tableItem.title}
               </Link>
             </Tooltip>

@@ -29,11 +29,10 @@ const ReviewerOverflow = ({ reviewers, hiddenReviewers }: ReviewerOverflowProps)
           <span style={{ fontWeight: 'bold' }}>Reviewers</span>
         </div>
         <div className="flex-column flex-center justify-start">
-          {hiddenReviewers.map(v => reviewerPill(reviewers[v.index]))}
+          {hiddenReviewers.map((v) => reviewerPill(reviewers[v.index]))}
         </div>
       </div>
-    )}
-  >
+    )}>
     <div className="tooltip-overflow-child">
       <Pill variant={2} size={2}>
         <div style={{ height: '22px' }}>+{hiddenReviewers.length}</div>
@@ -63,8 +62,7 @@ export const reviewerPill = (reviewer: IdentityRefWithVote) => (
           </div>
         </div>
       </div>
-    )}
-  >
+    )}>
     <div className="tooltip-overflow-child">
       <Pill key={reviewer.id} variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={2}>
         <div className="flex-row rhythm-horizontal-8">
@@ -83,9 +81,9 @@ export const PRTableCellReviewers = ({ reviewers }: Props) => {
   const measureTag = useCallback(
     (node: HTMLDivElement | null) =>
       node &&
-      setWidths(widths => {
+      setWidths((widths) => {
         const elementWidth = Math.ceil(node.getBoundingClientRect().width) ?? 0;
-        const totalWidth = [...widths.map(w => w.width), elementWidth].reduce((prev, curr) => prev + curr, 0);
+        const totalWidth = [...widths.map((w) => w.width), elementWidth].reduce((prev, curr) => prev + curr, 0);
 
         return [
           ...widths,
@@ -97,7 +95,7 @@ export const PRTableCellReviewers = ({ reviewers }: Props) => {
           },
         ];
       }),
-    [],
+    []
   );
 
   const showPillGroup = widths.length > 0 && widths.length === reviewers.length;
@@ -105,9 +103,9 @@ export const PRTableCellReviewers = ({ reviewers }: Props) => {
     return (
       <div className="reviewers-container">
         <PillGroup overflow={1}>
-          {widths.filter(w => !w.isOverflow).map(v => reviewerPill(reviewers[v.index]))}
-          {widths.filter(w => w.isOverflow).length > 0 && (
-            <ReviewerOverflow reviewers={reviewers} hiddenReviewers={widths.filter(w => w.isOverflow)} />
+          {widths.filter((w) => !w.isOverflow).map((v) => reviewerPill(reviewers[v.index]))}
+          {widths.filter((w) => w.isOverflow).length > 0 && (
+            <ReviewerOverflow reviewers={reviewers} hiddenReviewers={widths.filter((w) => w.isOverflow)} />
           )}
         </PillGroup>
       </div>
@@ -117,7 +115,7 @@ export const PRTableCellReviewers = ({ reviewers }: Props) => {
   return (
     <div className="reviewers-container">
       <PillGroup overflow={1}>
-        {reviewers.map(reviewer => (
+        {reviewers.map((reviewer) => (
           <div key={reviewer.id} ref={measureTag} className="tooltip-overflow-child">
             <Pill variant={2} color={reviewerVoteToIColorLight(reviewer.vote)} size={2}>
               <div className="flex-row rhythm-horizontal-8">

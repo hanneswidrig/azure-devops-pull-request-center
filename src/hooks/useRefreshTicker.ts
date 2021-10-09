@@ -11,7 +11,7 @@ export const useRefreshTicker = (refreshDuration: RefreshDuration) => {
   useEffect(() => {
     if (refreshDuration !== 'off') {
       setTicker(Number(refreshDuration));
-      const interval = setInterval(() => setTicker(secsLeft => (secsLeft === 1 ? 0 : secsLeft - 1)), 1000);
+      const interval = setInterval(() => setTicker((secsLeft) => (secsLeft === 1 ? 0 : secsLeft - 1)), 1000);
       return () => clearInterval(interval);
     }
   }, [refreshDuration]);

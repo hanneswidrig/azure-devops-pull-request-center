@@ -10,7 +10,7 @@ const setState: SplitReducer = (state, action) => [
   [
     ActionTypes.SET_CURRENT_USER,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.data.currentUser = action.payload;
       });
     },
@@ -18,7 +18,7 @@ const setState: SplitReducer = (state, action) => [
   [
     ActionTypes.SET_FULL_SCREEN_MODE,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.ui.isFullScreenMode = action.payload;
       });
     },
@@ -26,7 +26,7 @@ const setState: SplitReducer = (state, action) => [
   [
     ActionTypes.SET_SORT_DIRECTION,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.ui.sortDirection = action.payload;
       });
     },
@@ -34,7 +34,7 @@ const setState: SplitReducer = (state, action) => [
   [
     ActionTypes.SET_PULL_REQUESTS,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.data.pullRequests = action.payload;
       });
     },
@@ -42,8 +42,8 @@ const setState: SplitReducer = (state, action) => [
   [
     ActionTypes.PUSH_COMPLETED_PULL_REQUESTS,
     () => {
-      const existingNonCompletedPullRequests = state.data.pullRequests.filter(pr => !pr.isCompleted);
-      return produce(state, draft => {
+      const existingNonCompletedPullRequests = state.data.pullRequests.filter((pr) => !pr.isCompleted);
+      return produce(state, (draft) => {
         draft.data.pullRequests = [...existingNonCompletedPullRequests, ...action.payload];
       });
     },
@@ -51,7 +51,7 @@ const setState: SplitReducer = (state, action) => [
   [
     ActionTypes.SET_REPOSITORIES,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.data.repositories = action.payload;
       });
     },
@@ -61,7 +61,7 @@ const setState: SplitReducer = (state, action) => [
     () => {
       if (action.payload) {
         const savedSettings: Partial<DefaultSettings> = action.payload;
-        return produce(state, draft => {
+        return produce(state, (draft) => {
           draft.ui.isFilterVisible.value = savedSettings.isFilterVisible ?? defaultSettingValues.isFilterVisible;
           draft.ui.isFullScreenMode = savedSettings.isFullScreenMode ?? defaultSettingValues.isFullScreenMode;
           draft.ui.selectedTab = savedSettings.selectedTab ?? defaultSettingValues.selectedTab;
@@ -88,7 +88,7 @@ const setState: SplitReducer = (state, action) => [
   [
     ActionTypes.SET_SELECTED_TAB,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.ui.selectedTab = action.payload;
       });
     },
@@ -103,18 +103,18 @@ const setState: SplitReducer = (state, action) => [
   [
     ActionTypes.SET_REFRESH_DURATION,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.settings.autoRefreshDuration = action.payload;
       });
     },
   ],
 ];
 
-const updateState: SplitReducer = state => [
+const updateState: SplitReducer = (state) => [
   [
     ActionTypes.ADD_ASYNC_TASK,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.data.asyncTaskCount = state.data.asyncTaskCount === -1 ? 1 : state.data.asyncTaskCount + 1;
       });
     },
@@ -122,7 +122,7 @@ const updateState: SplitReducer = state => [
   [
     ActionTypes.REMOVE_ASYNC_TASK,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.data.asyncTaskCount = state.data.asyncTaskCount - 1;
       });
     },
@@ -130,7 +130,7 @@ const updateState: SplitReducer = state => [
   [
     ActionTypes.TOGGLE_SORT_DIRECTION,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.ui.sortDirection = state.ui.sortDirection === 'desc' ? 'asc' : 'desc';
       });
     },
@@ -138,14 +138,14 @@ const updateState: SplitReducer = state => [
   [
     ActionTypes.TOGGLE_SETTINGS_PANEL,
     () => {
-      return produce(state, draft => {
+      return produce(state, (draft) => {
         draft.settings.settingsPanelOpen = !state.settings.settingsPanelOpen;
       });
     },
   ],
 ];
 
-const modifyObservables: SplitReducer = state => [
+const modifyObservables: SplitReducer = (state) => [
   [
     ActionTypes.TOGGLE_FILTER_BAR,
     () => {

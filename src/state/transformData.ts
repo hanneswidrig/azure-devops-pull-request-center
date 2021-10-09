@@ -9,7 +9,7 @@ import { FilterItemsDictionary } from '../tabs/TabTypes';
 const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext: DevOps.IUserContext) => {
   let voteResult: ReviewerVoteNumber = ReviewerVoteNumber.NoVote;
   if (reviewers && reviewers.length > 0) {
-    const currentUserReviewer = reviewers.filter(r => r.id === userContext.id);
+    const currentUserReviewer = reviewers.filter((r) => r.id === userContext.id);
 
     if (currentUserReviewer.length > 0) {
       voteResult = currentUserReviewer[0].vote.toString() as ReviewerVoteNumber;
@@ -92,32 +92,32 @@ export const fromPRToFilterItems = (pullRequests: PR[]): FilterItemsDictionary =
     ],
   };
 
-  pullRequests.forEach(pr => {
+  pullRequests.forEach((pr) => {
     const repositoryItem = { id: pr.repositoryId, text: pr.repository.name };
     const sourceBranchItem = { id: pr.sourceBranch.name, text: pr.sourceBranch.name };
     const targetBranchItem = { id: pr.targetBranch.name, text: pr.targetBranch.name };
     const authorItem = { id: pr.createdBy.id, text: pr.createdBy.displayName };
-    const reviewerItem = pr.reviewers.map(r => {
+    const reviewerItem = pr.reviewers.map((r) => {
       return { id: r.id, text: r.displayName };
     });
 
-    if (!filterItems.repositories.find(i => i.id === repositoryItem.id)) {
+    if (!filterItems.repositories.find((i) => i.id === repositoryItem.id)) {
       filterItems.repositories.push(repositoryItem);
     }
 
-    if (!filterItems.sourceBranch.find(i => i.id === sourceBranchItem.id)) {
+    if (!filterItems.sourceBranch.find((i) => i.id === sourceBranchItem.id)) {
       filterItems.sourceBranch.push(sourceBranchItem);
     }
 
-    if (!filterItems.targetBranch.find(i => i.id === targetBranchItem.id)) {
+    if (!filterItems.targetBranch.find((i) => i.id === targetBranchItem.id)) {
       filterItems.targetBranch.push(targetBranchItem);
     }
 
-    if (!filterItems.author.find(i => i.id === authorItem.id)) {
+    if (!filterItems.author.find((i) => i.id === authorItem.id)) {
       filterItems.author.push(authorItem);
     }
 
-    const newReviewers = reviewerItem.filter(r => !filterItems.reviewer.find(i => i.id === r.id));
+    const newReviewers = reviewerItem.filter((r) => !filterItems.reviewer.find((i) => i.id === r.id));
     if (newReviewers.length > 0) {
       filterItems.reviewer.push(...newReviewers);
     }

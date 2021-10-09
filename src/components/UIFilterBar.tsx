@@ -108,22 +108,22 @@ export const UIFilterBar = ({ filterItems }: Props) => {
 };
 
 type ExtractCommonValues = (
-  listBoxItem: IListBoxItem<{}>[],
-  defaultValuesItem: string | string[],
-) => IListBoxItem<{}>[];
+  listBoxItem: IListBoxItem<any>[],
+  defaultValuesItem: string | string[]
+) => IListBoxItem<any>[];
 
 type MatchingFilterValues = (
   defaultValues: FilterDictionaryNonNullable,
-  filterItems: FilterItemsDictionary,
+  filterItems: FilterItemsDictionary
 ) => FilterItemsDictionary;
 
 type SelectExistingDefaultFilterValue = (
   matchedFilterValues: FilterItemsDictionary,
-  allFilterItems: FilterItemsDictionary,
+  allFilterItems: FilterItemsDictionary
 ) => void;
 
 const extractCommonValues: ExtractCommonValues = (listBoxItem, defaultValuesItem) => {
-  const matchingValues = listBoxItem.filter(item => defaultValuesItem.includes(item.id));
+  const matchingValues = listBoxItem.filter((item) => defaultValuesItem.includes(item.id));
   return listBoxItem.length > 0 ? matchingValues : [];
 };
 
@@ -139,22 +139,22 @@ const matchingFilterValues: MatchingFilterValues = (defaultValues, filterItems) 
 };
 
 const selectExistingDefaultFilterValue: SelectExistingDefaultFilterValue = (matchedFilterValues, allFilterItems) => {
-  matchedFilterValues.repositories.forEach(item =>
-    _repositories.select(allFilterItems.repositories.findIndex(filterItem => filterItem.id === item.id)),
+  matchedFilterValues.repositories.forEach((item) =>
+    _repositories.select(allFilterItems.repositories.findIndex((filterItem) => filterItem.id === item.id))
   );
-  matchedFilterValues.sourceBranch.forEach(item =>
-    _sourceBranch.select(allFilterItems.sourceBranch.findIndex(filterItem => filterItem.id === item.id)),
+  matchedFilterValues.sourceBranch.forEach((item) =>
+    _sourceBranch.select(allFilterItems.sourceBranch.findIndex((filterItem) => filterItem.id === item.id))
   );
-  matchedFilterValues.targetBranch.forEach(item =>
-    _targetBranch.select(allFilterItems.targetBranch.findIndex(filterItem => filterItem.id === item.id)),
+  matchedFilterValues.targetBranch.forEach((item) =>
+    _targetBranch.select(allFilterItems.targetBranch.findIndex((filterItem) => filterItem.id === item.id))
   );
-  matchedFilterValues.author.forEach(item =>
-    _author.select(allFilterItems.author.findIndex(filterItem => filterItem.id === item.id)),
+  matchedFilterValues.author.forEach((item) =>
+    _author.select(allFilterItems.author.findIndex((filterItem) => filterItem.id === item.id))
   );
-  matchedFilterValues.reviewer.forEach(item =>
-    _reviewer.select(allFilterItems.reviewer.findIndex(filterItem => filterItem.id === item.id)),
+  matchedFilterValues.reviewer.forEach((item) =>
+    _reviewer.select(allFilterItems.reviewer.findIndex((filterItem) => filterItem.id === item.id))
   );
-  matchedFilterValues.myApprovalStatus.forEach(item =>
-    _myApprovalStatus.select(allFilterItems.myApprovalStatus.findIndex(filterItem => filterItem.id === item.id)),
+  matchedFilterValues.myApprovalStatus.forEach((item) =>
+    _myApprovalStatus.select(allFilterItems.myApprovalStatus.findIndex((filterItem) => filterItem.id === item.id))
   );
 };

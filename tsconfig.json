@@ -11,10 +11,16 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noEmit": true,
-    "jsx": "preserve",
-    "lib": ["esnext", "dom"],
+    "jsx": "react-jsx",
+    "lib": [
+      "esnext",
+      "dom"
+    ],
     "isolatedModules": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

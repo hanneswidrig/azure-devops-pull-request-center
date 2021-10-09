@@ -32,7 +32,7 @@ import {
 import { applyFilter, defaultFilterValues } from '../lib/filters';
 import { ITab, ActiveItemProvider, FilterItemsDictionary, FilterDictionary, FilterOptions } from './TabTypes';
 
-export const getCurrentFilterValues: (filter: Filter) => FilterDictionary = filter => {
+export const getCurrentFilterValues: (filter: Filter) => FilterDictionary = (filter) => {
   return {
     searchString: filter.getFilterItemValue<string>(FilterOptions.searchString),
     repositories: filter.getFilterItemValue<string[]>(FilterOptions.repositories),
@@ -61,7 +61,7 @@ const onFilterChanges = (store: PrHubState) => {
     if (store.data.pullRequests.length > 0) {
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(
-        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab),
+        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab)
       );
       triggerSortDirection();
     }
@@ -124,32 +124,32 @@ const getPageContent = ({ newSelectedTab, filterItems, store }: { newSelectedTab
 
 const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | undefined = (
   pullRequests: PR[],
-  selectedTab: TabOptions,
+  selectedTab: TabOptions
 ) => {
   if (pullRequests.length === 0) {
     return undefined;
   }
 
   if (selectedTab === 'active') {
-    const activePrsCount = pullRequests.filter(v => v.isActive && !v.isDraft).length;
+    const activePrsCount = pullRequests.filter((v) => v.isActive && !v.isDraft).length;
     return activePrsCount > 0 ? activePrsCount : undefined;
   }
 
   if (selectedTab === 'draft') {
-    const draftPrsCount = pullRequests.filter(v => v.isDraft).length;
+    const draftPrsCount = pullRequests.filter((v) => v.isDraft).length;
     return draftPrsCount > 0 ? draftPrsCount : undefined;
   }
 
   if (selectedTab === 'completed') {
-    const completedPrsCount = pullRequests.filter(v => v.isCompleted).length;
+    const completedPrsCount = pullRequests.filter((v) => v.isCompleted).length;
     return completedPrsCount > 0 ? completedPrsCount : undefined;
   }
 };
 
 export const pullRequestItemProvider$ = new ObservableArray<ActiveItemProvider>();
 export const TabProvider = () => {
-  const store = useTypedSelector(store => store);
-  const selectedTab = useTypedSelector(store => store.ui.selectedTab);
+  const store = useTypedSelector((store) => store);
+  const selectedTab = useTypedSelector((store) => store.ui.selectedTab);
   const dispatch = useDispatch();
 
   const [filterItems, setFilterItems] = React.useState<FilterItemsDictionary>({
@@ -173,7 +173,7 @@ export const TabProvider = () => {
       clearSelections();
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
       pullRequestItemProvider$.push(
-        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), selectedTab),
+        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), selectedTab)
       );
       setFilterItems(fromPRToFilterItems(applyFilter(store.data.pullRequests, defaultFilterValues, selectedTab)));
       triggerSortDirection();
@@ -206,7 +206,7 @@ export const TabProvider = () => {
         )} */}
         <TabBar
           selectedTabId={store.ui.selectedTab}
-          onSelectedTabChanged={newSelectedTab => dispatch(setSelectedTab({ newSelectedTab: newSelectedTab }))}
+          onSelectedTabChanged={(newSelectedTab) => dispatch(setSelectedTab({ newSelectedTab: newSelectedTab }))}
           tabSize={'tall' as any}
           renderAdditionalContent={() => (
             <HeaderCommandBarWithFilter
@@ -214,8 +214,7 @@ export const TabProvider = () => {
               items={getFilterCommandBarItems(dispatch, store)}
               filterToggled={store.ui.isFilterVisible}
             />
-          )}
-        >
+          )}>
           <Tab name="Active" id="active" badgeCount={badgeCount(store.data.pullRequests, 'active')} />
           <Tab name="Draft" id="draft" badgeCount={badgeCount(store.data.pullRequests, 'draft')} />
           <Tab name="Recently Completed" id="completed" badgeCount={badgeCount(store.data.pullRequests, 'completed')} />

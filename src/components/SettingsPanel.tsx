@@ -71,7 +71,7 @@ export const getDurationText = (refreshDuration: RefreshDuration) => {
 const autoRefreshMenuItems: (
   settingValues: DefaultSettings,
   setSettingValues: SetSettingValuesCallback,
-  dispatch: Dispatch<any>,
+  dispatch: Dispatch<any>
 ) => IContextualMenuProps = (settingValues, setSettingValues, dispatch) => ({
   items: [
     {
@@ -106,7 +106,7 @@ const autoRefreshMenuItems: (
 type ChoiceGroupChanged = (
   selectedOption: IChoiceGroupOption | undefined,
   setSettingValues: SetSettingValuesCallback,
-  dispatch?: Dispatch<any>,
+  dispatch?: Dispatch<any>
 ) => void;
 
 type CompoundButtonChanged = (decision: 'save' | 'clear', setSettingValues: SetSettingValuesCallback) => void;
@@ -116,7 +116,7 @@ type ToggleChanged = (selectedOption: boolean | undefined, setSettingValues: Set
 type AutoRefreshDurationChanged = (
   duration: RefreshDuration,
   setSettingValues: SetSettingValuesCallback,
-  dispatch: Dispatch<any>,
+  dispatch: Dispatch<any>
 ) => void;
 
 type ResetChanges = (setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
@@ -125,7 +125,7 @@ type ApplyChanges = (defaultSettings: DefaultSettings, dispatch: Dispatch<any>) 
 
 const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingValues, dispatch) => {
   const isFullScreenMode = selectedOption?.key === 'true' ?? false;
-  setSettingValues(values => ({ ...values, isFullScreenMode: isFullScreenMode }));
+  setSettingValues((values) => ({ ...values, isFullScreenMode: isFullScreenMode }));
   if (dispatch) {
     dispatch(setFullScreenMode({ isFullScreenMode: isFullScreenMode }));
   }
@@ -133,8 +133,8 @@ const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingV
 
 const isSavingFilterItemsChanged: CompoundButtonChanged = (decision, setSettingValues) => {
   const isSavingFilterItems = decision === 'save';
-  setSettingValues(values => ({ ...values, isSavingFilterItems: isSavingFilterItems }));
-  setSettingValues(values => ({
+  setSettingValues((values) => ({ ...values, isSavingFilterItems: isSavingFilterItems }));
+  setSettingValues((values) => ({
     ...values,
     filterValues: isSavingFilterItems ? getCurrentFilterValues(filter) : undefined,
   }));
@@ -145,17 +145,17 @@ const isFilterVisibleChanged: ToggleChanged = (selectedOption, setSettingValues)
 };
 
 const selectedTabChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
-  const option = selectedTabItems.find(option => option.key === selectedOption?.key) ?? selectedTabItems[0];
-  setSettingValues(values => ({ ...values, selectedTab: option.key as TabOptions }));
+  const option = selectedTabItems.find((option) => option.key === selectedOption?.key) ?? selectedTabItems[0];
+  setSettingValues((values) => ({ ...values, selectedTab: option.key as TabOptions }));
 };
 
 const sortDirectionChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
-  const option = sortDirectionItems.find(option => option.key === selectedOption?.key) ?? sortDirectionItems[0];
-  setSettingValues(values => ({ ...values, sortDirection: option.key as SortDirection }));
+  const option = sortDirectionItems.find((option) => option.key === selectedOption?.key) ?? sortDirectionItems[0];
+  setSettingValues((values) => ({ ...values, sortDirection: option.key as SortDirection }));
 };
 
 const autoRefreshDurationChanged: AutoRefreshDurationChanged = (duration, setSettingValues, dispatch) => {
-  setSettingValues(values => ({ ...values, autoRefreshDuration: duration }));
+  setSettingValues((values) => ({ ...values, autoRefreshDuration: duration }));
   dispatch(setRefreshDuration({ refreshDuration: duration }));
 };
 
@@ -217,8 +217,8 @@ const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings):
 };
 
 export const SettingsPanel = () => {
-  const store = useTypedSelector(store => store);
-  const defaultDuration = useTypedSelector(store => store.settings.defaults.autoRefreshDuration);
+  const store = useTypedSelector((store) => store);
+  const defaultDuration = useTypedSelector((store) => store.settings.defaults.autoRefreshDuration);
   const dispatch = useDispatch();
   const [settingValues, setSettingValues] = React.useState<DefaultSettings>({
     isFilterVisible: store.settings.defaults.isFilterVisible,
@@ -249,8 +249,7 @@ export const SettingsPanel = () => {
           onClick: () => applyChanges(settingValues, dispatch),
           disabled: !isDirty,
         },
-      ]}
-    >
+      ]}>
       <Stack tokens={{ childrenGap: 8 }}>
         <DefaultButton
           primary={settingValues.autoRefreshDuration !== 'off'}
@@ -260,8 +259,7 @@ export const SettingsPanel = () => {
               : 'Auto Refresh Disabled'
           }
           iconProps={{ iconName: 'Timer' }}
-          menuProps={autoRefreshMenuItems(settingValues, setSettingValues, dispatch)}
-        ></DefaultButton>
+          menuProps={autoRefreshMenuItems(settingValues, setSettingValues, dispatch)}></DefaultButton>
         <div>
           <Label className="light-dark-toggle">Full Screen Mode</Label>
           <ChoiceGroup
@@ -285,16 +283,14 @@ export const SettingsPanel = () => {
           iconProps={{ iconName: 'Save' }}
           secondaryText={`Default to currently selected values.`}
           onClick={() => isSavingFilterItemsChanged('save', setSettingValues)}
-          primary={settingValues.isSavingFilterItems}
-        >
+          primary={settingValues.isSavingFilterItems}>
           Save
         </CompoundButton>
         <CompoundButton
           iconProps={{ iconName: 'ClearFilter' }}
           secondaryText={`Remove default selected values.`}
           onClick={() => isSavingFilterItemsChanged('clear', setSettingValues)}
-          disabled={!settingValues.isSavingFilterItems}
-        >
+          disabled={!settingValues.isSavingFilterItems}>
           Clear
         </CompoundButton>
         <div>
