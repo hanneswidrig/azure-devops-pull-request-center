@@ -35,7 +35,8 @@ const App = () => {
   );
 };
 
-init();
-ready().then(() => {
-  ReactDOM.render(<App />, document.getElementById('root'));
-});
+init().then(() =>
+  ready().then(() => {
+    ReactDOM.render(<App />, document.getElementById('root'));
+  })
+);

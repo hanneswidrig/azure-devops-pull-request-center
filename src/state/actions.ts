@@ -1,15 +1,15 @@
 import {
   getClient,
-  IProjectPageService,
-  IHostPageLayoutService,
-  IExtensionDataService,
   IExtensionDataManager,
+  IExtensionDataService,
   IGlobalMessagesService,
+  IHostPageLayoutService,
+  IProjectPageService,
 } from 'azure-devops-extension-api';
 import { CoreRestClient } from 'azure-devops-extension-api/Core/CoreClient';
 import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
 import { GitPullRequestSearchCriteria, GitRepository, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
-import { getService, getUser, getExtensionContext, getAccessToken } from 'azure-devops-extension-sdk';
+import { getAccessToken, getExtensionContext, getService, getUser } from 'azure-devops-extension-sdk';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
 import { store } from '..';
@@ -18,8 +18,8 @@ import { FilterDictionary } from '../tabs/TabTypes';
 import { fromPullRequestToPR } from './transformData';
 import { pullRequestItemProvider$ } from '../tabs/TabProvider';
 import { defaultSettingValues } from '../components/SettingsPanel';
-import { sortByRepositoryName, sortByPullRequestId } from '../lib/utils';
-import { ActionTypes, DefaultSettings, SortDirection, RefreshDuration } from './types';
+import { sortByPullRequestId, sortByRepositoryName } from '../lib/utils';
+import { ActionTypes, DefaultSettings, RefreshDuration, SortDirection } from './types';
 
 export const activePrCriteria: GitPullRequestSearchCriteria = {
   repositoryId: '',
@@ -223,8 +223,7 @@ export const restoreSettings: Task = () => async (dispatch) => {
       dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
       triggerSortDirection();
     } else {
-      const defaultSettings = defaultSettingValues;
-      await setSettings(defaultSettings);
+      await setSettings(defaultSettingValues);
     }
     dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
   } catch {
