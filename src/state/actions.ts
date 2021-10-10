@@ -19,7 +19,7 @@ import { fromPullRequestToPR } from './transformData';
 import { pullRequestItemProvider$ } from '../tabs/TabProvider';
 import { defaultSettingValues } from '../components/SettingsPanel';
 import { sortByPullRequestId, sortByRepositoryName } from '../lib/utils';
-import { ActionTypes, DefaultSettings, RefreshDuration, SortDirection } from './types';
+import { ActionTypes, DefaultSettings, PR, RefreshDuration, SortDirection } from './types';
 
 export const activePrCriteria: GitPullRequestSearchCriteria = {
   repositoryId: '',
@@ -128,25 +128,10 @@ export const setPullRequests: Task = () => async (dispatch) => {
     dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
     const repositories = await getRepositories();
 
-    const allRepositoryPullRequests = await Promise.all(
-      repositories.map(async (repo) => await gitClient.getPullRequests(repo.id, activePrCriteria))
-    );
-    console.debug(allRepositoryPullRequests[0]);
+    const allPullRequests = await Promise.all(repositories.flatMap((repo) => fetchPullRequests(repo, activePrCriteria, 25)));
+    const payload = allPullRequests.reduce((prev, curr) => [...prev, ...curr], []).sort((a, b) => sortByPullRequestId(a, b, 'desc'));
 
-    const allPullRequests = await Promise.all(
-      allRepositoryPullRequests.flatMap((prsForSingleRepo) =>
-        prsForSingleRepo.map(async (pr) => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId))
-      )
-    );
-
-    const transformedPullRequests = await Promise.all(
-      allPullRequests.map(async (pr) => fromPullRequestToPR({ pr: pr, workItems: [], userContext: getUser() }))
-    );
-
-    dispatch({
-      type: ActionTypes.SET_PULL_REQUESTS,
-      payload: transformedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
-    });
+    dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload });
     triggerSortDirection();
     dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
     dispatch(setCompletedPullRequests(repositories));
@@ -162,24 +147,10 @@ export const setPullRequests: Task = () => async (dispatch) => {
 
 export const setCompletedPullRequests: Task<GitRepository[]> = (repositories: GitRepository[]) => async (dispatch) => {
   try {
-    const allRepositoryPullRequests = await Promise.all(
-      repositories.map(async (repo) => await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, 0, 25))
-    );
+    const allPullRequests = await Promise.all(repositories.flatMap((repo) => fetchPullRequests(repo, completedPrCriteria, 25)));
+    const payload = allPullRequests.reduce((prev, curr) => [...prev, ...curr], []).sort((a, b) => sortByPullRequestId(a, b, 'desc'));
 
-    const allPullRequests = await Promise.all(
-      allRepositoryPullRequests.flatMap((singleRepoPr) =>
-        singleRepoPr.map(async (pr) => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId))
-      )
-    );
-
-    const transformedPullRequests = await Promise.all(
-      allPullRequests.map(async (pr) => fromPullRequestToPR({ pr, workItems: [], userContext: getUser() }))
-    );
-
-    dispatch({
-      type: ActionTypes.PUSH_COMPLETED_PULL_REQUESTS,
-      payload: transformedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
-    });
+    dispatch({ type: ActionTypes.PUSH_COMPLETED_PULL_REQUESTS, payload });
     triggerSortDirection();
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
@@ -270,3 +241,18 @@ const setSettings = async (data: DefaultSettings): Promise<DefaultSettings> => {
   const context = await getDataManagementContext();
   return context.setValue(dbKey, data);
 };
+
+async function fetchPullRequests(repo: GitRepository, criteria: GitPullRequestSearchCriteria, take: number): Promise<PR[]> {
+  let skip = 0;
+  const userContext = getUser();
+  const pullRequests: PR[] = [];
+
+  do {
+    const prsPerRepo = await gitClient.getPullRequests(repo.id, criteria, undefined, undefined, skip, take);
+    const prs = prsPerRepo.map((pr) => fromPullRequestToPR({ pr, workItems: [], userContext }));
+    pullRequests.push(...prs);
+    skip = skip + take;
+  } while (pullRequests.length !== 0 && pullRequests.length % take === 0);
+
+  return pullRequests;
+}
