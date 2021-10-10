@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import createMockStore from 'redux-mock-store';
 import '@testing-library/jest-dom/extend-expect';
 import { renderHook, act } from '@testing-library/react-hooks';
@@ -7,14 +7,17 @@ import { initialState } from '../state/initialState';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
 import { TestingWrapper, WrapperType } from '../components/TestingWrapper';
 
-jest.useFakeTimers();
 jest.mock('../state/actions', () => ({
-  setPullRequests: jest.fn(() => ({ type: 'setPullRequests' })),
+  setPullRequests: () => ({ type: 'setPullRequests' }),
 }));
 
 const store = createMockStore([])(initialState);
 
 describe('useRefreshTicker', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
   it('initial ticker value: [off]', () => {
     const { result } = renderHook(() => useRefreshTicker('off'), {
       wrapper: ({ children }: WrapperType) => <TestingWrapper store={store}>{children}</TestingWrapper>,
