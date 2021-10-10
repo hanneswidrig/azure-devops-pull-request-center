@@ -66,20 +66,15 @@ const setState: SplitReducer = (state, action) => [
           draft.ui.isFullScreenMode = savedSettings.isFullScreenMode ?? defaultSettingValues.isFullScreenMode;
           draft.ui.selectedTab = savedSettings.selectedTab ?? defaultSettingValues.selectedTab;
           draft.ui.sortDirection = savedSettings.sortDirection ?? defaultSettingValues.sortDirection;
-          draft.settings.autoRefreshDuration =
-            savedSettings.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration;
+          draft.settings.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration;
 
-          draft.settings.defaults.isFilterVisible =
-            savedSettings.isFilterVisible ?? defaultSettingValues.isFilterVisible;
-          draft.settings.defaults.isFullScreenMode =
-            savedSettings.isFullScreenMode ?? defaultSettingValues.isFullScreenMode;
+          draft.settings.defaults.isFilterVisible = savedSettings.isFilterVisible ?? defaultSettingValues.isFilterVisible;
+          draft.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode ?? defaultSettingValues.isFullScreenMode;
           draft.settings.defaults.selectedTab = savedSettings.selectedTab ?? defaultSettingValues.selectedTab;
           draft.settings.defaults.sortDirection = savedSettings.sortDirection ?? defaultSettingValues.sortDirection;
-          draft.settings.defaults.isSavingFilterItems =
-            savedSettings.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems;
+          draft.settings.defaults.isSavingFilterItems = savedSettings.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems;
           draft.settings.defaults.filterValues = savedSettings.filterValues;
-          draft.settings.defaults.autoRefreshDuration =
-            savedSettings.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration;
+          draft.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration;
         });
       }
       return state;

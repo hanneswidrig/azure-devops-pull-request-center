@@ -28,9 +28,7 @@ const ReviewerOverflow = ({ reviewers, hiddenReviewers }: ReviewerOverflowProps)
           <NoVote className="vote-status no-vote" />
           <span style={{ fontWeight: 'bold' }}>Reviewers</span>
         </div>
-        <div className="flex-column flex-center justify-start">
-          {hiddenReviewers.map((v) => reviewerPill(reviewers[v.index]))}
-        </div>
+        <div className="flex-column flex-center justify-start">{hiddenReviewers.map((v) => reviewerPill(reviewers[v.index]))}</div>
       </div>
     )}>
     <div className="tooltip-overflow-child">

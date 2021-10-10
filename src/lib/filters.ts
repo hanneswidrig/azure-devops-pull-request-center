@@ -18,8 +18,7 @@ export const filterByTitle: FilterFunc = (pullRequest, filterValue) =>
   pullRequest.targetBranch.name.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1 ||
   pullRequest.createdBy.displayName.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1;
 
-export const filterByRepositoryId: FilterFunc = (pullRequest, filterValue) =>
-  filterValue.some((v) => pullRequest.repositoryId === v);
+export const filterByRepositoryId: FilterFunc = (pullRequest, filterValue) => filterValue.some((v) => pullRequest.repositoryId === v);
 
 export const filterBySourceBranchDisplayName: FilterFunc = (pullRequest, filterValue) =>
   filterValue.some((v) => pullRequest.sourceBranch.name === v);
@@ -27,8 +26,7 @@ export const filterBySourceBranchDisplayName: FilterFunc = (pullRequest, filterV
 export const filterByTargetBranchDisplayName: FilterFunc = (pullRequest, filterValue) =>
   filterValue.some((v) => pullRequest.targetBranch.name === v);
 
-export const filterByCreatedByUserId: FilterFunc = (pullRequest, filterValue) =>
-  filterValue.some((v) => pullRequest.createdBy.id === v);
+export const filterByCreatedByUserId: FilterFunc = (pullRequest, filterValue) => filterValue.some((v) => pullRequest.createdBy.id === v);
 
 export const filterByReviewers: FilterFunc = (pullRequest, filterValue) =>
   filterValue.some((v) => pullRequest.reviewers.some((r) => r.id === v));

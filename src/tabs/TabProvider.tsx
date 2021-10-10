@@ -8,27 +8,19 @@ import { Page } from 'azure-devops-ui/Page';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab } from 'azure-devops-ui/Tabs';
 import { RecentlyCompleted } from './RecentlyCompleted';
-// import { MessageCard } from 'azure-devops-ui/MessageCard';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import { FILTER_CHANGE_EVENT, Filter } from 'azure-devops-ui/Utilities/Filter';
 import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
 import { IHeaderCommandBarItem, HeaderCommandBarWithFilter, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 
 import { filter } from '..';
-// import { useDeltaState } from '../hooks/useDeltaState';
 import { clearSelections } from '../components/UIFilterBar';
 import { useUnmount, useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from '../components/SettingsPanel';
 import { PrHubState, PR, TabOptions } from '../state/types';
 import { fromPRToFilterItems } from '../state/transformData';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
-import {
-  setSelectedTab,
-  setPullRequests,
-  toggleSettingsPanel,
-  toggleSortDirection,
-  triggerSortDirection,
-} from '../state/actions';
+import { setSelectedTab, setPullRequests, toggleSettingsPanel, toggleSortDirection, triggerSortDirection } from '../state/actions';
 import { applyFilter, defaultFilterValues } from '../lib/filters';
 import { ITab, ActiveItemProvider, FilterItemsDictionary, FilterDictionary, FilterOptions } from './TabTypes';
 
@@ -60,9 +52,7 @@ const onFilterChanges = (store: PrHubState) => {
   filter.subscribe(() => {
     if (store.data.pullRequests.length > 0) {
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-      pullRequestItemProvider$.push(
-        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab)
-      );
+      pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), store.ui.selectedTab));
       triggerSortDirection();
     }
   }, FILTER_CHANGE_EVENT);
@@ -122,10 +112,7 @@ const getPageContent = ({ newSelectedTab, filterItems, store }: { newSelectedTab
   return tabs[newSelectedTab];
 };
 
-const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | undefined = (
-  pullRequests: PR[],
-  selectedTab: TabOptions
-) => {
+const badgeCount: (pullRequests: PR[], selectedTab: TabOptions) => number | undefined = (pullRequests: PR[], selectedTab: TabOptions) => {
   if (pullRequests.length === 0) {
     return undefined;
   }
@@ -161,7 +148,6 @@ export const TabProvider = () => {
     myApprovalStatus: [],
   });
   const { timeUntil } = useRefreshTicker(store.settings.autoRefreshDuration);
-  // const { deltaUpdate, acknowledge } = useDeltaState();
   onFilterChanges(store);
 
   React.useEffect(() => {
@@ -172,9 +158,7 @@ export const TabProvider = () => {
     if (store.data.pullRequests.length > 0) {
       clearSelections();
       pullRequestItemProvider$.splice(0, pullRequestItemProvider$.length);
-      pullRequestItemProvider$.push(
-        ...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), selectedTab)
-      );
+      pullRequestItemProvider$.push(...applyFilter(store.data.pullRequests, getCurrentFilterValues(filter), selectedTab));
       setFilterItems(fromPRToFilterItems(applyFilter(store.data.pullRequests, defaultFilterValues, selectedTab)));
       triggerSortDirection();
     }
@@ -197,13 +181,7 @@ export const TabProvider = () => {
           </HeaderTitleArea>
           <HeaderCommandBar items={commandBarItems(dispatch, store, timeUntil)} />
         </CustomHeader>
-        {/* {!deltaUpdate.areEqual && (
-          <div style={{ padding: '12px 32px 4px 32px' }}>
-            <MessageCard onDismiss={() => acknowledge()}>
-              {JSON.stringify(deltaUpdate.deltaState.active, null, 2)}
-            </MessageCard>
-          </div>
-        )} */}
+
         <TabBar
           selectedTabId={store.ui.selectedTab}
           onSelectedTabChanged={(newSelectedTab) => dispatch(setSelectedTab({ newSelectedTab: newSelectedTab }))}
@@ -214,7 +192,8 @@ export const TabProvider = () => {
               items={getFilterCommandBarItems(dispatch, store)}
               filterToggled={store.ui.isFilterVisible}
             />
-          )}>
+          )}
+        >
           <Tab name="Active" id="active" badgeCount={badgeCount(store.data.pullRequests, 'active')} />
           <Tab name="Draft" id="draft" badgeCount={badgeCount(store.data.pullRequests, 'draft')} />
           <Tab name="Recently Completed" id="completed" badgeCount={badgeCount(store.data.pullRequests, 'completed')} />

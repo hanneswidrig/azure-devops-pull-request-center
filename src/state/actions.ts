@@ -8,7 +8,7 @@ import {
 } from 'azure-devops-extension-api';
 import { CoreRestClient } from 'azure-devops-extension-api/Core/CoreClient';
 import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
-import { GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
+import { GitPullRequestSearchCriteria, GitRepository, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 import { getService, getUser, getExtensionContext, getAccessToken } from 'azure-devops-extension-sdk';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
@@ -51,14 +51,9 @@ export const workItemClient: WorkItemTrackingRestClient = getClient(WorkItemTrac
 const getRepositories = async () => {
   const projectService = await getService<IProjectPageService>('ms.vss-tfs-web.tfs-page-data-service');
   const currentProject = await projectService.getProject();
-  return (await gitClient.getRepositories(currentProject?.id)).sort(sortByRepositoryName);
+  const repositories = await gitClient.getRepositories(currentProject?.id);
+  return repositories.sort(sortByRepositoryName);
 };
-
-// const getWorkItemsForPr = async (pullRequest: GitPullRequest) => {
-//   const workItemRefs = await gitClient.getPullRequestWorkItemRefs(pullRequest.repository.id, pullRequest.pullRequestId);
-//   const workItemIds = workItemRefs.flatMap((ref: ResourceRef) => Number(ref.id));
-//   return workItemIds.length > 0 ? await workItemClient.getWorkItems(workItemIds) : [];
-// };
 
 const getLayoutService = async (): Promise<IHostPageLayoutService> => {
   return await getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
@@ -76,9 +71,7 @@ export const setCurrentUser: Task = () => (dispatch) => {
 
 export const toggleSortDirection: Task = () => (dispatch, getState) => {
   const nextSortDirection = getState().ui.sortDirection === 'desc' ? 'asc' : 'desc';
-  pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
-    sortByPullRequestId(a, b, nextSortDirection)
-  );
+  pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) => sortByPullRequestId(a, b, nextSortDirection));
   dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
 };
 
@@ -134,30 +127,29 @@ export const setPullRequests: Task = () => async (dispatch) => {
   try {
     dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
     const repositories = await getRepositories();
-    const getAllRepositoryPullRequests = repositories.map(
-      async (repo) => await gitClient.getPullRequests(repo.id, activePrCriteria)
+
+    const allRepositoryPullRequests = await Promise.all(
+      repositories.map(async (repo) => await gitClient.getPullRequests(repo.id, activePrCriteria))
     );
-    const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
-    const getCompletePullRequests = allRepositoryPullRequests.flatMap((prsForSingleRepo) =>
-      prsForSingleRepo.map(async (pr) => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId))
-    );
-    const allPullRequests = await Promise.all(getCompletePullRequests);
-    const transformedPopulatedPullRequests = await Promise.all(
-      allPullRequests.map(async (pullRequest) =>
-        fromPullRequestToPR({
-          pr: pullRequest,
-          workItems: [],
-          userContext: getUser(),
-        })
+    console.debug(allRepositoryPullRequests[0]);
+
+    const allPullRequests = await Promise.all(
+      allRepositoryPullRequests.flatMap((prsForSingleRepo) =>
+        prsForSingleRepo.map(async (pr) => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId))
       )
     );
+
+    const transformedPullRequests = await Promise.all(
+      allPullRequests.map(async (pr) => fromPullRequestToPR({ pr: pr, workItems: [], userContext: getUser() }))
+    );
+
     dispatch({
       type: ActionTypes.SET_PULL_REQUESTS,
-      payload: transformedPopulatedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
+      payload: transformedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
     });
     triggerSortDirection();
     dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
-    dispatch(setCompletedPullRequests());
+    dispatch(setCompletedPullRequests(repositories));
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
     globalMessagesSvc.addToast({
@@ -168,29 +160,25 @@ export const setPullRequests: Task = () => async (dispatch) => {
   }
 };
 
-export const setCompletedPullRequests: Task = () => async (dispatch) => {
+export const setCompletedPullRequests: Task<GitRepository[]> = (repositories: GitRepository[]) => async (dispatch) => {
   try {
-    const repositories = await getRepositories();
-    const getAllRepositoryPullRequests = repositories.map(
-      async (repo) => await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, 0, 25)
+    const allRepositoryPullRequests = await Promise.all(
+      repositories.map(async (repo) => await gitClient.getPullRequests(repo.id, completedPrCriteria, undefined, undefined, 0, 25))
     );
-    const allRepositoryPullRequests = await Promise.all(getAllRepositoryPullRequests);
-    const getCompletePullRequests = allRepositoryPullRequests.flatMap((prsForSingleRepo) =>
-      prsForSingleRepo.map(async (pr) => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId))
-    );
-    const allPullRequests = await Promise.all(getCompletePullRequests);
-    const transformedPopulatedPullRequests = await Promise.all(
-      allPullRequests.map(async (pullRequest) =>
-        fromPullRequestToPR({
-          pr: pullRequest,
-          workItems: [],
-          userContext: getUser(),
-        })
+
+    const allPullRequests = await Promise.all(
+      allRepositoryPullRequests.flatMap((singleRepoPr) =>
+        singleRepoPr.map(async (pr) => await gitClient.getPullRequest(pr.repository.id, pr.pullRequestId))
       )
     );
+
+    const transformedPullRequests = await Promise.all(
+      allPullRequests.map(async (pr) => fromPullRequestToPR({ pr, workItems: [], userContext: getUser() }))
+    );
+
     dispatch({
       type: ActionTypes.PUSH_COMPLETED_PULL_REQUESTS,
-      payload: transformedPopulatedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
+      payload: transformedPullRequests.sort((a, b) => sortByPullRequestId(a, b, 'desc')),
     });
     triggerSortDirection();
   } catch {

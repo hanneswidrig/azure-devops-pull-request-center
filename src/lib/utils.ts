@@ -28,9 +28,7 @@ export const sortByDisplayName = (a: IdentityRef, b: IdentityRef) => {
 };
 
 export const sortByPullRequestId = (a: ActiveItemProvider, b: ActiveItemProvider, sortDirection: SortDirection) => {
-  return sortDirection === 'desc'
-    ? (b as PR).pullRequestId - (a as PR).pullRequestId
-    : (a as PR).pullRequestId - (b as PR).pullRequestId;
+  return sortDirection === 'desc' ? (b as PR).pullRequestId - (a as PR).pullRequestId : (a as PR).pullRequestId - (b as PR).pullRequestId;
 };
 
 export const getVoteDescription = (vote: number): string => {

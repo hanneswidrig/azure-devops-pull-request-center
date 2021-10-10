@@ -113,11 +113,7 @@ type CompoundButtonChanged = (decision: 'save' | 'clear', setSettingValues: SetS
 
 type ToggleChanged = (selectedOption: boolean | undefined, setSettingValues: SetSettingValuesCallback) => void;
 
-type AutoRefreshDurationChanged = (
-  duration: RefreshDuration,
-  setSettingValues: SetSettingValuesCallback,
-  dispatch: Dispatch<any>
-) => void;
+type AutoRefreshDurationChanged = (duration: RefreshDuration, setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
 
 type ResetChanges = (setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
 
@@ -175,12 +171,10 @@ const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
 
 const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings): boolean => {
   const isFilterVisibleNotEqual =
-    (left.isFilterVisible ?? defaultSettingValues.isFilterVisible) !==
-    (right.isFilterVisible ?? defaultSettingValues.isFilterVisible);
+    (left.isFilterVisible ?? defaultSettingValues.isFilterVisible) !== (right.isFilterVisible ?? defaultSettingValues.isFilterVisible);
 
   const isFullScreenModeNotEqual =
-    (left.isFullScreenMode ?? defaultSettingValues.isFullScreenMode) !==
-    (right.isFullScreenMode ?? defaultSettingValues.isFullScreenMode);
+    (left.isFullScreenMode ?? defaultSettingValues.isFullScreenMode) !== (right.isFullScreenMode ?? defaultSettingValues.isFullScreenMode);
 
   const isSavingFilterItemsNotEqual =
     (left.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems) !==
@@ -198,8 +192,7 @@ const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings):
     (left.selectedTab ?? defaultSettingValues.selectedTab) !== (right.selectedTab ?? defaultSettingValues.selectedTab);
 
   const sortDirectionNotEqual =
-    (left.sortDirection ?? defaultSettingValues.sortDirection) !==
-    (right.sortDirection ?? defaultSettingValues.sortDirection);
+    (left.sortDirection ?? defaultSettingValues.sortDirection) !== (right.sortDirection ?? defaultSettingValues.sortDirection);
 
   const autoRefreshDurationNotEqual =
     (left.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration) !==

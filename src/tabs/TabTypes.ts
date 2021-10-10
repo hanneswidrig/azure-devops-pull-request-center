@@ -10,15 +10,7 @@ const targetBranch = 'targetBranch';
 const author = 'author';
 const reviewer = 'reviewer';
 const myApprovalStatus = 'myApprovalStatus';
-const allFilterOptions = [
-  searchString,
-  repositories,
-  sourceBranch,
-  targetBranch,
-  author,
-  reviewer,
-  myApprovalStatus,
-] as const;
+const allFilterOptions = [searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus] as const;
 
 export const FilterOptions = {
   searchString,
