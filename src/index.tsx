@@ -1,6 +1,6 @@
 import 'react-app-polyfill/stable';
 
-import * as React from 'react';
+import React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import thunk from 'redux-thunk';

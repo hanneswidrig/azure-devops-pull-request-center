@@ -12,11 +12,9 @@ import { GitPullRequestSearchCriteria, GitRepository, PullRequestStatus } from '
 import { getAccessToken, getExtensionContext, getService, getUser } from 'azure-devops-extension-sdk';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
-import { store } from '..';
 import { Task } from '../lib/typings';
 import { FilterDictionary } from '../tabs/TabTypes';
 import { fromPullRequestToPR } from './transformData';
-import { pullRequestItemProvider$ } from '../tabs/TabProvider';
 import { defaultSettingValues } from '../components/SettingsPanel';
 import { sortByPullRequestId, sortByRepositoryName } from '../lib/utils';
 import { ActionTypes, DefaultSettings, PR, RefreshDuration, SortDirection } from './types';
@@ -69,9 +67,7 @@ export const setCurrentUser: Task = () => (dispatch) => {
   dispatch({ type: ActionTypes.SET_CURRENT_USER, payload: getUser() });
 };
 
-export const toggleSortDirection: Task = () => (dispatch, getState) => {
-  const nextSortDirection = getState().ui.sortDirection === 'desc' ? 'asc' : 'desc';
-  pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) => sortByPullRequestId(a, b, nextSortDirection));
+export const toggleSortDirection: Task = () => (dispatch) => {
   dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
 };
 
@@ -85,11 +81,7 @@ export const setSortDirection: Task<{ sortDirection: SortDirection }> =
     dispatch({ type: ActionTypes.SET_SORT_DIRECTION, payload: sortDirection });
   };
 
-export const triggerSortDirection = () => {
-  pullRequestItemProvider$.value = pullRequestItemProvider$.value.sort((a, b) =>
-    sortByPullRequestId(a, b, store.getState().ui.sortDirection)
-  );
-};
+// export const triggerSortDirection = () => {};
 
 export const setFilterValues: Task<{ filterValues: FilterDictionary }> =
   ({ filterValues }) =>
@@ -97,10 +89,10 @@ export const setFilterValues: Task<{ filterValues: FilterDictionary }> =
     dispatch({ type: ActionTypes.SET_FILTER_VALUES, payload: filterValues });
   };
 
-export const setSelectedTab: Task<{ newSelectedTab: string }> =
-  ({ newSelectedTab }) =>
+export const setSelectedTab: Task<{ selectedTab: string }> =
+  ({ selectedTab }) =>
   (dispatch) => {
-    dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: newSelectedTab });
+    dispatch({ type: ActionTypes.SET_SELECTED_TAB, payload: selectedTab });
   };
 
 export const setRefreshDuration: Task<{ refreshDuration: RefreshDuration }> =
@@ -132,7 +124,7 @@ export const setPullRequests: Task = () => async (dispatch) => {
     const payload = allPullRequests.reduce((prev, curr) => [...prev, ...curr], []).sort((a, b) => sortByPullRequestId(a, b, 'desc'));
 
     dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload });
-    triggerSortDirection();
+    // triggerSortDirection();
     dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
     dispatch(setCompletedPullRequests(repositories));
   } catch {
@@ -151,7 +143,7 @@ export const setCompletedPullRequests: Task<GitRepository[]> = (repositories: Gi
     const payload = allPullRequests.reduce((prev, curr) => [...prev, ...curr], []).sort((a, b) => sortByPullRequestId(a, b, 'desc'));
 
     dispatch({ type: ActionTypes.PUSH_COMPLETED_PULL_REQUESTS, payload });
-    triggerSortDirection();
+    // triggerSortDirection();
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
     globalMessagesSvc.addToast({
@@ -192,7 +184,7 @@ export const restoreSettings: Task = () => async (dispatch) => {
     if (settings) {
       await setFullScreenModeState(settings.isFullScreenMode);
       dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
-      triggerSortDirection();
+      // triggerSortDirection();
     } else {
       await setSettings(defaultSettingValues);
     }

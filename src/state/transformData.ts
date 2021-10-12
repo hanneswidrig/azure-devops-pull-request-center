@@ -61,7 +61,7 @@ export const fromPullRequestToPR = ({
   return pullRequest;
 };
 
-export const fromPRToFilterItems = (pullRequests: PR[]): FilterItemsDictionary => {
+export const toFilterItems = (pullRequests: PR[]): FilterItemsDictionary => {
   const filterItems: FilterItemsDictionary = {
     repositories: [],
     sourceBranch: [],

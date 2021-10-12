@@ -25,5 +25,5 @@ export type FilterTypes = typeof allFilterOptions[number];
 export type FilterDictionary = Record<FilterTypes, string | string[] | undefined>;
 export type FilterDictionaryNonNullable = Record<FilterTypes, string | string[]>;
 export type FilterItemsDictionary = Record<Exclude<FilterTypes, typeof searchString>, IListBoxItem[]>;
-export type ITab = { filterItems: FilterItemsDictionary; store: PrHubState };
+export type ITab = { store: PrHubState };
 export type ActiveItemProvider = PR | IReadonlyObservableValue<PR | undefined>;

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Dispatch } from 'redux';
 import { useDispatch } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
@@ -22,10 +22,8 @@ import {
   saveSettings,
   setRefreshDuration,
 } from '../state/actions';
-import { filter } from '..';
 import './SettingsPanel.scss';
 import { useTypedSelector } from '../lib/utils';
-import { getCurrentFilterValues } from '../tabs/TabProvider';
 import { DefaultSettings, TabOptions, SortDirection, RefreshDuration } from '../state/types';
 
 type SetSettingValuesCallback = React.Dispatch<React.SetStateAction<DefaultSettings>>;
@@ -130,10 +128,7 @@ const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingV
 const isSavingFilterItemsChanged: CompoundButtonChanged = (decision, setSettingValues) => {
   const isSavingFilterItems = decision === 'save';
   setSettingValues((values) => ({ ...values, isSavingFilterItems: isSavingFilterItems }));
-  setSettingValues((values) => ({
-    ...values,
-    filterValues: isSavingFilterItems ? getCurrentFilterValues(filter) : undefined,
-  }));
+  setSettingValues((values) => ({ ...values, filterValues: undefined }));
 };
 
 const isFilterVisibleChanged: ToggleChanged = (selectedOption, setSettingValues) => {
@@ -163,7 +158,7 @@ const resetChanges: ResetChanges = (setSettingValues, dispatch) => {
 
 const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
   dispatch(setFilterBar({ isFilterVisible: defaultSettings.isFilterVisible }));
-  dispatch(setSelectedTab({ newSelectedTab: defaultSettings.selectedTab }));
+  dispatch(setSelectedTab({ selectedTab: defaultSettings.selectedTab }));
   dispatch(setSortDirection({ sortDirection: defaultSettings.sortDirection }));
   dispatch(saveSettings({ defaultSettings: defaultSettings }));
   dispatch(toggleSettingsPanel());
@@ -219,7 +214,7 @@ export const SettingsPanel = () => {
     selectedTab: store.settings.defaults.selectedTab,
     sortDirection: store.settings.defaults.sortDirection,
     isSavingFilterItems: store.settings.defaults.isSavingFilterItems,
-    filterValues: store.settings.defaults.isSavingFilterItems ? getCurrentFilterValues(filter) : undefined,
+    filterValues: undefined,
     autoRefreshDuration: defaultDuration !== 'off' ? defaultDuration : store.settings.autoRefreshDuration,
   });
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
