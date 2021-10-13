@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { IUserContext } from 'azure-devops-extension-sdk';
 import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
-import { fromPullRequestToPR } from '../state/transformData';
+import { toPr } from '../state/transformData';
 
 describe('transformData', () => {
   test('fromPullRequestToPR()', () => {
@@ -31,7 +31,7 @@ describe('transformData', () => {
       name: 'Name',
       imageUrl: 'https://image.com',
     };
-    const transformedPR = fromPullRequestToPR({
+    const transformedPR = toPr({
       pr: pullRequest,
       workItems: [],
       userContext: userContext,

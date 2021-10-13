@@ -1,17 +1,17 @@
 import '@testing-library/jest-dom/extend-expect';
 import { PR } from '../state/types';
 import {
-  filterByTitle,
-  filterByRepositoryId,
-  filterBySourceBranchDisplayName,
-  filterByTargetBranchDisplayName,
-  filterByCreatedByUserId,
-  filterByReviewers,
-  filterByApprovalStatus,
-  filterByDraftStatus,
-  applyFilter,
-  filterByActiveStatus,
-  filterByCompletedStatus,
+  title,
+  repositoryId,
+  sourceBranchName,
+  targetBranchName,
+  createdByUserId,
+  reviewers,
+  approvalStatus,
+  draftStatus,
+  filterPullRequestsByCriteria,
+  activeStatus,
+  completedStatus,
 } from '../lib/filters';
 
 describe('Filters for Pull Request Table', () => {
@@ -34,16 +34,16 @@ describe('Filters for Pull Request Table', () => {
         displayName: 'Display Name',
       },
     } as PR;
-    expect(filterByTitle(pullRequest, ['Title'])).toBeTruthy();
-    expect(filterByTitle(pullRequest, ['Not'])).toBeFalsy();
+    expect(title(pullRequest, ['Title'])).toBeTruthy();
+    expect(title(pullRequest, ['Not'])).toBeFalsy();
   });
 
   test('filterByRepositoryId()', () => {
     const pullRequest: PR = {
       repositoryId: '1',
     } as PR;
-    expect(filterByRepositoryId(pullRequest, ['1'])).toBeTruthy();
-    expect(filterByRepositoryId(pullRequest, ['2'])).toBeFalsy();
+    expect(repositoryId(pullRequest, ['1'])).toBeTruthy();
+    expect(repositoryId(pullRequest, ['2'])).toBeFalsy();
   });
 
   test('filterBySourceBranchDisplayName()', () => {
@@ -52,8 +52,8 @@ describe('Filters for Pull Request Table', () => {
         name: 'Source Branch',
       },
     } as PR;
-    expect(filterBySourceBranchDisplayName(pullRequest, ['Source Branch'])).toBeTruthy();
-    expect(filterBySourceBranchDisplayName(pullRequest, ['Target Branch'])).toBeFalsy();
+    expect(sourceBranchName(pullRequest, ['Source Branch'])).toBeTruthy();
+    expect(sourceBranchName(pullRequest, ['Target Branch'])).toBeFalsy();
   });
 
   test('filterByTargetBranchDisplayName()', () => {
@@ -62,8 +62,8 @@ describe('Filters for Pull Request Table', () => {
         name: 'Target Branch',
       },
     } as PR;
-    expect(filterByTargetBranchDisplayName(pullRequest, ['Target Branch'])).toBeTruthy();
-    expect(filterByTargetBranchDisplayName(pullRequest, ['Source Branch'])).toBeFalsy();
+    expect(targetBranchName(pullRequest, ['Target Branch'])).toBeTruthy();
+    expect(targetBranchName(pullRequest, ['Source Branch'])).toBeFalsy();
   });
 
   test('filterByCreatedByUserId()', () => {
@@ -72,39 +72,39 @@ describe('Filters for Pull Request Table', () => {
         id: '1',
       },
     } as PR;
-    expect(filterByCreatedByUserId(pullRequest, ['1'])).toBeTruthy();
-    expect(filterByCreatedByUserId(pullRequest, ['2'])).toBeFalsy();
+    expect(createdByUserId(pullRequest, ['1'])).toBeTruthy();
+    expect(createdByUserId(pullRequest, ['2'])).toBeFalsy();
   });
 
   test('filterByReviewers()', () => {
     const pullRequest: PR = {
       reviewers: [{ id: '1' }],
     } as PR;
-    expect(filterByReviewers(pullRequest, ['1'])).toBeTruthy();
-    expect(filterByReviewers(pullRequest, ['2'])).toBeFalsy();
+    expect(reviewers(pullRequest, ['1'])).toBeTruthy();
+    expect(reviewers(pullRequest, ['2'])).toBeFalsy();
   });
 
   test('filterByApprovalStatus()', () => {
     const pullRequest: PR = {
       myApprovalStatus: '10',
     } as PR;
-    expect(filterByApprovalStatus(pullRequest, ['10'])).toBeTruthy();
-    expect(filterByApprovalStatus(pullRequest, ['5'])).toBeFalsy();
+    expect(approvalStatus(pullRequest, ['10'])).toBeTruthy();
+    expect(approvalStatus(pullRequest, ['5'])).toBeFalsy();
   });
 
   test('filterByDraftStatus()', () => {
-    expect(filterByDraftStatus({ isDraft: true } as PR)).toBeTruthy();
-    expect(filterByDraftStatus({ isDraft: false } as PR)).toBeFalsy();
+    expect(draftStatus({ isDraft: true } as PR)).toBeTruthy();
+    expect(draftStatus({ isDraft: false } as PR)).toBeFalsy();
   });
 
   test('filterByActiveStatus()', () => {
-    expect(filterByActiveStatus({ isActive: true, isDraft: false } as PR)).toBeTruthy();
-    expect(filterByActiveStatus({ isActive: false, isDraft: true } as PR)).toBeFalsy();
+    expect(activeStatus({ isActive: true, isDraft: false } as PR)).toBeTruthy();
+    expect(activeStatus({ isActive: false, isDraft: true } as PR)).toBeFalsy();
   });
 
   test('filterByCompletedStatus()', () => {
-    expect(filterByCompletedStatus({ isCompleted: true } as PR)).toBeTruthy();
-    expect(filterByCompletedStatus({ isCompleted: false } as PR)).toBeFalsy();
+    expect(completedStatus({ isCompleted: true } as PR)).toBeTruthy();
+    expect(completedStatus({ isCompleted: false } as PR)).toBeFalsy();
   });
 
   test('applyFilter()', () => {
@@ -153,7 +153,7 @@ describe('Filters for Pull Request Table', () => {
         isDraft: false,
       },
     ] as PR[];
-    const filteredPullRequests = applyFilter(pullRequests, { searchString: 'Hello World' }, 'active');
+    const filteredPullRequests = filterPullRequestsByCriteria(pullRequests, { searchString: 'Hello World' }, 'active');
     expect(filteredPullRequests.length).toBe(1);
   });
 });

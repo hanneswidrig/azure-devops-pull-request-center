@@ -1,186 +1,69 @@
-import { FilterTypes } from '../tabs/TabTypes';
-import { PR, TabOptions } from '../state/types';
-
-export type FilterFunc = (pullRequest: PR, filterValue: string[]) => boolean;
-type TabFilterFunc = (pullRequest: PR) => boolean;
+import { FilterOption, FilterOptions, PR, TabOptions } from '../state/types';
 
 type IFilterSetup = {
-  func: FilterFunc;
-  val: string[];
+  filterBy: Filter;
+  criteria: FilterOption[];
   isActive: boolean;
 };
 
-export const filterByTitle: FilterFunc = (pullRequest, filterValue) =>
-  pullRequest.title.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1 ||
-  pullRequest.pullRequestId.toString().indexOf(filterValue[0].toLocaleLowerCase()) > -1 ||
-  pullRequest.repository.name.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1 ||
-  pullRequest.sourceBranch.name.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1 ||
-  pullRequest.targetBranch.name.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1 ||
-  pullRequest.createdBy.displayName.toLocaleLowerCase().indexOf(filterValue[0].toLocaleLowerCase()) > -1;
+type Filter = (pullRequest: PR, values: FilterOption[]) => boolean;
 
-export const filterByRepositoryId: FilterFunc = (pullRequest, filterValue) => filterValue.some((v) => pullRequest.repositoryId === v);
+export const title: Filter = (pullRequest, values) => {
+  return (
+    pullRequest.title.toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1 ||
+    pullRequest.pullRequestId.toString().toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1 ||
+    pullRequest.repository.name.toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1 ||
+    pullRequest.sourceBranch.name.toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1 ||
+    pullRequest.targetBranch.name.toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1 ||
+    pullRequest.createdBy.displayName.toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1
+  );
+};
+export const repositoryId: Filter = (pullRequest, values) => values.some(({ value }) => pullRequest.repositoryId === value);
+export const sourceBranchName: Filter = (pullRequest, values) => values.some(({ value }) => pullRequest.sourceBranch.name === value);
+export const targetBranchName: Filter = (pullRequest, values) => values.some(({ value }) => pullRequest.targetBranch.name === value);
+export const createdByUserId: Filter = (pullRequest, values) => values.some(({ value }) => pullRequest.createdBy.id === value);
+export const reviewers: Filter = (pullRequest, values) => values.some(({ value }) => pullRequest.reviewers.some((r) => r.id === value));
+export const approvalStatus: Filter = (pullRequest, values) => pullRequest.myApprovalStatus.toString() === values[0].toString();
+export const draftStatus: Filter = (pullRequest) => pullRequest.isDraft;
+export const activeStatus: Filter = (pullRequest) => pullRequest.isActive && !pullRequest.isDraft;
+export const completedStatus: Filter = (pullRequest) => pullRequest.isCompleted;
 
-export const filterBySourceBranchDisplayName: FilterFunc = (pullRequest, filterValue) =>
-  filterValue.some((v) => pullRequest.sourceBranch.name === v);
+export const setupFilters = (filterOptions: FilterOptions, selectedTab: TabOptions) => {
+  const { searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus } = filterOptions;
 
-export const filterByTargetBranchDisplayName: FilterFunc = (pullRequest, filterValue) =>
-  filterValue.some((v) => pullRequest.targetBranch.name === v);
+  const filters: IFilterSetup[] = [
+    { filterBy: title, criteria: searchString, isActive: searchString.length > 0 },
+    { filterBy: repositoryId, criteria: repositories, isActive: repositories.length > 0 },
+    { filterBy: sourceBranchName, criteria: sourceBranch, isActive: sourceBranch.length > 0 },
+    { filterBy: targetBranchName, criteria: targetBranch, isActive: targetBranch.length > 0 },
+    { filterBy: createdByUserId, criteria: author, isActive: author.length > 0 },
+    { filterBy: reviewers, criteria: reviewer, isActive: reviewer.length > 0 },
+    { filterBy: approvalStatus, criteria: myApprovalStatus, isActive: myApprovalStatus.length > 0 },
+  ];
 
-export const filterByCreatedByUserId: FilterFunc = (pullRequest, filterValue) => filterValue.some((v) => pullRequest.createdBy.id === v);
+  if (selectedTab === 'active') {
+    filters.push({ filterBy: activeStatus, criteria: [], isActive: true });
+  }
 
-export const filterByReviewers: FilterFunc = (pullRequest, filterValue) =>
-  filterValue.some((v) => pullRequest.reviewers.some((r) => r.id === v));
+  if (selectedTab === 'draft') {
+    filters.push({ filterBy: draftStatus, criteria: [], isActive: true });
+  }
 
-export const filterByApprovalStatus: FilterFunc = (pullRequest, filterValue) =>
-  pullRequest.myApprovalStatus.toString() === filterValue[0].toString();
+  if (selectedTab === 'completed') {
+    filters.push({ filterBy: completedStatus, criteria: [], isActive: true });
+  }
 
-export const filterByDraftStatus: TabFilterFunc = (pullRequest) => pullRequest.isDraft;
-
-export const filterByActiveStatus: TabFilterFunc = (pullRequest) => pullRequest.isActive && !pullRequest.isDraft;
-
-export const filterByCompletedStatus: TabFilterFunc = (pullRequest) => pullRequest.isCompleted;
-
-export const setupFilters = (filterValues: Partial<Record<FilterTypes, any>>, tab: TabOptions) => {
-  const { searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus } = filterValues;
-  const opts: Record<TabOptions, IFilterSetup[]> = {
-    active: [
-      {
-        func: filterByTitle,
-        val: [searchString || ''],
-        isActive: searchString !== undefined && searchString.length > 0 && searchString[0].length > 0,
-      },
-      {
-        func: filterByRepositoryId,
-        val: repositories || [],
-        isActive: repositories !== undefined && repositories.length > 0,
-      },
-      {
-        func: filterBySourceBranchDisplayName,
-        val: sourceBranch || [],
-        isActive: sourceBranch !== undefined && sourceBranch.length > 0,
-      },
-      {
-        func: filterByTargetBranchDisplayName,
-        val: targetBranch || [],
-        isActive: targetBranch !== undefined && targetBranch.length > 0,
-      },
-      {
-        func: filterByCreatedByUserId,
-        val: author || [],
-        isActive: author !== undefined && author.length > 0,
-      },
-      {
-        func: filterByReviewers,
-        val: reviewer || [],
-        isActive: reviewer !== undefined && reviewer.length > 0,
-      },
-      {
-        func: filterByApprovalStatus,
-        val: myApprovalStatus || [],
-        isActive: myApprovalStatus !== undefined && myApprovalStatus.length > 0,
-      },
-      {
-        func: filterByActiveStatus,
-        val: undefined,
-        isActive: true,
-      },
-    ],
-    draft: [
-      {
-        func: filterByTitle,
-        val: [searchString || ''],
-        isActive: searchString !== undefined && searchString.length > 0 && searchString[0].length > 0,
-      },
-      {
-        func: filterByRepositoryId,
-        val: repositories || [],
-        isActive: repositories !== undefined && repositories.length > 0,
-      },
-      {
-        func: filterBySourceBranchDisplayName,
-        val: sourceBranch || [],
-        isActive: sourceBranch !== undefined && sourceBranch.length > 0,
-      },
-      {
-        func: filterByTargetBranchDisplayName,
-        val: targetBranch || [],
-        isActive: targetBranch !== undefined && targetBranch.length > 0,
-      },
-      {
-        func: filterByCreatedByUserId,
-        val: author || [],
-        isActive: author !== undefined && author.length > 0,
-      },
-      {
-        func: filterByReviewers,
-        val: reviewer || [],
-        isActive: reviewer !== undefined && reviewer.length > 0,
-      },
-      {
-        func: filterByApprovalStatus,
-        val: myApprovalStatus || [],
-        isActive: myApprovalStatus !== undefined && myApprovalStatus.length > 0,
-      },
-      {
-        func: filterByDraftStatus,
-        val: undefined,
-        isActive: true,
-      },
-    ],
-    completed: [
-      {
-        func: filterByTitle,
-        val: [searchString || ''],
-        isActive: searchString !== undefined && searchString.length > 0 && searchString[0].length > 0,
-      },
-      {
-        func: filterByRepositoryId,
-        val: repositories || [],
-        isActive: repositories !== undefined && repositories.length > 0,
-      },
-      {
-        func: filterBySourceBranchDisplayName,
-        val: sourceBranch || [],
-        isActive: sourceBranch !== undefined && sourceBranch.length > 0,
-      },
-      {
-        func: filterByTargetBranchDisplayName,
-        val: targetBranch || [],
-        isActive: targetBranch !== undefined && targetBranch.length > 0,
-      },
-      {
-        func: filterByCreatedByUserId,
-        val: author || [],
-        isActive: author !== undefined && author.length > 0,
-      },
-      {
-        func: filterByReviewers,
-        val: reviewer || [],
-        isActive: reviewer !== undefined && reviewer.length > 0,
-      },
-      {
-        func: filterByApprovalStatus,
-        val: myApprovalStatus || [],
-        isActive: myApprovalStatus !== undefined && myApprovalStatus.length > 0,
-      },
-      {
-        func: filterByCompletedStatus,
-        val: undefined,
-        isActive: true,
-      },
-    ],
-  };
-  return opts[tab].filter((fs) => fs.isActive);
+  return filters.filter(({ isActive }) => isActive);
 };
 
-export const applyFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>>, tab: TabOptions) => {
-  const appliedFilters = setupFilters(fv, tab);
+export const filterPullRequestsByCriteria = (pullRequests: PR[], filterOptions: FilterOptions, selectedTab: TabOptions) => {
+  const appliedFilters = setupFilters(filterOptions, selectedTab);
 
   if (appliedFilters.length > 0) {
-    return valArray.filter((val) => {
+    return pullRequests.filter((value) => {
       let found = false;
       for (const iterator of appliedFilters) {
-        found = iterator.func(val, iterator.val);
+        found = iterator.filterBy(value, iterator.criteria);
         if (!found) {
           break;
         }
@@ -189,15 +72,5 @@ export const applyFilter = (valArray: PR[], fv: Partial<Record<FilterTypes, any>
     });
   }
 
-  return valArray;
-};
-
-export const defaultFilterValues: Record<FilterTypes, any> = {
-  searchString: undefined,
-  repositories: undefined,
-  sourceBranch: undefined,
-  targetBranch: undefined,
-  author: undefined,
-  reviewer: undefined,
-  myApprovalStatus: undefined,
+  return pullRequests;
 };

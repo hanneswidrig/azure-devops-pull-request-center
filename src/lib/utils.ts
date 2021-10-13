@@ -1,9 +1,7 @@
-import { useEffect, useRef } from 'react';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { GitRepository } from 'azure-devops-extension-api/Git/Git';
 import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 
-import { ActiveItemProvider } from '../tabs/TabTypes';
 import { PrHubState, PR, SortDirection } from '../state/types';
 import { ReviewerVoteNumber, ReviewerVoteLabel } from './enums';
 
@@ -27,7 +25,7 @@ export const sortByDisplayName = (a: IdentityRef, b: IdentityRef) => {
   return 0;
 };
 
-export const sortByPullRequestId = (a: ActiveItemProvider, b: ActiveItemProvider, sortDirection: SortDirection) => {
+export const sortByPullRequestId = (a: PR, b: PR, sortDirection: SortDirection) => {
   return sortDirection === 'desc' ? (b as PR).pullRequestId - (a as PR).pullRequestId : (a as PR).pullRequestId - (b as PR).pullRequestId;
 };
 
@@ -43,9 +41,3 @@ export const getVoteDescription = (vote: number): string => {
 };
 
 export const useTypedSelector: TypedUseSelectorHook<PrHubState> = useSelector;
-
-export const useUnmount = (fn: () => any): void => {
-  const fnRef = useRef(fn);
-  fnRef.current = fn;
-  useEffect(() => fnRef.current(), []);
-};

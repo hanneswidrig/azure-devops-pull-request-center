@@ -8,11 +8,11 @@ import { TabBar, Tab, TabSize } from 'azure-devops-ui/Tabs';
 import { IHeaderCommandBarItem, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
 
+import { PrTable } from './PrTable';
 import { useTypedSelector } from '../lib/utils';
-import { SettingsPanel } from '../components/SettingsPanel';
+import { SettingsPanel } from './SettingsPanel';
 import { PrHubState, PR, TabOptions } from '../state/types';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
-import { Active, Draft, RecentlyCompleted } from './ClassicTab';
 import { setSelectedTab, setPullRequests, toggleSettingsPanel } from '../state/actions';
 
 const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: string): IHeaderCommandBarItem[] => {
@@ -96,9 +96,7 @@ export const TabProvider = () => {
           <Tab name="Recently Completed" id="completed" badgeCount={badgeCount(pullRequests, 'completed')} />
         </TabBar>
         <div className="page-content-left page-content-right page-content-top page-content-bottom">
-          {selectedTab === 'active' ? <Active store={store} /> : <></>}
-          {selectedTab === 'draft' ? <Draft store={store} /> : <></>}
-          {selectedTab === 'completed' ? <RecentlyCompleted store={store} /> : <></>}
+          <PrTable />
         </div>
       </Page>
       {settingsPanelOpen && <SettingsPanel />}

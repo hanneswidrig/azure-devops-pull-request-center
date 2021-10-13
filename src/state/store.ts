@@ -49,14 +49,6 @@ const setState: SplitReducer = (state, action) => [
     },
   ],
   [
-    ActionTypes.SET_REPOSITORIES,
-    () => {
-      return produce(state, (draft) => {
-        draft.data.repositories = action.payload;
-      });
-    },
-  ],
-  [
     ActionTypes.RESTORE_SETTINGS,
     () => {
       if (action.payload) {

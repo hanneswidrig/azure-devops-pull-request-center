@@ -15,7 +15,7 @@ import { composeWithDevTools } from 'remote-redux-devtools';
 import './index.scss';
 import { reducer } from './state/store';
 import { onInitialLoad } from './state/actions';
-import { TabProvider } from './tabs/TabProvider';
+import { TabProvider } from './components/TabProvider';
 
 const enhancer = applyMiddleware(thunk);
 const enhancerWithDevTools = composeWithDevTools({ name: 'PRC', realtime: true, port: 8000 })(applyMiddleware(thunk));

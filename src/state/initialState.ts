@@ -3,8 +3,16 @@ import { PrHubState } from './types';
 
 export const initialState: PrHubState = {
   data: {
-    repositories: [],
     pullRequests: [],
+    filterOptions: {
+      searchString: [],
+      repositories: [],
+      sourceBranch: [],
+      targetBranch: [],
+      author: [],
+      reviewer: [],
+      myApprovalStatus: [],
+    },
     currentUser: { id: '', name: '', displayName: '', descriptor: '', imageUrl: '' },
     asyncTaskCount: -1,
   },

@@ -2,10 +2,9 @@ import * as DevOps from 'azure-devops-extension-sdk';
 import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
-import { IdentityRefWithVote, PullRequestStatus, GitRepository } from 'azure-devops-extension-api/Git/Git';
+import { IdentityRefWithVote, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 
 import { ReviewerVoteNumber } from '../lib/enums';
-import { FilterDictionary } from '../tabs/TabTypes';
 
 const ADD_ASYNC_TASK = 'addAsyncTask';
 const SET_FILTER_BAR = 'setFilterBar';
@@ -54,7 +53,7 @@ export type DefaultSettings = {
   selectedTab: TabOptions;
   sortDirection: SortDirection;
   isSavingFilterItems: boolean;
-  filterValues: FilterDictionary | undefined;
+  filterValues: any; // TODO
   autoRefreshDuration: RefreshDuration;
 };
 
@@ -64,6 +63,7 @@ export type Settings = {
   defaults: DefaultSettings;
 };
 
+type PRRef = { name: string; href: string };
 export type PR = {
   pullRequestId: number;
   repositoryId: string;
@@ -73,33 +73,41 @@ export type PR = {
   isAutoComplete: boolean;
   hasMergeConflicts: boolean;
   status: PullRequestStatus;
-
   title: string;
   href: string;
   createdBy: IdentityRef;
   creationDate: Date;
   secondaryTitle: string;
-
   sourceBranch: PRRef;
   targetBranch: PRRef;
   repository: PRRef;
-
   myApprovalStatus: ReviewerVoteNumber;
-
   workItems: WorkItem[];
   reviewers: IdentityRefWithVote[];
 };
 
-type PRRef = { name: string; href: string };
+const searchString = 'searchString';
+const repositories = 'repositories';
+const sourceBranch = 'sourceBranch';
+const targetBranch = 'targetBranch';
+const author = 'author';
+const reviewer = 'reviewer';
+const myApprovalStatus = 'myApprovalStatus';
+export const options = [searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus] as const;
+
+export type FilterOption = { label: string; value: string };
+export type FilterOptions = Record<typeof options[number], FilterOption[]>;
+
 export type Data = {
-  repositories: GitRepository[];
   pullRequests: PR[];
+  filterOptions: FilterOptions;
   currentUser: DevOps.IUserContext;
   asyncTaskCount: number;
 };
 
-export type SortDirection = 'desc' | 'asc';
 export type TabOptions = 'active' | 'draft' | 'completed';
+export type SortDirection = 'desc' | 'asc';
+
 export type UI = {
   isFilterVisible: ObservableValue<boolean>;
   isFullScreenMode: boolean;

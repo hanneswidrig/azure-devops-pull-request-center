@@ -13,32 +13,22 @@ import { getAccessToken, getExtensionContext, getService, getUser } from 'azure-
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
 import { Task } from '../lib/typings';
-import { FilterDictionary } from '../tabs/TabTypes';
-import { fromPullRequestToPR } from './transformData';
+import { toPr } from './transformData';
 import { defaultSettingValues } from '../components/SettingsPanel';
 import { sortByPullRequestId, sortByRepositoryName } from '../lib/utils';
 import { ActionTypes, DefaultSettings, PR, RefreshDuration, SortDirection } from './types';
 
-export const activePrCriteria: GitPullRequestSearchCriteria = {
-  repositoryId: '',
-  creatorId: '',
-  includeLinks: true,
-  reviewerId: '',
-  sourceRefName: '',
-  sourceRepositoryId: '',
-  status: PullRequestStatus.Active,
-  targetRefName: '',
-};
-
-export const completedPrCriteria: GitPullRequestSearchCriteria = {
-  repositoryId: '',
-  creatorId: '',
-  includeLinks: true,
-  reviewerId: '',
-  sourceRefName: '',
-  sourceRepositoryId: '',
-  status: PullRequestStatus.Completed,
-  targetRefName: '',
+const criteria = (status: PullRequestStatus): GitPullRequestSearchCriteria => {
+  return {
+    repositoryId: '',
+    creatorId: '',
+    includeLinks: true,
+    reviewerId: '',
+    sourceRefName: '',
+    sourceRepositoryId: '',
+    status: status,
+    targetRefName: '',
+  };
 };
 
 // VSTS REST Clients
@@ -83,7 +73,7 @@ export const setSortDirection: Task<{ sortDirection: SortDirection }> =
 
 // export const triggerSortDirection = () => {};
 
-export const setFilterValues: Task<{ filterValues: FilterDictionary }> =
+export const setFilterValues: Task<{ filterValues: any }> =  // TODO
   ({ filterValues }) =>
   (dispatch) => {
     dispatch({ type: ActionTypes.SET_FILTER_VALUES, payload: filterValues });
@@ -120,11 +110,10 @@ export const setPullRequests: Task = () => async (dispatch) => {
     dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
     const repositories = await getRepositories();
 
-    const allPullRequests = await Promise.all(repositories.flatMap((repo) => fetchPullRequests(repo, activePrCriteria, 25)));
-    const payload = allPullRequests.reduce((prev, curr) => [...prev, ...curr], []).sort((a, b) => sortByPullRequestId(a, b, 'desc'));
+    const allPrs = await Promise.all(repositories.flatMap((repo) => fetchPullRequests(repo, criteria(PullRequestStatus.Active), 25)));
+    const payload = allPrs.reduce((prev, curr) => [...prev, ...curr], []).sort((a, b) => sortByPullRequestId(a, b, 'desc'));
 
     dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload });
-    // triggerSortDirection();
     dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
     dispatch(setCompletedPullRequests(repositories));
   } catch {
@@ -139,27 +128,11 @@ export const setPullRequests: Task = () => async (dispatch) => {
 
 export const setCompletedPullRequests: Task<GitRepository[]> = (repositories: GitRepository[]) => async (dispatch) => {
   try {
-    const allPullRequests = await Promise.all(repositories.flatMap((repo) => fetchPullRequests(repo, completedPrCriteria, 25)));
-    const payload = allPullRequests.reduce((prev, curr) => [...prev, ...curr], []).sort((a, b) => sortByPullRequestId(a, b, 'desc'));
+    const allPrs = await Promise.all(repositories.flatMap((repo) => fetchPullRequests(repo, criteria(PullRequestStatus.Completed), 25)));
+    const payload = allPrs.reduce((prev, curr) => [...prev, ...curr], []).sort((a, b) => sortByPullRequestId(a, b, 'desc'));
 
     dispatch({ type: ActionTypes.PUSH_COMPLETED_PULL_REQUESTS, payload });
     // triggerSortDirection();
-  } catch {
-    const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
-    globalMessagesSvc.addToast({
-      duration: 5000,
-      message: 'An error occurred while fetching pull requests. Please reload or refresh the page.',
-      forceOverrideExisting: true,
-    });
-  }
-};
-
-export const setRepositories: Task = () => async (dispatch) => {
-  try {
-    dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
-    const repositories = await getRepositories();
-    dispatch({ type: ActionTypes.SET_REPOSITORIES, payload: repositories });
-    dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
     globalMessagesSvc.addToast({
@@ -184,7 +157,6 @@ export const restoreSettings: Task = () => async (dispatch) => {
     if (settings) {
       await setFullScreenModeState(settings.isFullScreenMode);
       dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
-      // triggerSortDirection();
     } else {
       await setSettings(defaultSettingValues);
     }
@@ -209,9 +181,7 @@ export const saveSettings: Task<{ defaultSettings: DefaultSettings }> =
 export const onInitialLoad: Task = () => {
   return (dispatch) => {
     dispatch(setCurrentUser());
-    dispatch(setRepositories());
     dispatch(setPullRequests());
-    dispatch(restoreSettings());
   };
 };
 
@@ -241,7 +211,7 @@ async function fetchPullRequests(repo: GitRepository, criteria: GitPullRequestSe
 
   do {
     const prsPerRepo = await gitClient.getPullRequests(repo.id, criteria, undefined, undefined, skip, take);
-    const prs = prsPerRepo.map((pr) => fromPullRequestToPR({ pr, workItems: [], userContext }));
+    const prs = prsPerRepo.map((pr) => toPr({ pr, workItems: [], userContext }));
     pullRequests.push(...prs);
     skip = skip + take;
   } while (pullRequests.length !== 0 && pullRequests.length % take === 0);
