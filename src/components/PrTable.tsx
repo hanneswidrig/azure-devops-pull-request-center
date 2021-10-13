@@ -8,9 +8,10 @@ import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 import './PrTable.scss';
 
 import { PR } from '../state/types';
-import { useTypedSelector } from '../lib/utils';
 import { UiFilterBar } from './UiFilterBar';
+import { useTypedSelector } from '../lib/utils';
 import { EmptyDataVisual } from './EmptyDataVisual';
+import { filterPullRequestsByCriteria } from '../lib/filters';
 import { titleColumn, reviewersColumn } from './PRTableCellColumns';
 
 export const pullRequestItemProvider$ = new ObservableArray<PR>();
@@ -23,13 +24,13 @@ export const columns: ITableColumn<PR>[] = [
 export const PrTable = () => {
   const selectedTab = useTypedSelector((store) => store.ui.selectedTab);
   const pullRequests = useTypedSelector((store) => store.data.pullRequests);
+  const filterOptions = useTypedSelector((store) => store.data.filterOptions);
   const asyncTaskCount = useTypedSelector((store) => store.data.asyncTaskCount);
 
   React.useEffect(() => {
-    console.debug(selectedTab);
     pullRequestItemProvider$.removeAll();
-    pullRequestItemProvider$.push(...pullRequests);
-  }, [pullRequests, selectedTab]);
+    pullRequestItemProvider$.push(...filterPullRequestsByCriteria(pullRequests, filterOptions, selectedTab));
+  }, [pullRequests, filterOptions, selectedTab]);
 
   return (
     <div className="flex-column">
