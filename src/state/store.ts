@@ -95,6 +95,14 @@ const setState: SplitReducer = (state, action) => [
       });
     },
   ],
+  [
+    ActionTypes.SET_FILTER_OPTION_SEARCH_STRING,
+    () => {
+      return produce(state, (draft) => {
+        draft.data.filterOptions.searchString = action.payload;
+      });
+    },
+  ],
 ];
 
 const updateState: SplitReducer = (state) => [

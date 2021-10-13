@@ -6,10 +6,10 @@ import './UiFilterBar.scss';
 
 import { FilterOption } from '../state/types';
 import { useTypedSelector } from '../lib/utils';
-import { Dispatch } from 'redux';
+import { setFilterOptionSearchString } from '../state/actions';
 
-type UiSelectProps = { placeholder: string; options: FilterOption[]; dispatch: Dispatch<any> };
-const UiSelect = ({ placeholder, options }: UiSelectProps) => {
+type UiSelectProps = { placeholder: string; options: FilterOption[] };
+const UiMultiSelect = ({ placeholder, options }: UiSelectProps) => {
   return (
     <Select
       className="filter-bar-item"
@@ -29,13 +29,18 @@ export const UiFilterBar = () => {
   const dispatch = useDispatch();
   return (
     <div className="filter-bar">
-      <input className="search-box" type="search" placeholder={'Search...'} />
-      <UiSelect placeholder={'Repositories'} options={filterOptions.repositories} dispatch={dispatch} />
-      <UiSelect placeholder={'Source Branch'} options={filterOptions.sourceBranch} dispatch={dispatch} />
-      <UiSelect placeholder={'Target Branch'} options={filterOptions.targetBranch} dispatch={dispatch} />
-      <UiSelect placeholder={'PR Author'} options={filterOptions.author} dispatch={dispatch} />
-      <UiSelect placeholder={'Assigned Reviewer'} options={filterOptions.reviewer} dispatch={dispatch} />
-      <UiSelect placeholder={'My Approval Status'} options={filterOptions.myApprovalStatus} dispatch={dispatch} />
+      <input
+        className="search-box"
+        type="search"
+        placeholder="Search..."
+        onChange={(e) => dispatch(setFilterOptionSearchString({ searchString: [{ label: e.target.value, value: e.target.value }] }))}
+      />
+      <UiMultiSelect placeholder={'Repositories'} options={filterOptions.repositories} />
+      <UiMultiSelect placeholder={'Source Branch'} options={filterOptions.sourceBranch} />
+      <UiMultiSelect placeholder={'Target Branch'} options={filterOptions.targetBranch} />
+      <UiMultiSelect placeholder={'PR Author'} options={filterOptions.author} />
+      <UiMultiSelect placeholder={'Assigned Reviewer'} options={filterOptions.reviewer} />
+      <UiMultiSelect placeholder={'My Approval Status'} options={filterOptions.myApprovalStatus} />
     </div>
   );
 };
