@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hanneswidrig/azure-devops-pull-request-center"
+    "uri": "https://github.com/hanneswidrig/azure-devops-pull-request-center"
   },
   "content": {
     "details": {
@@ -35,7 +35,6 @@
     { "path": "marketplace/screenshot-2.png" },
     { "path": "marketplace/screenshot-3.png" }
   ],
-  "tags": [],
   "contributions": [
     {
       "id": "pull-request-center",
@@ -43,7 +42,7 @@
       "targets": ["ms.vss-code-web.code-hub-group"],
       "properties": {
         "name": "Pull Requests Center",
-        "uri": "build/index.html",
+        "uri": "dist/index.html",
         "icon": {
           "light": "marketplace/icon-light.png",
           "dark": "marketplace/icon-dark.png"
@@ -53,7 +52,7 @@
   ],
   "files": [
     {
-      "path": "build",
+      "path": "dist",
       "addressable": true
     },
     {

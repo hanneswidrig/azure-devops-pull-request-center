@@ -21,13 +21,13 @@
   },
   "scripts": {
     "start": "cross-env HTTPS=true react-scripts start",
-    "build": "cross-env NODE_ENV=production react-scripts build",
+    "build": "cross-env NODE_ENV=production BUILD_PATH=./dist react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "redux-devtools": "redux-devtools --hostname=localhost --port=8000",
-    "package-release": "npm run build && npm run clean-build && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center.vsix",
-    "package-dev": "npm run build && npm run clean-build && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center-develop.vsix --manifest-globs ./vss-extension.json --overrides-file ./vss-extension.dev.json --share-with hannes-widrig",
-    "clean": "rimraf build/**/runtime~main*.map build/**/runtime~main*.js",
+    "package-release": "npm run build && npm run clean && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center.vsix",
+    "package-dev": "npm run build && npm run clean && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center-develop.vsix --manifest-globs ./vss-extension.json --overrides-file ./vss-extension.dev.json --share-with hannes-widrig",
+    "clean": "rimraf dist/",
     "lint": "eslint src/**/*.{ts,tsx}",
     "format": "prettier --write src/"
   },
