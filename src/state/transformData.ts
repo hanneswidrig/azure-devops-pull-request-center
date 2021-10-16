@@ -1,11 +1,11 @@
-import * as DevOps from 'azure-devops-extension-sdk';
+import { IUserContext } from 'azure-devops-extension-sdk';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
 import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
 import { FilterOptions, PR } from './types';
 import { ReviewerVoteNumber, ReviewerVoteLabel } from '../lib/enums';
 
-const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext: DevOps.IUserContext) => {
+const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext: IUserContext) => {
   let voteResult: ReviewerVoteNumber = ReviewerVoteNumber.NoVote;
   if (reviewers && reviewers.length > 0) {
     const currentUserReviewer = reviewers.filter((r) => r.id === userContext.id);
@@ -17,7 +17,7 @@ const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext:
   return voteResult;
 };
 
-export const toPr = ({ pr, workItems, userContext }: { pr: GitPullRequest; workItems: WorkItem[]; userContext: DevOps.IUserContext }) => {
+export const toPr = ({ pr, workItems, userContext }: { pr: GitPullRequest; workItems: WorkItem[]; userContext: IUserContext }) => {
   const pullRequest: PR = {
     pullRequestId: pr.pullRequestId,
     repositoryId: pr.repository.id,

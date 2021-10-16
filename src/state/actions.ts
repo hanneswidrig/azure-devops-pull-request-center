@@ -31,7 +31,6 @@ const criteria = (status: PullRequestStatus): GitPullRequestSearchCriteria => {
   };
 };
 
-// VSTS REST Clients
 export const coreClient: CoreRestClient = getClient(CoreRestClient);
 export const gitClient: GitRestClient = getClient(GitRestClient);
 export const workItemClient: WorkItemTrackingRestClient = getClient(WorkItemTrackingRestClient);
@@ -105,12 +104,6 @@ export const setFilterBar: Task<{ isFilterVisible: boolean }> =
 
 export const toggleSettingsPanel: Task = () => (dispatch) => dispatch({ type: ActionTypes.TOGGLE_SETTINGS_PANEL });
 
-/**
- * @summary Asynchronously fetches all pull requests from all connected repositories in an Azure DevOps Project.
- * Makes additional calls to get complete information including:
- * - Work Items associated with the respective PR
- * - Auto Complete status
- */
 export const setPullRequests: Task = () => async (dispatch) => {
   try {
     dispatch({ type: ActionTypes.ADD_ASYNC_TASK });

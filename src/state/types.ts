@@ -1,4 +1,4 @@
-import * as DevOps from 'azure-devops-extension-sdk';
+import { IUserContext } from 'azure-devops-extension-sdk';
 import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
@@ -103,7 +103,7 @@ export type FilterOptions = Record<typeof options[number], FilterOption[]>;
 export type Data = {
   pullRequests: PR[];
   filterOptions: FilterOptions;
-  currentUser: DevOps.IUserContext;
+  currentUser: IUserContext;
   asyncTaskCount: number;
 };
 
