@@ -2,7 +2,19 @@
   "name": "azure-pull-request-hub",
   "version": "0.0.1",
   "private": true,
-  "homepage": "./",
+  "scripts": {
+    "start": "cross-env HTTPS=true react-scripts start",
+    "build": "cross-env NODE_ENV=production BUILD_PATH=./dist react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "redux-devtools": "redux-devtools --hostname=localhost --port=8000",
+    "package-release": "npm run build && npm run clean && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center.vsix",
+    "package-dev": "npm run build && npm run clean && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center-develop.vsix --manifest-globs ./vss-extension.json --overrides-file ./vss-extension.dev.json --share-with hannes-widrig",
+    "clean": "rimraf dist/",
+    "eslint": "eslint . --ext .ts,.tsx --fix",
+    "prettier": "prettier --write **/*.{ts,tsx,html,css,json}",
+    "stylelint": "stylelint \"**/*.css\""
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
@@ -18,38 +30,6 @@
     "react-select": "^5.1.0",
     "redux": "^4.1.1",
     "redux-thunk": "^2.3.0"
-  },
-  "scripts": {
-    "start": "cross-env HTTPS=true react-scripts start",
-    "build": "cross-env NODE_ENV=production BUILD_PATH=./dist react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "redux-devtools": "redux-devtools --hostname=localhost --port=8000",
-    "package-release": "npm run build && npm run clean && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center.vsix",
-    "package-dev": "npm run build && npm run clean && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center-develop.vsix --manifest-globs ./vss-extension.json --overrides-file ./vss-extension.dev.json --share-with hannes-widrig",
-    "clean": "rimraf dist/",
-    "lint": "eslint src/**/*.{ts,tsx}",
-    "format": "prettier --write src/"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "jest": {
-    "transformIgnorePatterns": [
-      "node_modules/(?!(azure-devops-ui|office-ui-fabric-react|react|react-dom)/)"
-    ]
   },
   "devDependencies": {
     "@redux-devtools/cli": "^1.0.0-7",
@@ -85,5 +65,25 @@
     "rimraf": "^3.0.2",
     "tfx-cli": "^0.7.11",
     "typescript": "^4.4.3"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(azure-devops-ui|office-ui-fabric-react|react|react-dom)/)"
+    ]
   }
 }
