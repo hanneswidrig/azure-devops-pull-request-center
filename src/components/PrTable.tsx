@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Card } from 'azure-devops-ui/Card';
 import { Spinner } from 'office-ui-fabric-react';
 import { Table, ITableColumn } from 'azure-devops-ui/Table';
@@ -9,9 +8,9 @@ import './PrTable.scss';
 
 import { PR } from '../state/types';
 import { UiFilterBar } from './UiFilterBar';
+import { applyFilters } from '../lib/filters';
 import { useTypedSelector } from '../lib/utils';
 import { EmptyDataVisual } from './EmptyDataVisual';
-import { filterPullRequestsByCriteria } from '../lib/filters';
 import { titleColumn, reviewersColumn } from './PRTableCellColumns';
 
 export const pullRequestItemProvider$ = new ObservableArray<PR>();
@@ -23,14 +22,13 @@ export const columns: ITableColumn<PR>[] = [
 
 export const PrTable = () => {
   const selectedTab = useTypedSelector((store) => store.ui.selectedTab);
-  const pullRequests = useTypedSelector((store) => store.data.pullRequests);
-  const filterOptions = useTypedSelector((store) => store.data.filterOptions);
   const asyncTaskCount = useTypedSelector((store) => store.data.asyncTaskCount);
+  const pullRequests = useTypedSelector((store) => applyFilters(store.data.pullRequests, store.data.filterOptions, store.ui.selectedTab));
 
   React.useEffect(() => {
     pullRequestItemProvider$.removeAll();
-    pullRequestItemProvider$.push(...filterPullRequestsByCriteria(pullRequests, filterOptions, selectedTab));
-  }, [pullRequests, filterOptions, selectedTab]);
+    pullRequestItemProvider$.push(...pullRequests);
+  }, [pullRequests, selectedTab]);
 
   return (
     <div className="flex-column">

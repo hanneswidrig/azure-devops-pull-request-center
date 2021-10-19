@@ -56,7 +56,7 @@ export const setupFilters = (filterOptions: FilterOptions, selectedTab: TabOptio
   return filters.filter(({ isActive }) => isActive);
 };
 
-export const filterPullRequestsByCriteria = (pullRequests: PR[], filterOptions: FilterOptions, selectedTab: TabOptions) => {
+export const applyFilters = (pullRequests: PR[], filterOptions: FilterOptions, selectedTab: TabOptions) => {
   const appliedFilters = setupFilters(filterOptions, selectedTab);
 
   if (appliedFilters.length > 0) {

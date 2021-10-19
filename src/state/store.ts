@@ -3,7 +3,7 @@ import { Reducer } from 'redux';
 
 import { initialState } from './initialState';
 import { Enum, SplitReducer, FetchAction } from '../lib/typings';
-import { ActionTypes, PrHubState, DefaultSettings } from './types';
+import { ActionTypes, PrHubState, DefaultSettings, FilterOptions } from './types';
 import { defaultSettingValues } from '../components/SettingsPanel';
 
 const setState: SplitReducer = (state, action) => [
@@ -96,10 +96,17 @@ const setState: SplitReducer = (state, action) => [
     },
   ],
   [
-    ActionTypes.SET_FILTER_OPTION_SEARCH_STRING,
+    ActionTypes.SET_FILTER_OPTIONS,
     () => {
       return produce(state, (draft) => {
-        draft.data.filterOptions.searchString = action.payload;
+        const filterOptions: FilterOptions = action.payload;
+        draft.data.filterOptions.searchString = filterOptions.searchString;
+        draft.data.filterOptions.repositories = filterOptions.repositories;
+        draft.data.filterOptions.sourceBranch = filterOptions.sourceBranch;
+        draft.data.filterOptions.targetBranch = filterOptions.targetBranch;
+        draft.data.filterOptions.author = filterOptions.author;
+        draft.data.filterOptions.reviewer = filterOptions.reviewer;
+        draft.data.filterOptions.myApprovalStatus = filterOptions.myApprovalStatus;
       });
     },
   ],

@@ -16,7 +16,7 @@ import { Task } from '../lib/typings';
 import { toPr } from './transformData';
 import { defaultSettingValues } from '../components/SettingsPanel';
 import { sortByPullRequestId, sortByRepositoryName } from '../lib/utils';
-import { ActionTypes, DefaultSettings, FilterOption, PR, RefreshDuration, SortDirection } from './types';
+import { ActionTypes, DefaultSettings, FilterOptions, PR, RefreshDuration, SortDirection } from './types';
 
 const criteria = (status: PullRequestStatus): GitPullRequestSearchCriteria => {
   return {
@@ -72,17 +72,9 @@ export const setSortDirection: Task<{ sortDirection: SortDirection }> =
 
 // export const triggerSortDirection = () => {};
 
-export const setFilterValues: Task<{ filterValues: any }> =  // TODO
-  ({ filterValues }) =>
-  (dispatch) => {
-    dispatch({ type: ActionTypes.SET_FILTER_VALUES, payload: filterValues });
-  };
-
-export const setFilterOptionSearchString: Task<{ searchString: FilterOption[] }> =
-  ({ searchString }) =>
-  (dispatch) => {
-    dispatch({ type: ActionTypes.SET_FILTER_OPTION_SEARCH_STRING, payload: searchString });
-  };
+export const setFilterOptions: Task<FilterOptions> = (filterOptions) => (dispatch) => {
+  dispatch({ type: ActionTypes.SET_FILTER_OPTIONS, payload: filterOptions });
+};
 
 export const setSelectedTab: Task<{ selectedTab: string }> =
   ({ selectedTab }) =>

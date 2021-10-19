@@ -51,7 +51,7 @@ export const toPr = ({ pr, workItems, userContext }: { pr: GitPullRequest; workI
   return pullRequest;
 };
 
-export const toFilterItems = (pullRequests: PR[]): FilterOptions => {
+export const deriveFilterOptions = (pullRequests: PR[]): FilterOptions => {
   const filterItems: FilterOptions = {
     searchString: [],
     repositories: [],
