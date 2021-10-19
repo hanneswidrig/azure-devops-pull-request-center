@@ -1,5 +1,4 @@
 import { IUserContext } from 'azure-devops-extension-sdk';
-import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
 import { IdentityRefWithVote, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
@@ -8,7 +7,6 @@ import { ReviewerVoteNumber } from '../lib/enums';
 
 export const ActionTypes = {
   ADD_ASYNC_TASK: 'addAsyncTask',
-  SET_FILTER_BAR: 'setFilterBar',
   SET_CURRENT_USER: 'setCurrentUser',
   SET_SELECTED_TAB: 'setSelectedTab',
   RESTORE_SETTINGS: 'restoreSettings',
@@ -29,12 +27,11 @@ export const ActionTypes = {
 
 export type RefreshDuration = 'off' | '60' | '300' | '900' | '3600';
 export type DefaultSettings = {
-  isFilterVisible: boolean;
   isFullScreenMode: boolean;
   selectedTab: TabOptions;
   sortDirection: SortDirection;
-  isSavingFilterItems: boolean;
-  filterValues: any; // TODO
+  isSavingFilterOptions: boolean;
+  selectedFilterOptions: FilterOptions;
   autoRefreshDuration: RefreshDuration;
 };
 
@@ -90,7 +87,6 @@ export type TabOptions = 'active' | 'draft' | 'completed';
 export type SortDirection = 'desc' | 'asc';
 
 export type UI = {
-  isFilterVisible: ObservableValue<boolean>;
   isFullScreenMode: boolean;
   selectedTab: TabOptions;
   sortDirection: SortDirection;

@@ -88,12 +88,6 @@ export const setRefreshDuration: Task<{ refreshDuration: RefreshDuration }> =
     dispatch({ type: ActionTypes.SET_REFRESH_DURATION, payload: refreshDuration });
   };
 
-export const setFilterBar: Task<{ isFilterVisible: boolean }> =
-  ({ isFilterVisible }) =>
-  (dispatch) => {
-    dispatch({ type: ActionTypes.SET_FILTER_BAR, payload: isFilterVisible });
-  };
-
 export const toggleSettingsPanel: Task = () => (dispatch) => dispatch({ type: ActionTypes.TOGGLE_SETTINGS_PANEL });
 
 export const setPullRequests: Task = () => async (dispatch) => {

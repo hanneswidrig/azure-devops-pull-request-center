@@ -1,4 +1,3 @@
-import { ObservableValue } from 'azure-devops-ui/Core/Observable';
 import { PrHubState } from './types';
 
 export const initialState: PrHubState = {
@@ -17,7 +16,6 @@ export const initialState: PrHubState = {
     asyncTaskCount: -1,
   },
   ui: {
-    isFilterVisible: new ObservableValue(false),
     isFullScreenMode: false,
     selectedTab: 'active',
     sortDirection: 'desc',
@@ -26,12 +24,19 @@ export const initialState: PrHubState = {
     autoRefreshDuration: 'off',
     settingsPanelOpen: false,
     defaults: {
-      isFilterVisible: false,
       isFullScreenMode: false,
       selectedTab: 'active',
       sortDirection: 'desc',
-      isSavingFilterItems: false,
-      filterValues: undefined,
+      isSavingFilterOptions: false,
+      selectedFilterOptions: {
+        searchString: [],
+        repositories: [],
+        sourceBranch: [],
+        targetBranch: [],
+        author: [],
+        reviewer: [],
+        myApprovalStatus: [],
+      },
       autoRefreshDuration: 'off',
     },
   },

@@ -54,18 +54,16 @@ const setState: SplitReducer = (state, action) => [
       if (action.payload) {
         const savedSettings: Partial<DefaultSettings> = action.payload;
         return produce(state, (draft) => {
-          draft.ui.isFilterVisible.value = savedSettings.isFilterVisible ?? defaultSettingValues.isFilterVisible;
           draft.ui.isFullScreenMode = savedSettings.isFullScreenMode ?? defaultSettingValues.isFullScreenMode;
           draft.ui.selectedTab = savedSettings.selectedTab ?? defaultSettingValues.selectedTab;
           draft.ui.sortDirection = savedSettings.sortDirection ?? defaultSettingValues.sortDirection;
           draft.settings.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration;
 
-          draft.settings.defaults.isFilterVisible = savedSettings.isFilterVisible ?? defaultSettingValues.isFilterVisible;
           draft.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode ?? defaultSettingValues.isFullScreenMode;
           draft.settings.defaults.selectedTab = savedSettings.selectedTab ?? defaultSettingValues.selectedTab;
           draft.settings.defaults.sortDirection = savedSettings.sortDirection ?? defaultSettingValues.sortDirection;
-          draft.settings.defaults.isSavingFilterItems = savedSettings.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems;
-          draft.settings.defaults.filterValues = savedSettings.filterValues;
+          draft.settings.defaults.isSavingFilterOptions = savedSettings.isSavingFilterOptions ?? defaultSettingValues.isSavingFilterOptions;
+          draft.settings.defaults.selectedFilterOptions = savedSettings.selectedFilterOptions ?? defaultSettingValues.selectedFilterOptions;
           draft.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration;
         });
       }
@@ -78,13 +76,6 @@ const setState: SplitReducer = (state, action) => [
       return produce(state, (draft) => {
         draft.ui.selectedTab = action.payload;
       });
-    },
-  ],
-  [
-    ActionTypes.SET_FILTER_BAR,
-    () => {
-      state.ui.isFilterVisible.value = action.payload;
-      return state;
     },
   ],
   [
@@ -147,23 +138,8 @@ const updateState: SplitReducer = (state) => [
   ],
 ];
 
-const modifyObservables: SplitReducer = (state) => [
-  [
-    ActionTypes.TOGGLE_FILTER_BAR,
-    () => {
-      state.ui.isFilterVisible.value = !state.ui.isFilterVisible.value;
-      return state;
-    },
-  ],
-];
-
 export const reducer: Reducer<PrHubState, any> = (state: PrHubState = initialState, action: FetchAction) => {
-  const reducerActions = new Map<Enum<typeof ActionTypes>, () => PrHubState>([
-    ...setState(state, action),
-    ...updateState(state, action),
-    ...modifyObservables(state, action),
-  ]);
-
+  const reducerActions = new Map<Enum<typeof ActionTypes>, () => PrHubState>([...setState(state, action), ...updateState(state, action)]);
   const callableReducerAction = reducerActions.get(action.type);
   return callableReducerAction ? callableReducerAction() : state;
 };

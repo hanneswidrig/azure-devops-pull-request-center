@@ -2,23 +2,13 @@ import React from 'react';
 import { Dispatch } from 'redux';
 import { useDispatch } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
-import {
-  ChoiceGroup,
-  IChoiceGroupOption,
-  Stack,
-  Toggle,
-  Label,
-  CompoundButton,
-  DefaultButton,
-  IContextualMenuProps,
-} from 'office-ui-fabric-react';
+import { ChoiceGroup, IChoiceGroupOption, Stack, Label, CompoundButton, DefaultButton, IContextualMenuProps } from 'office-ui-fabric-react';
 
 import {
   toggleSettingsPanel,
   setFullScreenMode,
   setSelectedTab,
   setSortDirection,
-  setFilterBar,
   saveSettings,
   setRefreshDuration,
 } from '../state/actions';
@@ -29,12 +19,19 @@ import { DefaultSettings, TabOptions, SortDirection, RefreshDuration } from '../
 type SetSettingValuesCallback = React.Dispatch<React.SetStateAction<DefaultSettings>>;
 
 export const defaultSettingValues: DefaultSettings = {
-  isFilterVisible: false,
   isFullScreenMode: false,
   selectedTab: 'active',
   sortDirection: 'desc',
-  isSavingFilterItems: false,
-  filterValues: undefined,
+  isSavingFilterOptions: false,
+  selectedFilterOptions: {
+    searchString: [],
+    repositories: [],
+    sourceBranch: [],
+    targetBranch: [],
+    author: [],
+    reviewer: [],
+    myApprovalStatus: [],
+  },
   autoRefreshDuration: 'off',
 };
 
@@ -46,7 +43,7 @@ const isFullScreenModeItems: IChoiceGroupOption[] = [
 const selectedTabItems: IChoiceGroupOption[] = [
   { key: 'active', text: 'Active' },
   { key: 'draft', text: 'Draft' },
-  { key: 'completed', text: 'Completed (25 Most Recent)' },
+  { key: 'completed', text: 'Completed' },
 ];
 
 const sortDirectionItems: IChoiceGroupOption[] = [
@@ -109,8 +106,6 @@ type ChoiceGroupChanged = (
 
 type CompoundButtonChanged = (decision: 'save' | 'clear', setSettingValues: SetSettingValuesCallback) => void;
 
-type ToggleChanged = (selectedOption: boolean | undefined, setSettingValues: SetSettingValuesCallback) => void;
-
 type AutoRefreshDurationChanged = (duration: RefreshDuration, setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
 
 type ResetChanges = (setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
@@ -126,13 +121,7 @@ const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingV
 };
 
 const isSavingFilterItemsChanged: CompoundButtonChanged = (decision, setSettingValues) => {
-  const isSavingFilterItems = decision === 'save';
-  setSettingValues((values) => ({ ...values, isSavingFilterItems: isSavingFilterItems }));
-  setSettingValues((values) => ({ ...values, filterValues: undefined }));
-};
-
-const isFilterVisibleChanged: ToggleChanged = (selectedOption, setSettingValues) => {
-  setSettingValues((values: DefaultSettings) => ({ ...values, isFilterVisible: selectedOption ?? false }));
+  setSettingValues((values) => ({ ...values, isSavingFilterOptions: decision === 'save' }));
 };
 
 const selectedTabChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
@@ -157,7 +146,6 @@ const resetChanges: ResetChanges = (setSettingValues, dispatch) => {
 };
 
 const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
-  dispatch(setFilterBar({ isFilterVisible: defaultSettings.isFilterVisible }));
   dispatch(setSelectedTab({ selectedTab: defaultSettings.selectedTab }));
   dispatch(setSortDirection({ sortDirection: defaultSettings.sortDirection }));
   dispatch(saveSettings({ defaultSettings: defaultSettings }));
@@ -165,23 +153,20 @@ const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
 };
 
 const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings): boolean => {
-  const isFilterVisibleNotEqual =
-    (left.isFilterVisible ?? defaultSettingValues.isFilterVisible) !== (right.isFilterVisible ?? defaultSettingValues.isFilterVisible);
-
   const isFullScreenModeNotEqual =
     (left.isFullScreenMode ?? defaultSettingValues.isFullScreenMode) !== (right.isFullScreenMode ?? defaultSettingValues.isFullScreenMode);
 
   const isSavingFilterItemsNotEqual =
-    (left.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems) !==
-    (right.isSavingFilterItems ?? defaultSettingValues.isSavingFilterItems);
+    (left.isSavingFilterOptions ?? defaultSettingValues.isSavingFilterOptions) !==
+    (right.isSavingFilterOptions ?? defaultSettingValues.isSavingFilterOptions);
 
   const filterValuesNotEqual =
-    left.filterValues?.repositories?.length !== right.filterValues?.repositories?.length ||
-    left.filterValues?.sourceBranch?.length !== right.filterValues?.sourceBranch?.length ||
-    left.filterValues?.targetBranch?.length !== right.filterValues?.targetBranch?.length ||
-    left.filterValues?.author?.length !== right.filterValues?.author?.length ||
-    left.filterValues?.reviewer?.length !== right.filterValues?.reviewer?.length ||
-    left.filterValues?.myApprovalStatus?.length !== right.filterValues?.myApprovalStatus?.length;
+    left.selectedFilterOptions?.repositories?.length !== right.selectedFilterOptions?.repositories?.length ||
+    left.selectedFilterOptions?.sourceBranch?.length !== right.selectedFilterOptions?.sourceBranch?.length ||
+    left.selectedFilterOptions?.targetBranch?.length !== right.selectedFilterOptions?.targetBranch?.length ||
+    left.selectedFilterOptions?.author?.length !== right.selectedFilterOptions?.author?.length ||
+    left.selectedFilterOptions?.reviewer?.length !== right.selectedFilterOptions?.reviewer?.length ||
+    left.selectedFilterOptions?.myApprovalStatus?.length !== right.selectedFilterOptions?.myApprovalStatus?.length;
 
   const selectedTabNotEqual =
     (left.selectedTab ?? defaultSettingValues.selectedTab) !== (right.selectedTab ?? defaultSettingValues.selectedTab);
@@ -194,7 +179,6 @@ const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings):
     (right.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration);
 
   return (
-    isFilterVisibleNotEqual ||
     isFullScreenModeNotEqual ||
     isSavingFilterItemsNotEqual ||
     filterValuesNotEqual ||
@@ -209,12 +193,11 @@ export const SettingsPanel = () => {
   const defaultDuration = useTypedSelector((store) => store.settings.defaults.autoRefreshDuration);
   const dispatch = useDispatch();
   const [settingValues, setSettingValues] = React.useState<DefaultSettings>({
-    isFilterVisible: store.settings.defaults.isFilterVisible,
     isFullScreenMode: store.settings.defaults.isFullScreenMode || store.ui.isFullScreenMode,
     selectedTab: store.settings.defaults.selectedTab,
     sortDirection: store.settings.defaults.sortDirection,
-    isSavingFilterItems: store.settings.defaults.isSavingFilterItems,
-    filterValues: undefined,
+    isSavingFilterOptions: store.settings.defaults.isSavingFilterOptions,
+    selectedFilterOptions: store.settings.defaults.selectedFilterOptions,
     autoRefreshDuration: defaultDuration !== 'off' ? defaultDuration : store.settings.autoRefreshDuration,
   });
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
@@ -228,7 +211,7 @@ export const SettingsPanel = () => {
       size={0}
       onDismiss={() => dispatch(toggleSettingsPanel())}
       titleProps={{ text: 'Extension Preferences' }}
-      description={'Pull Requests Center 1.2.10'}
+      description={'Pull Requests Center 2.0.0'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => resetChanges(setSettingValues, dispatch) },
         {
@@ -256,29 +239,19 @@ export const SettingsPanel = () => {
             onChange={(_, o) => isFullScreenModeChanged(o, setSettingValues, dispatch)}
           />
         </div>
-        <div style={{ marginTop: 8 }}></div>
-        <div>
-          <Label className="light-dark-toggle">Filter Bar: Visible by Default</Label>
-          <Toggle
-            onText="On"
-            offText="Off"
-            checked={settingValues.isFilterVisible}
-            onChange={(_, o) => isFilterVisibleChanged(o, setSettingValues)}
-          />
-        </div>
         <Label className="light-dark-toggle">Currently Selected Filter Values</Label>
         <CompoundButton
           iconProps={{ iconName: 'Save' }}
           secondaryText={`Default to currently selected values.`}
           onClick={() => isSavingFilterItemsChanged('save', setSettingValues)}
-          primary={settingValues.isSavingFilterItems}>
+          primary={settingValues.isSavingFilterOptions}>
           Save
         </CompoundButton>
         <CompoundButton
           iconProps={{ iconName: 'ClearFilter' }}
           secondaryText={`Remove default selected values.`}
           onClick={() => isSavingFilterItemsChanged('clear', setSettingValues)}
-          disabled={!settingValues.isSavingFilterItems}>
+          disabled={!settingValues.isSavingFilterOptions}>
           Clear
         </CompoundButton>
         <div>
