@@ -1,4 +1,4 @@
-@import 'azure-devops-ui/Core/_platformCommon.scss';
+@import '~azure-devops-ui/Core/platformCommon';
 
 #root {
   height: 100%;
@@ -23,12 +23,6 @@ body {
 //
 // Global styles
 //
-.bolt-panel-content,
-.custom-scrollbar {
-  scrollbar-color: $transblack-20 transparent;
-  scrollbar-width: thin;
-}
-
 .bolt-panel-content::-webkit-scrollbar {
   width: 18px;
 }

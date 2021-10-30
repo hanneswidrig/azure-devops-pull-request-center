@@ -1,4 +1,4 @@
-@import 'azure-devops-ui/Core/_platformCommon.scss';
+@import '~azure-devops-ui/Core/platformCommon';
 
 .reviewers-container {
   display: flex;
@@ -40,6 +40,4 @@ td.bolt-table-cell-content.no-padding.bolt-table-cell.bolt-list-cell > div {
   padding: 0;
   background-color: transparent;
   box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
-  box-shadow: 0 1.6px 3.6px 0 var(--callout-shadow-color, rgba(0, 0, 0, 0.132)),
-    0 0.3px 0.9px 0 var(--callout-shadow-secondary-color, rgba(0, 0, 0, 0.108));
 }

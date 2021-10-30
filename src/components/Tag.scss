@@ -1,13 +1,13 @@
-@import 'azure-devops-ui/Core/_platformCommon.scss';
+@import '~azure-devops-ui/Core/platformCommon';
 
 .tag-container {
   display: inline-flex;
-  margin: 0px 4px;
+  margin: 0 4px;
   border-radius: 4px;
 }
 
 .tag-text {
   text-transform: capitalize;
-  padding: 0px 6px;
+  padding: 0 6px;
   font-size: 12px;
 }

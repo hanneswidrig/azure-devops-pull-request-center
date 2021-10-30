@@ -8,26 +8,34 @@ import { FilterOption } from '../state/types';
 import { useTypedSelector } from '../lib/utils';
 import { setFilterOptions } from '../state/actions';
 import { deriveFilterOptions } from '../state/transformData';
+import { Button } from 'azure-devops-ui/Button';
 
-type SearchBoxProps = { placeholder: string; setter: React.Dispatch<React.SetStateAction<FilterOption[]>> };
-const SearchBox = ({ placeholder, setter }: SearchBoxProps) => {
+type SearchBoxProps = { placeholder: string; value: FilterOption[]; setter: React.Dispatch<React.SetStateAction<FilterOption[]>> };
+const SearchBox = ({ placeholder, value, setter }: SearchBoxProps) => {
   return (
     <input
       className="search-box"
       type="search"
       placeholder={placeholder}
+      value={value[0]?.value ?? ''}
       onChange={(e) => setter([{ label: e.target.value, value: e.target.value }])}
     />
   );
 };
 
-type UiSelectProps = { placeholder: string; options: FilterOption[]; setter: React.Dispatch<React.SetStateAction<FilterOption[]>> };
-const UiMultiSelect = ({ placeholder, options, setter }: UiSelectProps) => {
+type UiSelectProps = {
+  placeholder: string;
+  options: FilterOption[];
+  value: FilterOption[];
+  setter: React.Dispatch<React.SetStateAction<FilterOption[]>>;
+};
+const UiMultiSelect = ({ placeholder, options, value, setter }: UiSelectProps) => {
   return (
     <Select
       className="filter-bar-item"
       placeholder={placeholder}
       onChange={(selectedValues) => setter([...selectedValues])}
+      value={value}
       getOptionLabel={({ label }) => label}
       getOptionValue={({ value }) => value}
       options={options}
@@ -49,19 +57,35 @@ export const UiFilterBar = () => {
   const [reviewer, setReviewer] = React.useState<FilterOption[]>([]);
   const [myApprovalStatus, setMyApprovalStatus] = React.useState<FilterOption[]>([]);
 
+  const resetFilters = () => {
+    setSearchString([]);
+    setRepositories([]);
+    setSourceBranch([]);
+    setTargetBranch([]);
+    setAuthor([]);
+    setReviewer([]);
+    setMyApprovalStatus([]);
+  };
+
   React.useEffect(() => {
     dispatch(setFilterOptions({ searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus }));
   }, [dispatch, searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus]);
 
   return (
     <div className="filter-bar">
-      <SearchBox placeholder={'Search...'} setter={setSearchString} />
-      <UiMultiSelect placeholder={'Repositories'} options={filterOptions.repositories} setter={setRepositories} />
-      <UiMultiSelect placeholder={'Source Branch'} options={filterOptions.sourceBranch} setter={setSourceBranch} />
-      <UiMultiSelect placeholder={'Target Branch'} options={filterOptions.targetBranch} setter={setTargetBranch} />
-      <UiMultiSelect placeholder={'PR Author'} options={filterOptions.author} setter={setAuthor} />
-      <UiMultiSelect placeholder={'Assigned Reviewer'} options={filterOptions.reviewer} setter={setReviewer} />
-      <UiMultiSelect placeholder={'My Approval Status'} options={filterOptions.myApprovalStatus} setter={setMyApprovalStatus} />
+      <Button iconProps={{ iconName: 'ClearFilter' }} subtle onClick={() => resetFilters()} />
+      <SearchBox placeholder={'Search...'} value={searchString} setter={setSearchString} />
+      <UiMultiSelect placeholder={'Repositories'} options={filterOptions.repositories} value={repositories} setter={setRepositories} />
+      <UiMultiSelect placeholder={'Source Branch'} options={filterOptions.sourceBranch} value={sourceBranch} setter={setSourceBranch} />
+      <UiMultiSelect placeholder={'Target Branch'} options={filterOptions.targetBranch} value={targetBranch} setter={setTargetBranch} />
+      <UiMultiSelect placeholder={'PR Author'} options={filterOptions.author} value={author} setter={setAuthor} />
+      <UiMultiSelect placeholder={'Assigned Reviewer'} options={filterOptions.reviewer} value={reviewer} setter={setReviewer} />
+      <UiMultiSelect
+        placeholder={'My Approval Status'}
+        options={filterOptions.myApprovalStatus}
+        value={myApprovalStatus}
+        setter={setMyApprovalStatus}
+      />
     </div>
   );
 };
