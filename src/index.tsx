@@ -38,7 +38,3 @@ init().then(() =>
     ReactDOM.render(<App />, document.getElementById('root'));
   })
 );
-
-/* TODO
- * Cap PR Fetching (7,14,30,...???) days
- * */

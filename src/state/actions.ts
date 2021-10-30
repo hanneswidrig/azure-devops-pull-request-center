@@ -130,11 +130,7 @@ export const restoreSettings: Task = () => async (dispatch) => {
     dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
-    globalMessagesSvc.addToast({
-      duration: 5000,
-      message: 'An error occurred while fetching pull requests. Please reload or refresh the page.',
-      forceOverrideExisting: true,
-    });
+    globalMessagesSvc.addToast({ duration: 5000, message: apiErrorMessage, forceOverrideExisting: true });
   }
 };
 
