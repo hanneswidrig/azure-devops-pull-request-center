@@ -14,11 +14,11 @@ import {
 } from '../state/actions';
 import './SettingsPanel.scss';
 import { useTypedSelector } from '../lib/utils';
-import { DefaultSettings, TabOptions, SortDirection, RefreshDuration } from '../state/types';
+import { DefaultSettings, TabOptions, SortDirection, RefreshDuration, FilterOption } from '../state/types';
 
 type SetSettingValuesCallback = React.Dispatch<React.SetStateAction<DefaultSettings>>;
 
-export const defaultSettingValues: DefaultSettings = {
+export const defaults: DefaultSettings = {
   isFullScreenMode: false,
   selectedTab: 'active',
   sortDirection: 'desc',
@@ -105,11 +105,8 @@ type ChoiceGroupChanged = (
 ) => void;
 
 type CompoundButtonChanged = (decision: 'save' | 'clear', setSettingValues: SetSettingValuesCallback) => void;
-
 type AutoRefreshDurationChanged = (duration: RefreshDuration, setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
-
 type ResetChanges = (setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
-
 type ApplyChanges = (defaultSettings: DefaultSettings, dispatch: Dispatch<any>) => void;
 
 const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingValues, dispatch) => {
@@ -140,9 +137,9 @@ const autoRefreshDurationChanged: AutoRefreshDurationChanged = (duration, setSet
 };
 
 const resetChanges: ResetChanges = (setSettingValues, dispatch) => {
-  setSettingValues(defaultSettingValues);
+  setSettingValues(defaults);
   dispatch(setRefreshDuration({ refreshDuration: 'off' }));
-  dispatch(setFullScreenMode({ isFullScreenMode: defaultSettingValues.isFullScreenMode }));
+  dispatch(setFullScreenMode({ isFullScreenMode: defaults.isFullScreenMode }));
 };
 
 const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
@@ -152,52 +149,73 @@ const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
   dispatch(toggleSettingsPanel());
 };
 
-const defaultSettingsEquality = (left: DefaultSettings, right: DefaultSettings): boolean => {
-  const isFullScreenModeNotEqual =
-    (left.isFullScreenMode ?? defaultSettingValues.isFullScreenMode) !== (right.isFullScreenMode ?? defaultSettingValues.isFullScreenMode);
+export const isNotEqual = (a: FilterOption[], b: FilterOption[]): boolean => {
+  const aValues = a.map((v) => v.value.toLocaleLowerCase());
+  const bValues = b.map((v) => v.value.toLocaleLowerCase());
+  return aValues.some((v) => !bValues.includes(v));
+};
 
-  const isSavingFilterItemsNotEqual =
-    (left.isSavingFilterOptions ?? defaultSettingValues.isSavingFilterOptions) !==
-    (right.isSavingFilterOptions ?? defaultSettingValues.isSavingFilterOptions);
+const defaultSettingsEquality = (a: DefaultSettings, b: DefaultSettings): boolean => {
+  const { isFullScreenMode, selectedTab, sortDirection, isSavingFilterOptions, selectedFilterOptions, autoRefreshDuration } = defaults;
 
-  const filterValuesNotEqual =
-    left.selectedFilterOptions?.repositories?.length !== right.selectedFilterOptions?.repositories?.length ||
-    left.selectedFilterOptions?.sourceBranch?.length !== right.selectedFilterOptions?.sourceBranch?.length ||
-    left.selectedFilterOptions?.targetBranch?.length !== right.selectedFilterOptions?.targetBranch?.length ||
-    left.selectedFilterOptions?.author?.length !== right.selectedFilterOptions?.author?.length ||
-    left.selectedFilterOptions?.reviewer?.length !== right.selectedFilterOptions?.reviewer?.length ||
-    left.selectedFilterOptions?.myApprovalStatus?.length !== right.selectedFilterOptions?.myApprovalStatus?.length;
-
-  const selectedTabNotEqual =
-    (left.selectedTab ?? defaultSettingValues.selectedTab) !== (right.selectedTab ?? defaultSettingValues.selectedTab);
-
-  const sortDirectionNotEqual =
-    (left.sortDirection ?? defaultSettingValues.sortDirection) !== (right.sortDirection ?? defaultSettingValues.sortDirection);
-
-  const autoRefreshDurationNotEqual =
-    (left.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration) !==
-    (right.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration);
+  const isFullScreenModeCheck = (a.isFullScreenMode ?? isFullScreenMode) !== (b.isFullScreenMode ?? isFullScreenMode);
+  const isSavingFilterOptionsCheck =
+    (a.isSavingFilterOptions ?? isSavingFilterOptions) !== (b.isSavingFilterOptions ?? isSavingFilterOptions);
+  const selectedFilterOptionsCheck =
+    isNotEqual(
+      (a.selectedFilterOptions ?? selectedFilterOptions.searchString).searchString,
+      (b.selectedFilterOptions ?? selectedFilterOptions.searchString).searchString
+    ) ||
+    isNotEqual(
+      (a.selectedFilterOptions ?? selectedFilterOptions.repositories).repositories,
+      (b.selectedFilterOptions ?? selectedFilterOptions.repositories).repositories
+    ) ||
+    isNotEqual(
+      (a.selectedFilterOptions ?? selectedFilterOptions.sourceBranch).sourceBranch,
+      (b.selectedFilterOptions ?? selectedFilterOptions.sourceBranch).sourceBranch
+    ) ||
+    isNotEqual(
+      (a.selectedFilterOptions ?? selectedFilterOptions.targetBranch).targetBranch,
+      (b.selectedFilterOptions ?? selectedFilterOptions.targetBranch).targetBranch
+    ) ||
+    isNotEqual(
+      (a.selectedFilterOptions ?? selectedFilterOptions.author).author,
+      (b.selectedFilterOptions ?? selectedFilterOptions.author).author
+    ) ||
+    isNotEqual(
+      (a.selectedFilterOptions ?? selectedFilterOptions.reviewer).reviewer,
+      (b.selectedFilterOptions ?? selectedFilterOptions.reviewer).reviewer
+    ) ||
+    isNotEqual(
+      (a.selectedFilterOptions ?? selectedFilterOptions.myApprovalStatus).myApprovalStatus,
+      (b.selectedFilterOptions ?? selectedFilterOptions.myApprovalStatus).myApprovalStatus
+    );
+  const selectedTabCheck = (a.selectedTab ?? selectedTab) !== (b.selectedTab ?? selectedTab);
+  const sortDirectionCheck = (a.sortDirection ?? sortDirection) !== (b.sortDirection ?? sortDirection);
+  const autoRefreshDurationCheck = (a.autoRefreshDuration ?? autoRefreshDuration) !== (b.autoRefreshDuration ?? autoRefreshDuration);
 
   return (
-    isFullScreenModeNotEqual ||
-    isSavingFilterItemsNotEqual ||
-    filterValuesNotEqual ||
-    selectedTabNotEqual ||
-    sortDirectionNotEqual ||
-    autoRefreshDurationNotEqual
+    isFullScreenModeCheck ||
+    isSavingFilterOptionsCheck ||
+    selectedFilterOptionsCheck ||
+    selectedTabCheck ||
+    sortDirectionCheck ||
+    autoRefreshDurationCheck
   );
 };
 
 export const SettingsPanel = () => {
   const store = useTypedSelector((store) => store);
+  const filterOptions = useTypedSelector((store) => store.data.filterOptions);
   const defaultDuration = useTypedSelector((store) => store.settings.defaults.autoRefreshDuration);
   const dispatch = useDispatch();
+
   const [settingValues, setSettingValues] = React.useState<DefaultSettings>({
     isFullScreenMode: store.settings.defaults.isFullScreenMode || store.ui.isFullScreenMode,
     selectedTab: store.settings.defaults.selectedTab,
     sortDirection: store.settings.defaults.sortDirection,
     isSavingFilterOptions: store.settings.defaults.isSavingFilterOptions,
-    selectedFilterOptions: store.settings.defaults.selectedFilterOptions,
+    selectedFilterOptions: store.settings.defaults.isSavingFilterOptions ? filterOptions : store.settings.defaults.selectedFilterOptions,
     autoRefreshDuration: defaultDuration !== 'off' ? defaultDuration : store.settings.autoRefreshDuration,
   });
   const [isDirty, setIsDirty] = React.useState<boolean>(false);

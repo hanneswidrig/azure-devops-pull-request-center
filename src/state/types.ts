@@ -10,19 +10,15 @@ export const ActionTypes = {
   SET_CURRENT_USER: 'setCurrentUser',
   SET_SELECTED_TAB: 'setSelectedTab',
   RESTORE_SETTINGS: 'restoreSettings',
-  SET_REPOSITORIES: 'setRepositories',
   SET_PULL_REQUESTS: 'setPullRequests',
   REMOVE_ASYNC_TASK: 'removeAsyncTask',
-  TOGGLE_FILTER_BAR: 'toggleFilterBar',
   SET_FILTER_OPTIONS: 'setFilterOptions',
-  DISPLAY_WORK_ITEMS: 'displayWorkItems',
   SET_SORT_DIRECTION: 'setSortDirection',
   SET_REFRESH_DURATION: 'setRefreshDuration',
   SET_FULL_SCREEN_MODE: 'setFullScreenMode',
   TOGGLE_SETTINGS_PANEL: 'toggleSettingsPanel',
-  REFRESH_PULL_REQUESTS: 'refreshPullRequests',
   TOGGLE_SORT_DIRECTION: 'toggleSortDirection',
-  PUSH_COMPLETED_PULL_REQUESTS: 'pushCompletedPullRequests',
+  SET_COMPLETED_PULL_REQUESTS: 'setCompletedPullRequests',
 } as const;
 
 export type RefreshDuration = 'off' | '60' | '300' | '900' | '3600';

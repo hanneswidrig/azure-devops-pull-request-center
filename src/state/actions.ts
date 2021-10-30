@@ -15,7 +15,7 @@ import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemT
 import { Task } from '../lib/typings';
 import { toPr } from './transformData';
 import { sortByRepositoryName } from '../lib/utils';
-import { defaultSettingValues } from '../components/SettingsPanel';
+import { defaults } from '../components/SettingsPanel';
 import { ActionTypes, DefaultSettings, FilterOptions, PR, RefreshDuration, SortDirection } from './types';
 
 const criteria = (status: PullRequestStatus): GitPullRequestSearchCriteria => {
@@ -62,10 +62,6 @@ export const toggleSortDirection: Task = () => (dispatch) => {
   dispatch({ type: ActionTypes.TOGGLE_SORT_DIRECTION });
 };
 
-export const toggleFilterBar: Task = () => (dispatch) => {
-  dispatch({ type: ActionTypes.TOGGLE_FILTER_BAR });
-};
-
 export const setSortDirection: Task<{ sortDirection: SortDirection }> =
   ({ sortDirection }) =>
   (dispatch) => {
@@ -96,7 +92,6 @@ export const setPullRequests: Task = () => async (dispatch) => {
     const repositories = await getRepositories();
     const allPrs = await Promise.all(repositories.flatMap((repo) => fetchPullRequests(repo, criteria(PullRequestStatus.Active), 25)));
     dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload: allPrs.reduce((prev, curr) => [...prev, ...curr], []) });
-    dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
     dispatch(setCompletedPullRequests(repositories));
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
@@ -107,7 +102,8 @@ export const setPullRequests: Task = () => async (dispatch) => {
 export const setCompletedPullRequests: Task<GitRepository[]> = (repositories: GitRepository[]) => async (dispatch) => {
   try {
     const allPrs = await Promise.all(repositories.flatMap((repo) => fetchPullRequests(repo, criteria(PullRequestStatus.Completed), 25)));
-    dispatch({ type: ActionTypes.PUSH_COMPLETED_PULL_REQUESTS, payload: allPrs.reduce((prev, curr) => [...prev, ...curr], []) });
+    dispatch({ type: ActionTypes.SET_COMPLETED_PULL_REQUESTS, payload: allPrs.reduce((prev, curr) => [...prev, ...curr], []) });
+    dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
     globalMessagesSvc.addToast({ duration: 5000, message: apiErrorMessage, forceOverrideExisting: true });
@@ -129,7 +125,7 @@ export const restoreSettings: Task = () => async (dispatch) => {
       await setFullScreenModeState(settings.isFullScreenMode);
       dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
     } else {
-      await setSettings(defaultSettingValues);
+      await setSettings(defaults);
     }
     dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
   } catch {
@@ -151,6 +147,7 @@ export const saveSettings: Task<{ defaultSettings: DefaultSettings }> =
 
 export const onInitialLoad: Task = () => {
   return (dispatch) => {
+    dispatch(restoreSettings());
     dispatch(setCurrentUser());
     dispatch(setPullRequests());
   };

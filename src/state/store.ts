@@ -4,7 +4,7 @@ import { Reducer } from 'redux';
 import { initialState } from './initialState';
 import { sortByCreationDate } from '../lib/utils';
 import { Enum, FetchAction, SplitReducer } from '../lib/typings';
-import { defaultSettingValues } from '../components/SettingsPanel';
+import { defaults } from '../components/SettingsPanel';
 import { ActionTypes, DefaultSettings, FilterOptions, PR, PrHubState, SortDirection } from './types';
 
 const setState: SplitReducer = (state, action) => [
@@ -44,7 +44,7 @@ const setState: SplitReducer = (state, action) => [
     },
   ],
   [
-    ActionTypes.PUSH_COMPLETED_PULL_REQUESTS,
+    ActionTypes.SET_COMPLETED_PULL_REQUESTS,
     () => {
       return produce(state, (draft) => {
         const completedPullRequests: PR[] = action.payload;
@@ -60,17 +60,17 @@ const setState: SplitReducer = (state, action) => [
       if (action.payload) {
         const savedSettings: Partial<DefaultSettings> = action.payload;
         return produce(state, (draft) => {
-          draft.ui.isFullScreenMode = savedSettings.isFullScreenMode ?? defaultSettingValues.isFullScreenMode;
-          draft.ui.selectedTab = savedSettings.selectedTab ?? defaultSettingValues.selectedTab;
-          draft.ui.sortDirection = savedSettings.sortDirection ?? defaultSettingValues.sortDirection;
-          draft.settings.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration;
+          draft.ui.isFullScreenMode = savedSettings.isFullScreenMode ?? defaults.isFullScreenMode;
+          draft.ui.selectedTab = savedSettings.selectedTab ?? defaults.selectedTab;
+          draft.ui.sortDirection = savedSettings.sortDirection ?? defaults.sortDirection;
+          draft.settings.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaults.autoRefreshDuration;
 
-          draft.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode ?? defaultSettingValues.isFullScreenMode;
-          draft.settings.defaults.selectedTab = savedSettings.selectedTab ?? defaultSettingValues.selectedTab;
-          draft.settings.defaults.sortDirection = savedSettings.sortDirection ?? defaultSettingValues.sortDirection;
-          draft.settings.defaults.isSavingFilterOptions = savedSettings.isSavingFilterOptions ?? defaultSettingValues.isSavingFilterOptions;
-          draft.settings.defaults.selectedFilterOptions = savedSettings.selectedFilterOptions ?? defaultSettingValues.selectedFilterOptions;
-          draft.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaultSettingValues.autoRefreshDuration;
+          draft.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode ?? defaults.isFullScreenMode;
+          draft.settings.defaults.selectedTab = savedSettings.selectedTab ?? defaults.selectedTab;
+          draft.settings.defaults.sortDirection = savedSettings.sortDirection ?? defaults.sortDirection;
+          draft.settings.defaults.isSavingFilterOptions = savedSettings.isSavingFilterOptions ?? defaults.isSavingFilterOptions;
+          draft.settings.defaults.selectedFilterOptions = savedSettings.selectedFilterOptions ?? defaults.selectedFilterOptions;
+          draft.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaults.autoRefreshDuration;
         });
       }
       return state;

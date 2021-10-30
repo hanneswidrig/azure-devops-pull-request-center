@@ -40,7 +40,5 @@ init().then(() =>
 );
 
 /* TODO
- * Fix Filter Value Saving
  * Cap PR Fetching (7,14,30,...???) days
- * Ensure filtered by values are not cleared unless specified by user
  * */

@@ -47,6 +47,8 @@ const UiMultiSelect = ({ placeholder, options, value, setter }: UiSelectProps) =
 
 export const UiFilterBar = () => {
   const filterOptions = useTypedSelector(({ data }) => deriveFilterOptions(data.pullRequests));
+  const isSavingFilterOptions = useTypedSelector((store) => store.settings.defaults.isSavingFilterOptions);
+  const selectedFilterOptions = useTypedSelector((store) => store.settings.defaults.selectedFilterOptions);
   const dispatch = useDispatch();
 
   const [searchString, setSearchString] = React.useState<FilterOption[]>([]);
@@ -57,6 +59,22 @@ export const UiFilterBar = () => {
   const [reviewer, setReviewer] = React.useState<FilterOption[]>([]);
   const [myApprovalStatus, setMyApprovalStatus] = React.useState<FilterOption[]>([]);
 
+  React.useEffect(() => {
+    if (isSavingFilterOptions) {
+      setSearchString(selectedFilterOptions.searchString);
+      setRepositories(selectedFilterOptions.repositories);
+      setSourceBranch(selectedFilterOptions.sourceBranch);
+      setTargetBranch(selectedFilterOptions.targetBranch);
+      setAuthor(selectedFilterOptions.author);
+      setReviewer(selectedFilterOptions.reviewer);
+      setMyApprovalStatus(selectedFilterOptions.myApprovalStatus);
+    }
+  }, [isSavingFilterOptions, selectedFilterOptions]);
+
+  React.useEffect(() => {
+    dispatch(setFilterOptions({ searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus }));
+  }, [dispatch, searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus, isSavingFilterOptions]);
+
   const resetFilters = () => {
     setSearchString([]);
     setRepositories([]);
@@ -66,10 +84,6 @@ export const UiFilterBar = () => {
     setReviewer([]);
     setMyApprovalStatus([]);
   };
-
-  React.useEffect(() => {
-    dispatch(setFilterOptions({ searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus }));
-  }, [dispatch, searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus]);
 
   return (
     <div className="filter-bar">
