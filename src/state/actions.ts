@@ -14,8 +14,8 @@ import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemT
 
 import { Task } from '../lib/typings';
 import { toPr } from './transformData';
+import { sortByRepositoryName } from '../lib/utils';
 import { defaultSettingValues } from '../components/SettingsPanel';
-import { sortByPullRequestId, sortByRepositoryName } from '../lib/utils';
 import { ActionTypes, DefaultSettings, FilterOptions, PR, RefreshDuration, SortDirection } from './types';
 
 const criteria = (status: PullRequestStatus): GitPullRequestSearchCriteria => {
@@ -30,6 +30,8 @@ const criteria = (status: PullRequestStatus): GitPullRequestSearchCriteria => {
     targetRefName: '',
   };
 };
+
+const apiErrorMessage = 'An error occurred while fetching pull requests. Please reload or refresh the page.';
 
 export const coreClient: CoreRestClient = getClient(CoreRestClient);
 export const gitClient: GitRestClient = getClient(GitRestClient);
@@ -70,8 +72,6 @@ export const setSortDirection: Task<{ sortDirection: SortDirection }> =
     dispatch({ type: ActionTypes.SET_SORT_DIRECTION, payload: sortDirection });
   };
 
-// export const triggerSortDirection = () => {};
-
 export const setFilterOptions: Task<FilterOptions> = (filterOptions) => (dispatch) => {
   dispatch({ type: ActionTypes.SET_FILTER_OPTIONS, payload: filterOptions });
 };
@@ -94,37 +94,23 @@ export const setPullRequests: Task = () => async (dispatch) => {
   try {
     dispatch({ type: ActionTypes.ADD_ASYNC_TASK });
     const repositories = await getRepositories();
-
     const allPrs = await Promise.all(repositories.flatMap((repo) => fetchPullRequests(repo, criteria(PullRequestStatus.Active), 25)));
-    const payload = allPrs.reduce((prev, curr) => [...prev, ...curr], []).sort((a, b) => sortByPullRequestId(a, b, 'desc'));
-
-    dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload });
+    dispatch({ type: ActionTypes.SET_PULL_REQUESTS, payload: allPrs.reduce((prev, curr) => [...prev, ...curr], []) });
     dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
     dispatch(setCompletedPullRequests(repositories));
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
-    globalMessagesSvc.addToast({
-      duration: 5000,
-      message: 'An error occurred while fetching pull requests. Please reload or refresh the page.',
-      forceOverrideExisting: true,
-    });
+    globalMessagesSvc.addToast({ duration: 5000, message: apiErrorMessage, forceOverrideExisting: true });
   }
 };
 
 export const setCompletedPullRequests: Task<GitRepository[]> = (repositories: GitRepository[]) => async (dispatch) => {
   try {
     const allPrs = await Promise.all(repositories.flatMap((repo) => fetchPullRequests(repo, criteria(PullRequestStatus.Completed), 25)));
-    const payload = allPrs.reduce((prev, curr) => [...prev, ...curr], []).sort((a, b) => sortByPullRequestId(a, b, 'desc'));
-
-    dispatch({ type: ActionTypes.PUSH_COMPLETED_PULL_REQUESTS, payload });
-    // triggerSortDirection();
+    dispatch({ type: ActionTypes.PUSH_COMPLETED_PULL_REQUESTS, payload: allPrs.reduce((prev, curr) => [...prev, ...curr], []) });
   } catch {
     const globalMessagesSvc = await getService<IGlobalMessagesService>('ms.vss-tfs-web.tfs-global-messages-service');
-    globalMessagesSvc.addToast({
-      duration: 5000,
-      message: 'An error occurred while fetching pull requests. Please reload or refresh the page.',
-      forceOverrideExisting: true,
-    });
+    globalMessagesSvc.addToast({ duration: 5000, message: apiErrorMessage, forceOverrideExisting: true });
   }
 };
 

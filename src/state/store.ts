@@ -2,9 +2,10 @@ import produce from 'immer';
 import { Reducer } from 'redux';
 
 import { initialState } from './initialState';
-import { Enum, SplitReducer, FetchAction } from '../lib/typings';
-import { ActionTypes, PrHubState, DefaultSettings, FilterOptions } from './types';
+import { sortByCreationDate } from '../lib/utils';
+import { Enum, FetchAction, SplitReducer } from '../lib/typings';
 import { defaultSettingValues } from '../components/SettingsPanel';
+import { ActionTypes, DefaultSettings, FilterOptions, PR, PrHubState, SortDirection } from './types';
 
 const setState: SplitReducer = (state, action) => [
   [
@@ -27,7 +28,9 @@ const setState: SplitReducer = (state, action) => [
     ActionTypes.SET_SORT_DIRECTION,
     () => {
       return produce(state, (draft) => {
-        draft.ui.sortDirection = action.payload;
+        const sortDirection: SortDirection = action.payload;
+        draft.ui.sortDirection = sortDirection;
+        draft.data.pullRequests = [...state.data.pullRequests].sort((a, b) => sortByCreationDate(a, b, sortDirection));
       });
     },
   ],
@@ -35,16 +38,19 @@ const setState: SplitReducer = (state, action) => [
     ActionTypes.SET_PULL_REQUESTS,
     () => {
       return produce(state, (draft) => {
-        draft.data.pullRequests = action.payload;
+        const pullRequests: PR[] = action.payload;
+        draft.data.pullRequests = pullRequests.sort((a, b) => sortByCreationDate(a, b, state.ui.sortDirection));
       });
     },
   ],
   [
     ActionTypes.PUSH_COMPLETED_PULL_REQUESTS,
     () => {
-      const existingNonCompletedPullRequests = state.data.pullRequests.filter((pr) => !pr.isCompleted);
       return produce(state, (draft) => {
-        draft.data.pullRequests = [...existingNonCompletedPullRequests, ...action.payload];
+        const completedPullRequests: PR[] = action.payload;
+        const activePullRequests = state.data.pullRequests.filter((pr) => !pr.isCompleted);
+        const pullRequests = [...activePullRequests, ...completedPullRequests];
+        draft.data.pullRequests = pullRequests.sort((a, b) => sortByCreationDate(a, b, state.ui.sortDirection));
       });
     },
   ],
@@ -125,6 +131,7 @@ const updateState: SplitReducer = (state) => [
     () => {
       return produce(state, (draft) => {
         draft.ui.sortDirection = state.ui.sortDirection === 'desc' ? 'asc' : 'desc';
+        draft.data.pullRequests = [...state.data.pullRequests].sort((a, b) => sortByCreationDate(a, b, draft.ui.sortDirection));
       });
     },
   ],

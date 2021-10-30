@@ -13,10 +13,26 @@ import { useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from './SettingsPanel';
 import { PrHubState, PR, TabOptions } from '../state/types';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
-import { setSelectedTab, setPullRequests, toggleSettingsPanel } from '../state/actions';
+import { setSelectedTab, setPullRequests, toggleSettingsPanel, toggleSortDirection } from '../state/actions';
 
 const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: string): IHeaderCommandBarItem[] => {
   return [
+    {
+      id: 'sort-direction',
+      text: store.ui.sortDirection === 'desc' ? 'Newest' : 'Oldest',
+      tooltipProps: {
+        text: 'Sorting by',
+        delayMs: 1000,
+      },
+      important: true,
+      subtle: true,
+      onActivate: () => {
+        dispatch(toggleSortDirection());
+      },
+      iconProps: {
+        iconName: store.ui.sortDirection === 'desc' ? 'SortDown' : 'SortUp',
+      },
+    },
     {
       id: 'refresh',
       text: store.settings.autoRefreshDuration !== 'off' ? `Auto Refreshing (${timeUntil})` : 'Refresh',

@@ -2,8 +2,8 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { GitRepository } from 'azure-devops-extension-api/Git/Git';
 import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 
-import { PrHubState, PR, SortDirection } from '../state/types';
-import { ReviewerVoteNumber, ReviewerVoteLabel } from './enums';
+import { PR, PrHubState, SortDirection } from '../state/types';
+import { ReviewerVoteLabel, ReviewerVoteNumber } from './enums';
 
 export const sortByRepositoryName = (a: GitRepository, b: GitRepository) => {
   if (a.name < b.name) {
@@ -25,8 +25,12 @@ export const sortByDisplayName = (a: IdentityRef, b: IdentityRef) => {
   return 0;
 };
 
-export const sortByPullRequestId = (a: PR, b: PR, sortDirection: SortDirection) => {
-  return sortDirection === 'desc' ? (b as PR).pullRequestId - (a as PR).pullRequestId : (a as PR).pullRequestId - (b as PR).pullRequestId;
+export const sortByCreationDate = (a: PR, b: PR, sortDirection: SortDirection) => {
+  if (sortDirection === 'desc') {
+    return b.creationDate.getTime() - a.creationDate.getTime();
+  }
+
+  return a.creationDate.getTime() - b.creationDate.getTime();
 };
 
 export const getVoteDescription = (vote: number): string => {

@@ -43,6 +43,5 @@ init().then(() =>
  * Fix Filter Value Saving
  * Cap PR Fetching (7,14,30,...???) days
  * Unit Testing
- * PR Sorting
  * Ensure filtered by values are not cleared unless specified by user
  * */
