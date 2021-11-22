@@ -8,7 +8,7 @@ import {
 } from 'azure-devops-extension-api';
 import { CoreRestClient } from 'azure-devops-extension-api/Core/CoreClient';
 import { GitRestClient } from 'azure-devops-extension-api/Git/GitClient';
-import { GitPullRequestSearchCriteria, GitRepository, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
+import Git, { GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 import { getAccessToken, getExtensionContext, getService, getUser } from 'azure-devops-extension-sdk';
 import { WorkItemTrackingRestClient } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTrackingClient';
 
@@ -17,6 +17,10 @@ import { toPr } from './transformData';
 import { sortByRepositoryName } from '../lib/utils';
 import { defaults } from '../components/SettingsPanel';
 import { ActionTypes, DefaultSettings, FilterOptions, PR, RefreshDuration, SortDirection } from './types';
+
+interface GitRepository extends Git.GitRepository {
+  isDisabled: boolean;
+}
 
 const criteria = (status: PullRequestStatus): GitPullRequestSearchCriteria => {
   return {
@@ -40,8 +44,8 @@ export const workItemClient: WorkItemTrackingRestClient = getClient(WorkItemTrac
 const getRepositories = async () => {
   const projectService = await getService<IProjectPageService>('ms.vss-tfs-web.tfs-page-data-service');
   const currentProject = await projectService.getProject();
-  const repositories = await gitClient.getRepositories(currentProject?.id);
-  return repositories.sort(sortByRepositoryName);
+  const repositories = (await gitClient.getRepositories(currentProject?.id)) as GitRepository[];
+  return repositories.sort(sortByRepositoryName).filter(({ isDisabled }) => !isDisabled);
 };
 
 const getLayoutService = async (): Promise<IHostPageLayoutService> => {
