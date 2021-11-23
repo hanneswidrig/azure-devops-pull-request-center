@@ -12,9 +12,9 @@ import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azur
 import './TabProvider.scss';
 
 import { PrTable } from './PrTable';
-import { filterByCreationDate, useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from './SettingsPanel';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
+import { filterByCreationDate, useTypedSelector } from '../lib/utils';
 import { PrHubState, PR, TabOptions, FilterOption, DaysAgo } from '../state/types';
 import { setSelectedTab, setPullRequests, toggleSettingsPanel, toggleSortDirection, setDaysAgo } from '../state/actions';
 
@@ -84,9 +84,7 @@ const Heading = ({ items }: { items: IHeaderCommandBarItem[] }) => {
     <CustomHeader>
       <HeaderTitleArea>
         <HeaderTitleRow>
-          <HeaderTitle className="text-ellipsis" titleSize={1}>
-            Pull Requests Center
-          </HeaderTitle>
+          <HeaderTitle titleSize={1}>Pull Requests Center</HeaderTitle>
         </HeaderTitleRow>
       </HeaderTitleArea>
       <HeaderCommandBar items={items} />
@@ -122,7 +120,7 @@ export const TabProvider = () => {
       <Page className="flex-grow">
         <Heading items={commandBarItems(dispatch, store, timeUntil)} />
         <TabBar
-          tabsClassName={'tab-bar'}
+          tabsClassName="tab-bar"
           selectedTabId={selectedTab}
           onSelectedTabChanged={(selectedTab) => dispatch(setSelectedTab({ selectedTab }))}
           tabSize={'compact' as TabSize}>
@@ -132,9 +130,7 @@ export const TabProvider = () => {
           <div className="days-ago">
             <i className="days-ago-label">Fetching pull requests more recent than</i>
             <Select
-              onChange={(selectedOption) => {
-                dispatch(setDaysAgo({ daysAgo: selectedOption?.value as DaysAgo }));
-              }}
+              onChange={(selectedOption) => dispatch(setDaysAgo({ daysAgo: selectedOption?.value as DaysAgo }))}
               value={daysAgoOptions.find(({ value }) => value === daysAgo)}
               getOptionLabel={({ label }) => label}
               getOptionValue={({ value }) => value}

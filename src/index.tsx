@@ -5,10 +5,9 @@ import ReactDOM from 'react-dom';
 
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
+import { initializeIcons } from '@uifabric/icons';
 import { createStore, applyMiddleware } from 'redux';
 import { init, ready } from 'azure-devops-extension-sdk';
-
-import { initializeIcons } from '@uifabric/icons';
 import { composeWithDevTools } from 'remote-redux-devtools';
 
 import './index.scss';

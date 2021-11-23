@@ -1,7 +1,5 @@
-import { isAfter, subDays } from 'date-fns';
-
-import { DaysAgo, FilterOption, FilterOptions, PR, TabOptions } from '../state/types';
 import { filterByCreationDate } from './utils';
+import { DaysAgo, FilterOption, FilterOptions, PR, TabOptions } from '../state/types';
 
 type IFilterSetup = {
   filterBy: Filter;
