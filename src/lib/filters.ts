@@ -1,6 +1,7 @@
 import { isAfter, subDays } from 'date-fns';
 
 import { DaysAgo, FilterOption, FilterOptions, PR, TabOptions } from '../state/types';
+import { filterByCreationDate } from './utils';
 
 type IFilterSetup = {
   filterBy: Filter;
@@ -29,10 +30,7 @@ export const approvalStatus: Filter = (pullRequest, values) => pullRequest.myApp
 export const draftStatus: Filter = (pullRequest) => pullRequest.isDraft;
 export const activeStatus: Filter = (pullRequest) => pullRequest.isActive && !pullRequest.isDraft;
 export const completedStatus: Filter = (pullRequest) => pullRequest.isCompleted;
-export const creationDate: Filter = (pullRequest, values) => {
-  const minimumDate = subDays(new Date(), Number(values[0].value));
-  return isAfter(pullRequest.creationDate, minimumDate);
-};
+export const creationDate: Filter = (pullRequest, values) => filterByCreationDate(pullRequest, values[0].value as DaysAgo);
 
 export const setupFilters = (filterOptions: FilterOptions, selectedTab: TabOptions, daysAgo: DaysAgo) => {
   const { searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus } = filterOptions;

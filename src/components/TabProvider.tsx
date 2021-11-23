@@ -12,7 +12,7 @@ import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azur
 import './TabProvider.scss';
 
 import { PrTable } from './PrTable';
-import { useTypedSelector } from '../lib/utils';
+import { filterByCreationDate, useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from './SettingsPanel';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
 import { PrHubState, PR, TabOptions, FilterOption, DaysAgo } from '../state/types';
@@ -108,7 +108,9 @@ export const TabProvider = () => {
   const store = useTypedSelector((store) => store);
   const daysAgo = useTypedSelector((store) => store.ui.daysAgo);
   const selectedTab = useTypedSelector((store) => store.ui.selectedTab);
-  const pullRequests = useTypedSelector((store) => store.data.pullRequests);
+  const pullRequests = useTypedSelector((store) =>
+    store.data.pullRequests.filter((pullRequest) => filterByCreationDate(pullRequest, store.ui.daysAgo))
+  );
   const settingsPanelOpen = useTypedSelector((store) => store.settings.settingsPanelOpen);
   const autoRefreshDuration = useTypedSelector((store) => store.settings.autoRefreshDuration);
 
@@ -128,7 +130,7 @@ export const TabProvider = () => {
           <Tab name="Draft" id="draft" badgeCount={badgeCount(pullRequests, 'draft')} />
           <Tab name="Recently Completed" id="completed" badgeCount={badgeCount(pullRequests, 'completed')} />
           <div className="days-ago">
-            <i className="days-ago-label">Fetching PRs from more recent than</i>
+            <i className="days-ago-label">Fetching pull requests more recent than</i>
             <Select
               onChange={(selectedOption) => {
                 dispatch(setDaysAgo({ daysAgo: selectedOption?.value as DaysAgo }));
