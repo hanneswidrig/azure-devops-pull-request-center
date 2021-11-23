@@ -33,12 +33,14 @@ const UiMultiSelect = ({ placeholder, options, value, setter }: UiSelectProps) =
   return (
     <Select
       className="filter-bar-item"
+      styles={{ placeholder: (existing) => ({ ...existing, fontSize: '0.8rem' }) }}
       placeholder={placeholder}
       onChange={(selectedValues) => setter([...selectedValues])}
       value={value}
       getOptionLabel={({ label }) => label}
       getOptionValue={({ value }) => value}
       options={options}
+      closeMenuOnSelect={false}
       isDisabled={options.length === 0}
       isMulti
     />
@@ -87,15 +89,17 @@ export const UiFilterBar = () => {
 
   return (
     <div className="filter-bar">
-      <Button iconProps={{ iconName: 'ClearFilter' }} subtle onClick={() => resetFilters()} />
-      <SearchBox placeholder={'Search...'} value={searchString} setter={setSearchString} />
+      <div className="search-box-container">
+        <Button iconProps={{ iconName: 'ClearFilter' }} subtle onClick={() => resetFilters()} />
+        <SearchBox placeholder={'Search...'} value={searchString} setter={setSearchString} />
+      </div>
       <UiMultiSelect placeholder={'Repositories'} options={filterOptions.repositories} value={repositories} setter={setRepositories} />
       <UiMultiSelect placeholder={'Source Branch'} options={filterOptions.sourceBranch} value={sourceBranch} setter={setSourceBranch} />
       <UiMultiSelect placeholder={'Target Branch'} options={filterOptions.targetBranch} value={targetBranch} setter={setTargetBranch} />
-      <UiMultiSelect placeholder={'PR Author'} options={filterOptions.author} value={author} setter={setAuthor} />
-      <UiMultiSelect placeholder={'Assigned Reviewer'} options={filterOptions.reviewer} value={reviewer} setter={setReviewer} />
+      <UiMultiSelect placeholder={'Author'} options={filterOptions.author} value={author} setter={setAuthor} />
+      <UiMultiSelect placeholder={'Reviewers'} options={filterOptions.reviewer} value={reviewer} setter={setReviewer} />
       <UiMultiSelect
-        placeholder={'My Approval Status'}
+        placeholder={'Approval Status'}
         options={filterOptions.myApprovalStatus}
         value={myApprovalStatus}
         setter={setMyApprovalStatus}

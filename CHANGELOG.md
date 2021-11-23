@@ -1,4 +1,14 @@
-# [Unreleased]
+# 2.0.0 (TBD)
+
+✔ Significantly faster PR fetching
+
+✔ Date-ranged pull request viewing
+
+✔ Improved and more reliable filtering
+
+🐛 Fixed: Disabled repositories crashing extension
+
+🐛 Fixed: Resilient preservation of filtering options across sessions
 
 # 1.2.9 (May 29, 2020)
 # 1.2.8 (May 29, 2020)

@@ -119,7 +119,7 @@ export const TabProvider = () => {
 
   return (
     <Surface background={1}>
-      <Page className="flex-grow">
+      <Page className="page">
         <Heading items={commandBarItems(dispatch, store, timeUntil)} />
         {asyncTaskCount > 0 && <Spinner label="fetching pull requests..." size={3} className="center-spinner" />}
         {asyncTaskCount === 0 && (
@@ -133,7 +133,7 @@ export const TabProvider = () => {
               <Tab name="Draft" id="draft" badgeCount={badgeCount(pullRequests, 'draft')} />
               <Tab name="Recently Completed" id="completed" badgeCount={badgeCount(pullRequests, 'completed')} />
               <div className="days-ago">
-                <i className="days-ago-label">Fetching pull requests more recent than</i>
+                <i className="days-ago-label">Displaying PRs more recent than</i>
                 <Select
                   onChange={(selectedOption) => dispatch(setDaysAgo({ daysAgo: selectedOption?.value as DaysAgo }))}
                   value={daysAgoOptions.find(({ value }) => value === daysAgo)}
