@@ -4,6 +4,7 @@ import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
 import { Page } from 'azure-devops-ui/Page';
+import { Spinner } from 'office-ui-fabric-react';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab, TabSize } from 'azure-devops-ui/Tabs';
 import { IHeaderCommandBarItem, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
@@ -106,6 +107,7 @@ export const TabProvider = () => {
   const store = useTypedSelector((store) => store);
   const daysAgo = useTypedSelector((store) => store.ui.daysAgo);
   const selectedTab = useTypedSelector((store) => store.ui.selectedTab);
+  const asyncTaskCount = useTypedSelector((store) => store.data.asyncTaskCount);
   const pullRequests = useTypedSelector((store) =>
     store.data.pullRequests.filter((pullRequest) => filterByCreationDate(pullRequest, store.ui.daysAgo))
   );
@@ -119,28 +121,33 @@ export const TabProvider = () => {
     <Surface background={1}>
       <Page className="flex-grow">
         <Heading items={commandBarItems(dispatch, store, timeUntil)} />
-        <TabBar
-          tabsClassName="tab-bar"
-          selectedTabId={selectedTab}
-          onSelectedTabChanged={(selectedTab) => dispatch(setSelectedTab({ selectedTab }))}
-          tabSize={'compact' as TabSize}>
-          <Tab name="Active" id="active" badgeCount={badgeCount(pullRequests, 'active')} />
-          <Tab name="Draft" id="draft" badgeCount={badgeCount(pullRequests, 'draft')} />
-          <Tab name="Recently Completed" id="completed" badgeCount={badgeCount(pullRequests, 'completed')} />
-          <div className="days-ago">
-            <i className="days-ago-label">Fetching pull requests more recent than</i>
-            <Select
-              onChange={(selectedOption) => dispatch(setDaysAgo({ daysAgo: selectedOption?.value as DaysAgo }))}
-              value={daysAgoOptions.find(({ value }) => value === daysAgo)}
-              getOptionLabel={({ label }) => label}
-              getOptionValue={({ value }) => value}
-              options={daysAgoOptions}
-            />
-          </div>
-        </TabBar>
-        <div className="page-content-left page-content-right page-content-top page-content-bottom">
-          <PrTable />
-        </div>
+        {asyncTaskCount > 0 && <Spinner label="fetching pull requests..." size={3} className="center-spinner" />}
+        {asyncTaskCount === 0 && (
+          <React.Fragment>
+            <TabBar
+              tabsClassName="tab-bar"
+              selectedTabId={selectedTab}
+              onSelectedTabChanged={(selectedTab) => dispatch(setSelectedTab({ selectedTab }))}
+              tabSize={'compact' as TabSize}>
+              <Tab name="Active" id="active" badgeCount={badgeCount(pullRequests, 'active')} />
+              <Tab name="Draft" id="draft" badgeCount={badgeCount(pullRequests, 'draft')} />
+              <Tab name="Recently Completed" id="completed" badgeCount={badgeCount(pullRequests, 'completed')} />
+              <div className="days-ago">
+                <i className="days-ago-label">Fetching pull requests more recent than</i>
+                <Select
+                  onChange={(selectedOption) => dispatch(setDaysAgo({ daysAgo: selectedOption?.value as DaysAgo }))}
+                  value={daysAgoOptions.find(({ value }) => value === daysAgo)}
+                  getOptionLabel={({ label }) => label}
+                  getOptionValue={({ value }) => value}
+                  options={daysAgoOptions}
+                />
+              </div>
+            </TabBar>
+            <div className="page-content-left page-content-right page-content-top page-content-bottom">
+              <PrTable />
+            </div>
+          </React.Fragment>
+        )}
       </Page>
       {settingsPanelOpen && <SettingsPanel />}
     </Surface>

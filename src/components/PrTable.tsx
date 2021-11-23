@@ -1,6 +1,5 @@
 import React from 'react';
 import { Card } from 'azure-devops-ui/Card';
-import { Spinner } from 'office-ui-fabric-react';
 import { Table, ITableColumn } from 'azure-devops-ui/Table';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 
@@ -22,7 +21,6 @@ export const columns: ITableColumn<PR>[] = [
 
 export const PrTable = () => {
   const selectedTab = useTypedSelector((store) => store.ui.selectedTab);
-  const asyncTaskCount = useTypedSelector((store) => store.data.asyncTaskCount);
   const pullRequests = useTypedSelector((store) =>
     applyFilters(store.data.pullRequests, store.data.filterOptions, store.ui.selectedTab, store.ui.daysAgo)
   );
@@ -35,13 +33,10 @@ export const PrTable = () => {
   return (
     <div className="flex-column">
       <UiFilterBar />
-      {asyncTaskCount > 0 && <Spinner label="fetching pull requests..." size={3} className="center-spinner" />}
-      {asyncTaskCount === 0 && (
-        <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: false }}>
-          {pullRequests.length > 0 && <Table<PR> columns={columns} itemProvider={pullRequestItemProvider$} showLines={true} role="table" />}
-          {pullRequests.length === 0 && <EmptyDataVisual />}
-        </Card>
-      )}
+      <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: false }}>
+        {pullRequests.length > 0 && <Table<PR> columns={columns} itemProvider={pullRequestItemProvider$} showLines={true} role="table" />}
+        {pullRequests.length === 0 && <EmptyDataVisual />}
+      </Card>
     </div>
   );
 };
