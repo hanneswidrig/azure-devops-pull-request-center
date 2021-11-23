@@ -19,6 +19,7 @@ export const initialState: PrHubState = {
     isFullScreenMode: false,
     selectedTab: 'active',
     sortDirection: 'desc',
+    daysAgo: '7',
   },
   settings: {
     autoRefreshDuration: 'off',
@@ -27,6 +28,7 @@ export const initialState: PrHubState = {
       isFullScreenMode: false,
       selectedTab: 'active',
       sortDirection: 'desc',
+      daysAgo: '7',
       isSavingFilterOptions: false,
       selectedFilterOptions: {
         searchString: [],

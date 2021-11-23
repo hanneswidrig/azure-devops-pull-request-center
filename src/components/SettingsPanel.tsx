@@ -14,7 +14,7 @@ import {
 } from '../state/actions';
 import './SettingsPanel.scss';
 import { useTypedSelector } from '../lib/utils';
-import { DefaultSettings, TabOptions, SortDirection, RefreshDuration, FilterOption } from '../state/types';
+import { DefaultSettings, TabOptions, SortDirection, RefreshDuration, FilterOption, DaysAgo } from '../state/types';
 
 type SetSettingValuesCallback = React.Dispatch<React.SetStateAction<DefaultSettings>>;
 
@@ -22,6 +22,7 @@ export const defaults: DefaultSettings = {
   isFullScreenMode: false,
   selectedTab: 'active',
   sortDirection: 'desc',
+  daysAgo: '7',
   isSavingFilterOptions: false,
   selectedFilterOptions: {
     searchString: [],
@@ -49,6 +50,16 @@ const selectedTabItems: IChoiceGroupOption[] = [
 const sortDirectionItems: IChoiceGroupOption[] = [
   { key: 'desc', text: 'Newest First', iconProps: { iconName: 'SortDown' } },
   { key: 'asc', text: 'Oldest First', iconProps: { iconName: 'SortUp' } },
+];
+
+const daysAgoItems: IChoiceGroupOption[] = [
+  { key: '7', text: '7 Days' },
+  { key: '14', text: '14 Days' },
+  { key: '30', text: '1 Month' },
+  { key: '90', text: '3 Months' },
+  { key: '180', text: '6 Months' },
+  { key: '365', text: '12 Months' },
+  { key: '-1', text: 'All Time' },
 ];
 
 const autoRefreshItems: Record<RefreshDuration, string> = {
@@ -131,6 +142,11 @@ const sortDirectionChanged: ChoiceGroupChanged = (selectedOption, setSettingValu
   setSettingValues((values) => ({ ...values, sortDirection: option.key as SortDirection }));
 };
 
+const daysAgoChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
+  const option = daysAgoItems.find((option) => option.key === selectedOption?.key) ?? daysAgoItems[0];
+  setSettingValues((values) => ({ ...values, daysAgo: option.key as DaysAgo }));
+};
+
 const autoRefreshDurationChanged: AutoRefreshDurationChanged = (duration, setSettingValues, dispatch) => {
   setSettingValues((values) => ({ ...values, autoRefreshDuration: duration }));
   dispatch(setRefreshDuration({ refreshDuration: duration }));
@@ -156,7 +172,8 @@ export const isNotEqual = (a: FilterOption[], b: FilterOption[]): boolean => {
 };
 
 const defaultSettingsEquality = (a: DefaultSettings, b: DefaultSettings): boolean => {
-  const { isFullScreenMode, selectedTab, sortDirection, isSavingFilterOptions, selectedFilterOptions, autoRefreshDuration } = defaults;
+  const { isFullScreenMode, selectedTab, sortDirection, daysAgo, isSavingFilterOptions, selectedFilterOptions, autoRefreshDuration } =
+    defaults;
 
   const isFullScreenModeCheck = (a.isFullScreenMode ?? isFullScreenMode) !== (b.isFullScreenMode ?? isFullScreenMode);
   const isSavingFilterOptionsCheck =
@@ -190,6 +207,7 @@ const defaultSettingsEquality = (a: DefaultSettings, b: DefaultSettings): boolea
       (a.selectedFilterOptions ?? selectedFilterOptions.myApprovalStatus).myApprovalStatus,
       (b.selectedFilterOptions ?? selectedFilterOptions.myApprovalStatus).myApprovalStatus
     );
+  const daysAgoCheck = (a.daysAgo ?? daysAgo) !== (b.daysAgo ?? daysAgo);
   const selectedTabCheck = (a.selectedTab ?? selectedTab) !== (b.selectedTab ?? selectedTab);
   const sortDirectionCheck = (a.sortDirection ?? sortDirection) !== (b.sortDirection ?? sortDirection);
   const autoRefreshDurationCheck = (a.autoRefreshDuration ?? autoRefreshDuration) !== (b.autoRefreshDuration ?? autoRefreshDuration);
@@ -199,6 +217,7 @@ const defaultSettingsEquality = (a: DefaultSettings, b: DefaultSettings): boolea
     isSavingFilterOptionsCheck ||
     selectedFilterOptionsCheck ||
     selectedTabCheck ||
+    daysAgoCheck ||
     sortDirectionCheck ||
     autoRefreshDurationCheck
   );
@@ -214,6 +233,7 @@ export const SettingsPanel = () => {
     isFullScreenMode: store.settings.defaults.isFullScreenMode || store.ui.isFullScreenMode,
     selectedTab: store.settings.defaults.selectedTab,
     sortDirection: store.settings.defaults.sortDirection,
+    daysAgo: store.settings.defaults.daysAgo,
     isSavingFilterOptions: store.settings.defaults.isSavingFilterOptions,
     selectedFilterOptions: store.settings.defaults.isSavingFilterOptions ? filterOptions : store.settings.defaults.selectedFilterOptions,
     autoRefreshDuration: defaultDuration !== 'off' ? defaultDuration : store.settings.autoRefreshDuration,
@@ -248,7 +268,8 @@ export const SettingsPanel = () => {
               : 'Auto Refresh Disabled'
           }
           iconProps={{ iconName: 'Timer' }}
-          menuProps={autoRefreshMenuItems(settingValues, setSettingValues, dispatch)}></DefaultButton>
+          menuProps={autoRefreshMenuItems(settingValues, setSettingValues, dispatch)}
+        />
         <div>
           <Label className="light-dark-toggle">Full Screen Mode</Label>
           <ChoiceGroup
@@ -286,6 +307,14 @@ export const SettingsPanel = () => {
             selectedKey={settingValues.sortDirection}
             options={sortDirectionItems}
             onChange={(_, o) => sortDirectionChanged(o, setSettingValues)}
+          />
+        </div>
+        <div>
+          <Label className="light-dark-toggle">Days Ago</Label>
+          <ChoiceGroup
+            selectedKey={settingValues.daysAgo}
+            options={daysAgoItems}
+            onChange={(_, o) => daysAgoChanged(o, setSettingValues)}
           />
         </div>
       </Stack>

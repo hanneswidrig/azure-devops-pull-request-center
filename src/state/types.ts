@@ -6,6 +6,7 @@ import { IdentityRefWithVote, PullRequestStatus } from 'azure-devops-extension-a
 import { ReviewerVoteNumber } from '../lib/enums';
 
 export const ActionTypes = {
+  SET_DAYS_AGO: 'setDaysAgo',
   ADD_ASYNC_TASK: 'addAsyncTask',
   SET_CURRENT_USER: 'setCurrentUser',
   SET_SELECTED_TAB: 'setSelectedTab',
@@ -23,6 +24,7 @@ export const ActionTypes = {
 
 export type RefreshDuration = 'off' | '60' | '300' | '900' | '3600';
 export type DefaultSettings = {
+  daysAgo: DaysAgo;
   isFullScreenMode: boolean;
   selectedTab: TabOptions;
   sortDirection: SortDirection;
@@ -81,11 +83,13 @@ export type Data = {
 
 export type TabOptions = 'active' | 'draft' | 'completed';
 export type SortDirection = 'desc' | 'asc';
+export type DaysAgo = '7' | '14' | '30' | '90' | '180' | '365' | '-1';
 
 export type UI = {
   isFullScreenMode: boolean;
   selectedTab: TabOptions;
   sortDirection: SortDirection;
+  daysAgo: DaysAgo;
 };
 
 export type PrHubState = {

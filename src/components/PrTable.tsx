@@ -23,7 +23,9 @@ export const columns: ITableColumn<PR>[] = [
 export const PrTable = () => {
   const selectedTab = useTypedSelector((store) => store.ui.selectedTab);
   const asyncTaskCount = useTypedSelector((store) => store.data.asyncTaskCount);
-  const pullRequests = useTypedSelector((store) => applyFilters(store.data.pullRequests, store.data.filterOptions, store.ui.selectedTab));
+  const pullRequests = useTypedSelector((store) =>
+    applyFilters(store.data.pullRequests, store.data.filterOptions, store.ui.selectedTab, store.ui.daysAgo)
+  );
 
   React.useEffect(() => {
     pullRequestItemProvider$.removeAll();

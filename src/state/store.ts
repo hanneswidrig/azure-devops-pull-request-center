@@ -2,9 +2,9 @@ import produce from 'immer';
 import { Reducer } from 'redux';
 
 import { initialState } from './initialState';
-import { sortByCreationDate } from '../lib/utils';
-import { Enum, FetchAction, SplitReducer } from '../lib/typings';
+import { pipePullRequests } from '../lib/utils';
 import { defaults } from '../components/SettingsPanel';
+import { Enum, FetchAction, SplitReducer } from '../lib/typings';
 import { ActionTypes, DefaultSettings, FilterOptions, PR, PrHubState, SortDirection } from './types';
 
 const setState: SplitReducer = (state, action) => [
@@ -30,7 +30,16 @@ const setState: SplitReducer = (state, action) => [
       return produce(state, (draft) => {
         const sortDirection: SortDirection = action.payload;
         draft.ui.sortDirection = sortDirection;
-        draft.data.pullRequests = [...state.data.pullRequests].sort((a, b) => sortByCreationDate(a, b, sortDirection));
+        draft.data.pullRequests = pipePullRequests([...state.data.pullRequests], sortDirection);
+      });
+    },
+  ],
+  [
+    ActionTypes.SET_DAYS_AGO,
+    () => {
+      return produce(state, (draft) => {
+        draft.ui.daysAgo = action.payload;
+        draft.data.pullRequests = pipePullRequests([...state.data.pullRequests], state.ui.sortDirection);
       });
     },
   ],
@@ -39,7 +48,7 @@ const setState: SplitReducer = (state, action) => [
     () => {
       return produce(state, (draft) => {
         const pullRequests: PR[] = action.payload;
-        draft.data.pullRequests = pullRequests.sort((a, b) => sortByCreationDate(a, b, state.ui.sortDirection));
+        draft.data.pullRequests = pipePullRequests(pullRequests, state.ui.sortDirection);
       });
     },
   ],
@@ -50,7 +59,7 @@ const setState: SplitReducer = (state, action) => [
         const completedPullRequests: PR[] = action.payload;
         const activePullRequests = state.data.pullRequests.filter((pr) => !pr.isCompleted);
         const pullRequests = [...activePullRequests, ...completedPullRequests];
-        draft.data.pullRequests = pullRequests.sort((a, b) => sortByCreationDate(a, b, state.ui.sortDirection));
+        draft.data.pullRequests = pipePullRequests(pullRequests, state.ui.sortDirection);
       });
     },
   ],
@@ -63,11 +72,13 @@ const setState: SplitReducer = (state, action) => [
           draft.ui.isFullScreenMode = savedSettings.isFullScreenMode ?? defaults.isFullScreenMode;
           draft.ui.selectedTab = savedSettings.selectedTab ?? defaults.selectedTab;
           draft.ui.sortDirection = savedSettings.sortDirection ?? defaults.sortDirection;
+          draft.ui.daysAgo = savedSettings.daysAgo ?? defaults.daysAgo;
           draft.settings.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaults.autoRefreshDuration;
 
           draft.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode ?? defaults.isFullScreenMode;
           draft.settings.defaults.selectedTab = savedSettings.selectedTab ?? defaults.selectedTab;
           draft.settings.defaults.sortDirection = savedSettings.sortDirection ?? defaults.sortDirection;
+          draft.settings.defaults.daysAgo = savedSettings.daysAgo ?? defaults.daysAgo;
           draft.settings.defaults.isSavingFilterOptions = savedSettings.isSavingFilterOptions ?? defaults.isSavingFilterOptions;
           draft.settings.defaults.selectedFilterOptions = savedSettings.selectedFilterOptions ?? defaults.selectedFilterOptions;
           draft.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaults.autoRefreshDuration;
@@ -131,7 +142,7 @@ const updateState: SplitReducer = (state) => [
     () => {
       return produce(state, (draft) => {
         draft.ui.sortDirection = state.ui.sortDirection === 'desc' ? 'asc' : 'desc';
-        draft.data.pullRequests = [...state.data.pullRequests].sort((a, b) => sortByCreationDate(a, b, draft.ui.sortDirection));
+        draft.data.pullRequests = pipePullRequests([...state.data.pullRequests], draft.ui.sortDirection);
       });
     },
   ],

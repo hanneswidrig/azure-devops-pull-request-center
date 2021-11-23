@@ -16,7 +16,7 @@ import { Task } from '../lib/typings';
 import { toPr } from './transformData';
 import { sortByRepositoryName } from '../lib/utils';
 import { defaults } from '../components/SettingsPanel';
-import { ActionTypes, DefaultSettings, FilterOptions, PR, RefreshDuration, SortDirection } from './types';
+import { ActionTypes, DaysAgo, DefaultSettings, FilterOptions, PR, RefreshDuration, SortDirection } from './types';
 
 interface GitRepository extends Git.GitRepository {
   isDisabled: boolean;
@@ -37,9 +37,9 @@ const criteria = (status: PullRequestStatus): GitPullRequestSearchCriteria => {
 
 const apiErrorMessage = 'An error occurred while fetching pull requests. Please reload or refresh the page.';
 
-export const coreClient: CoreRestClient = getClient(CoreRestClient);
-export const gitClient: GitRestClient = getClient(GitRestClient);
-export const workItemClient: WorkItemTrackingRestClient = getClient(WorkItemTrackingRestClient);
+export const coreClient = getClient<CoreRestClient>(CoreRestClient);
+export const gitClient = getClient<GitRestClient>(GitRestClient);
+export const workItemClient = getClient<WorkItemTrackingRestClient>(WorkItemTrackingRestClient);
 
 const getRepositories = async () => {
   const projectService = await getService<IProjectPageService>('ms.vss-tfs-web.tfs-page-data-service');
@@ -70,6 +70,12 @@ export const setSortDirection: Task<{ sortDirection: SortDirection }> =
   ({ sortDirection }) =>
   (dispatch) => {
     dispatch({ type: ActionTypes.SET_SORT_DIRECTION, payload: sortDirection });
+  };
+
+export const setDaysAgo: Task<{ daysAgo: DaysAgo }> =
+  ({ daysAgo }) =>
+  (dispatch) => {
+    dispatch({ type: ActionTypes.SET_DAYS_AGO, payload: daysAgo });
   };
 
 export const setFilterOptions: Task<FilterOptions> = (filterOptions) => (dispatch) => {

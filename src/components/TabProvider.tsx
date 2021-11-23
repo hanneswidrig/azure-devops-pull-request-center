@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dispatch } from 'redux';
+import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
 import { Page } from 'azure-devops-ui/Page';
@@ -8,12 +9,14 @@ import { TabBar, Tab, TabSize } from 'azure-devops-ui/Tabs';
 import { IHeaderCommandBarItem, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
 
+import './TabProvider.scss';
+
 import { PrTable } from './PrTable';
 import { useTypedSelector } from '../lib/utils';
 import { SettingsPanel } from './SettingsPanel';
-import { PrHubState, PR, TabOptions } from '../state/types';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
-import { setSelectedTab, setPullRequests, toggleSettingsPanel, toggleSortDirection } from '../state/actions';
+import { PrHubState, PR, TabOptions, FilterOption, DaysAgo } from '../state/types';
+import { setSelectedTab, setPullRequests, toggleSettingsPanel, toggleSortDirection, setDaysAgo } from '../state/actions';
 
 const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: string): IHeaderCommandBarItem[] => {
   return [
@@ -91,25 +94,51 @@ const Heading = ({ items }: { items: IHeaderCommandBarItem[] }) => {
   );
 };
 
+const daysAgoOptions: FilterOption[] = [
+  { label: '7 Days', value: '7' },
+  { label: '14 Days', value: '14' },
+  { label: '1 Month', value: '30' },
+  { label: '3 Months', value: '90' },
+  { label: '6 Months', value: '180' },
+  { label: '12 Months', value: '365' },
+  { label: 'All Time', value: '-1' },
+];
+
 export const TabProvider = () => {
   const store = useTypedSelector((store) => store);
-  const pullRequests = useTypedSelector((store) => store.data.pullRequests);
+  const daysAgo = useTypedSelector((store) => store.ui.daysAgo);
   const selectedTab = useTypedSelector((store) => store.ui.selectedTab);
+  const pullRequests = useTypedSelector((store) => store.data.pullRequests);
   const settingsPanelOpen = useTypedSelector((store) => store.settings.settingsPanelOpen);
   const autoRefreshDuration = useTypedSelector((store) => store.settings.autoRefreshDuration);
+
   const { timeUntil } = useRefreshTicker(autoRefreshDuration);
   const dispatch = useDispatch();
+
   return (
     <Surface background={1}>
       <Page className="flex-grow">
         <Heading items={commandBarItems(dispatch, store, timeUntil)} />
         <TabBar
+          tabsClassName={'tab-bar'}
           selectedTabId={selectedTab}
           onSelectedTabChanged={(selectedTab) => dispatch(setSelectedTab({ selectedTab }))}
-          tabSize={'tall' as TabSize}>
+          tabSize={'compact' as TabSize}>
           <Tab name="Active" id="active" badgeCount={badgeCount(pullRequests, 'active')} />
           <Tab name="Draft" id="draft" badgeCount={badgeCount(pullRequests, 'draft')} />
           <Tab name="Recently Completed" id="completed" badgeCount={badgeCount(pullRequests, 'completed')} />
+          <div className="days-ago">
+            <i className="days-ago-label">Fetching PRs from more recent than</i>
+            <Select
+              onChange={(selectedOption) => {
+                dispatch(setDaysAgo({ daysAgo: selectedOption?.value as DaysAgo }));
+              }}
+              value={daysAgoOptions.find(({ value }) => value === daysAgo)}
+              getOptionLabel={({ label }) => label}
+              getOptionValue={({ value }) => value}
+              options={daysAgoOptions}
+            />
+          </div>
         </TabBar>
         <div className="page-content-left page-content-right page-content-top page-content-bottom">
           <PrTable />

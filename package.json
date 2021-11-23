@@ -51,6 +51,7 @@
     "azure-devops-ui": "^1.160.4",
     "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^7.0.3",
+    "date-fns": "^2.26.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",

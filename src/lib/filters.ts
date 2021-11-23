@@ -1,4 +1,6 @@
-import { FilterOption, FilterOptions, PR, TabOptions } from '../state/types';
+import { isAfter, subDays } from 'date-fns';
+
+import { DaysAgo, FilterOption, FilterOptions, PR, TabOptions } from '../state/types';
 
 type IFilterSetup = {
   filterBy: Filter;
@@ -27,8 +29,12 @@ export const approvalStatus: Filter = (pullRequest, values) => pullRequest.myApp
 export const draftStatus: Filter = (pullRequest) => pullRequest.isDraft;
 export const activeStatus: Filter = (pullRequest) => pullRequest.isActive && !pullRequest.isDraft;
 export const completedStatus: Filter = (pullRequest) => pullRequest.isCompleted;
+export const creationDate: Filter = (pullRequest, values) => {
+  const minimumDate = subDays(new Date(), Number(values[0].value));
+  return isAfter(pullRequest.creationDate, minimumDate);
+};
 
-export const setupFilters = (filterOptions: FilterOptions, selectedTab: TabOptions) => {
+export const setupFilters = (filterOptions: FilterOptions, selectedTab: TabOptions, daysAgo: DaysAgo) => {
   const { searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus } = filterOptions;
 
   const filters: IFilterSetup[] = [
@@ -53,11 +59,15 @@ export const setupFilters = (filterOptions: FilterOptions, selectedTab: TabOptio
     filters.push({ filterBy: completedStatus, criteria: [], isActive: true });
   }
 
+  if (daysAgo !== '-1') {
+    filters.push({ filterBy: creationDate, criteria: [{ label: '', value: daysAgo }], isActive: true });
+  }
+
   return filters.filter(({ isActive }) => isActive);
 };
 
-export const applyFilters = (pullRequests: PR[], filterOptions: FilterOptions, selectedTab: TabOptions) => {
-  const appliedFilters = setupFilters(filterOptions, selectedTab);
+export const applyFilters = (pullRequests: PR[], filterOptions: FilterOptions, selectedTab: TabOptions, daysAgo: DaysAgo) => {
+  const appliedFilters = setupFilters(filterOptions, selectedTab, daysAgo);
 
   if (appliedFilters.length > 0) {
     return pullRequests.filter((value) => {
