@@ -8,12 +8,13 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "redux-devtools": "redux-devtools --hostname=localhost --port=8000",
-    "package-release": "npm run build && npm run clean && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center.vsix",
-    "package-dev": "npm run build && npm run clean && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center-develop.vsix --manifest-globs ./vss-extension.json --overrides-file ./vss-extension.dev.json --share-with hannes-widrig",
+    "pre-package": "npm run build && npm run clean",
+    "package": "npm run pre-package && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center.vsix",
+    "package-dev": "npm run pre-package && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center-develop.vsix --manifest-globs ./vss-extension.json --overrides-file ./vss-extension.dev.json --share-with hannes-widrig",
     "clean": "rimraf dist/",
     "eslint": "eslint . --ext .ts,.tsx --fix",
-    "prettier": "prettier --write **/*.{ts,tsx,html,css,json}",
-    "stylelint": "stylelint \"**/*.css\""
+    "prettier": "prettier --write **/*.{ts,tsx,html,scss,json}",
+    "stylelint": "stylelint \"**/*.scss\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
@@ -65,7 +66,7 @@
     "rename-webpack-plugin": "^2.0.0",
     "rimraf": "^3.0.2",
     "tfx-cli": "^0.7.11",
-    "typescript": "^4.4.3"
+    "typescript": "^4.5.2"
   },
   "eslintConfig": {
     "extends": "react-app"
