@@ -33,7 +33,18 @@ const UiMultiSelect = ({ placeholder, options, value, setter }: UiSelectProps) =
   return (
     <Select
       className="filter-bar-item"
-      styles={{ placeholder: (existing) => ({ ...existing, fontSize: '0.8rem' }) }}
+      styles={{
+        placeholder: (existing) => ({ ...existing, fontSize: '0.8rem' }),
+        control: (existing) => ({ ...existing, overflow: 'hidden' }),
+        valueContainer: (existing) => ({
+          ...existing,
+          flexWrap: 'nowrap',
+          overflowX: 'scroll',
+          marginBottom: '-50px',
+          paddingBottom: '50px',
+        }),
+        multiValue: (existing) => ({ ...existing, minWidth: 'auto' }),
+      }}
       placeholder={placeholder}
       onChange={(selectedValues) => setter([...selectedValues])}
       value={value}
