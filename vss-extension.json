@@ -42,7 +42,7 @@
       "targets": ["ms.vss-code-web.code-hub-group"],
       "properties": {
         "name": "Pull Requests Center",
-        "uri": "dist/index.html",
+        "uri": "build/index.html",
         "icon": {
           "light": "marketplace/icon-light.png",
           "dark": "marketplace/icon-dark.png"
@@ -52,7 +52,7 @@
   ],
   "files": [
     {
-      "path": "dist",
+      "path": "build",
       "addressable": true
     },
     {
