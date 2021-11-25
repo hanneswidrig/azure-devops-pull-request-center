@@ -2,6 +2,7 @@
   "extends": ["stylelint-config-standard", "stylelint-prettier/recommended"],
   "rules": {
     "selector-class-pattern": null,
-    "hue-degree-notation": ["number"]
+    "hue-degree-notation": ["number"],
+    "color-function-notation": ["legacy"]
   }
 }

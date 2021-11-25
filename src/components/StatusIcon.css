@@ -13,21 +13,21 @@
 }
 
 .approved {
-  fill: rgb(36 161 72);
+  fill: rgb(36, 161, 72);
 }
 
 .approved-with-suggestions {
-  fill: rgb(36 161 72);
+  fill: rgb(36, 161, 72);
 }
 
 .no-vote {
-  fill: rgb(0 120 212);
+  fill: rgb(0, 120, 212);
 }
 
 .waiting {
-  fill: rgb(235 121 8);
+  fill: rgb(235, 121, 8);
 }
 
 .rejected {
-  fill: rgb(218 30 40);
+  fill: rgb(218, 30, 40);
 }
