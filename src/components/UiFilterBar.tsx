@@ -1,6 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
+import { Button } from 'azure-devops-ui/Button';
 
 import './UiFilterBar.scss';
 
@@ -8,7 +9,6 @@ import { FilterOption } from '../state/types';
 import { useTypedSelector } from '../lib/utils';
 import { setFilterOptions } from '../state/actions';
 import { deriveFilterOptions } from '../state/transformData';
-import { Button } from 'azure-devops-ui/Button';
 
 type SearchBoxProps = { placeholder: string; value: FilterOption[]; setter: React.Dispatch<React.SetStateAction<FilterOption[]>> };
 const SearchBox = ({ placeholder, value, setter }: SearchBoxProps) => {

@@ -3,8 +3,8 @@ import { Dispatch } from 'redux';
 import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
+import { Spinner } from '@fluentui/react';
 import { Page } from 'azure-devops-ui/Page';
-import { Spinner } from 'office-ui-fabric-react';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab, TabSize } from 'azure-devops-ui/Tabs';
 import { IHeaderCommandBarItem, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';

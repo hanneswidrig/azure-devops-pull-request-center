@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { initializeIcons } from '@uifabric/icons';
+import { initializeIcons } from '@fluentui/font-icons-mdl2';
 import { createStore, applyMiddleware } from 'redux';
 import { init, ready } from 'azure-devops-extension-sdk';
 import { composeWithDevTools } from 'remote-redux-devtools';

@@ -2,7 +2,7 @@ import React from 'react';
 import { Dispatch } from 'redux';
 import { useDispatch } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
-import { ChoiceGroup, IChoiceGroupOption, Stack, Label, CompoundButton, DefaultButton, IContextualMenuProps } from 'office-ui-fabric-react';
+import { ChoiceGroup, IChoiceGroupOption, Stack, Label, CompoundButton, DefaultButton, IContextualMenuProps } from '@fluentui/react';
 
 import {
   toggleSettingsPanel,
