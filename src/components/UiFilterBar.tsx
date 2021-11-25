@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { Button } from 'azure-devops-ui/Button';
+import { IconButton } from '@fluentui/react';
 import Select, { components, GroupBase, MultiValueProps, MultiValueGenericProps, OptionProps, SelectComponentsConfig } from 'react-select';
 
 import './UiFilterBar.css';
@@ -167,7 +167,7 @@ export const UiFilterBar = () => {
   return (
     <div className="filter-bar">
       <div className="search-box-container">
-        <Button iconProps={{ iconName: 'ClearFilter' }} subtle onClick={() => resetFilters()} />
+        <IconButton iconProps={{ iconName: 'ClearFilter' }} onClick={() => resetFilters()} />
         <SearchBox placeholder={'Search...'} value={searchString} setter={setSearchString} />
       </div>
 
