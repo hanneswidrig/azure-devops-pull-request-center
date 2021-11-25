@@ -10,7 +10,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { init, ready } from 'azure-devops-extension-sdk';
 import { composeWithDevTools } from 'remote-redux-devtools';
 
-import './index.scss';
+import './index.css';
 import { reducer } from './state/store';
 import { onInitialLoad } from './state/actions';
 import { TabProvider } from './components/TabProvider';

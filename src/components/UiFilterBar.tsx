@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 import { Button } from 'azure-devops-ui/Button';
 
-import './UiFilterBar.scss';
+import './UiFilterBar.css';
 
 import { FilterOption } from '../state/types';
 import { useTypedSelector } from '../lib/utils';

@@ -5,7 +5,7 @@ import { Tooltip } from 'azure-devops-ui/TooltipEx';
 import { VssPersona } from 'azure-devops-ui/VssPersona';
 
 import { Tag } from './Tag';
-import './PRTableCellTitle.scss';
+import './PRTableCellTitle.css';
 import { PR } from '../state/types';
 import { PRTableCellBranches } from './PRTableCellBranches';
 

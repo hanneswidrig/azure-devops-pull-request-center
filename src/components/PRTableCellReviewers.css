@@ -1,8 +1,5 @@
-@import '~azure-devops-ui/Core/platformCommon';
-
 .reviewers-container {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
 }
 
@@ -17,8 +14,8 @@ td.bolt-table-cell-content.no-padding.bolt-table-cell.bolt-list-cell > div {
 }
 
 .tooltip-overflow-container {
-  background-color: $tooltip-background-color;
-  color: $backgroundColor;
+  background-color: var(--palette-neutral-80);
+  color: var(--background-color);
   padding: 12px 12px 12px 8px;
   border-radius: 4px;
 }
@@ -39,5 +36,5 @@ td.bolt-table-cell-content.no-padding.bolt-table-cell.bolt-list-cell > div {
   margin: 0;
   padding: 0;
   background-color: transparent;
-  box-shadow: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+  box-shadow: 0 1.6px 3.6px 0 rgba(0 0 0 13.2%), 0 0.3px 0.9px 0 rgba(0 0 0 10.8%);
 }

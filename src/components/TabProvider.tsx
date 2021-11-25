@@ -10,7 +10,7 @@ import { TabBar, Tab, TabSize } from 'azure-devops-ui/Tabs';
 import { IHeaderCommandBarItem, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
 
-import './TabProvider.scss';
+import './TabProvider.css';
 
 import { PrTable } from './PrTable';
 import { SettingsPanel } from './SettingsPanel';

@@ -3,7 +3,7 @@ import React from 'react';
 import { ITableColumn } from 'azure-devops-ui/Table';
 import { IListBoxItem } from 'azure-devops-ui/ListBox';
 
-import './ApprovalStatusItem.scss';
+import './ApprovalStatusItem.css';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 
 export const ApprovalStatusItem = (

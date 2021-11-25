@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'azure-devops-ui/Button';
 
-import './PRTableCellBranches.scss';
+import './PRTableCellBranches.css';
 import { PR } from '../state/types';
 
 type Props = { tableItem: PR };

@@ -6,7 +6,7 @@ import { Tooltip } from 'azure-devops-ui/TooltipEx';
 import { PillGroup } from 'azure-devops-ui/PillGroup';
 import { VssPersona } from 'azure-devops-ui/VssPersona';
 
-import './PRTableCellReviewers.scss';
+import './PRTableCellReviewers.css';
 import { getVoteDescription } from '../lib/utils';
 import { reviewerVoteToIColorLight } from '../lib/colors';
 import { getReviewerVoteIconStatus, NoVote } from './StatusIcon';

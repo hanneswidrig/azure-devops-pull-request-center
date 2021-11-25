@@ -1,6 +1,6 @@
 {
-  "name": "azure-pull-request-hub",
-  "version": "0.0.1",
+  "name": "pull-request-center",
+  "version": "0.0.0",
   "private": true,
   "homepage": "./",
   "scripts": {
@@ -14,8 +14,8 @@
     "package-beta": "npm run clean && npm run build && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center-beta.vsix --manifest-globs ./vss-extension.json --overrides-file ./vss-extension.beta.json",
     "package-dev": "npm run clean && npm run build && tfx extension create --root ./ --output-path ./azure-devops-pull-request-center-develop.vsix --manifest-globs ./vss-extension.json --overrides-file ./vss-extension.dev.json",
     "eslint": "eslint . --ext .ts,.tsx --fix",
-    "prettier": "prettier --write **/*.{ts,tsx,html,scss,json}",
-    "stylelint": "stylelint \"**/*.scss\""
+    "prettier": "prettier --write **/*.{ts,tsx,html,css,json}",
+    "stylelint": "stylelint \"src/**/*.css\""
   },
   "dependencies": {
     "@fluentui/react": "^8.43.0",
@@ -59,7 +59,10 @@
     "redux-mock-store": "^1.5.4",
     "remote-redux-devtools": "0.5.0",
     "rimraf": "^3.0.2",
-    "sass": "^1.43.5",
+    "stylelint": "^14.1.0",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-standard": "^24.0.0",
+    "stylelint-prettier": "^2.0.0",
     "tfx-cli": "^0.9.3",
     "typescript": "^4.5.2"
   },

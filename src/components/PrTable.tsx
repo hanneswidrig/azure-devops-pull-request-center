@@ -3,8 +3,6 @@ import { Card } from 'azure-devops-ui/Card';
 import { Table, ITableColumn } from 'azure-devops-ui/Table';
 import { ObservableArray } from 'azure-devops-ui/Core/Observable';
 
-import './PrTable.scss';
-
 import { PR } from '../state/types';
 import { UiFilterBar } from './UiFilterBar';
 import { applyFilters } from '../lib/filters';

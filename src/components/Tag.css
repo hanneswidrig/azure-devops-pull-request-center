@@ -1,5 +1,3 @@
-@import '~azure-devops-ui/Core/platformCommon';
-
 .tag-container {
   display: inline-flex;
   margin: 0 4px;

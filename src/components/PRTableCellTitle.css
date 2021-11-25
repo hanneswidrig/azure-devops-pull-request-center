@@ -5,6 +5,7 @@
 .line-one {
   flex-grow: 2;
 }
+
 .line-two {
   flex-grow: 1;
 }

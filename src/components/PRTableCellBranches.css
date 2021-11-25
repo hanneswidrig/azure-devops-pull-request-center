@@ -1,5 +1,3 @@
-@import '~azure-devops-ui/Core/platformCommon';
-
 button.branch-button {
   height: 32px;
   overflow: hidden;
@@ -7,7 +5,7 @@ button.branch-button {
 
 button.branch-button:hover,
 button.branch-button:active {
-  color: $communication-background-active;
+  color: var(--palette-primary-darkened-10);
 }
 
 .branch-button > span:last-child {

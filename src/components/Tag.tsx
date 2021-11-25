@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './Tag.scss';
+import './Tag.css';
 import { Colors } from '../lib/colors';
 
 type Props = { title: string; type: 'draft' | 'autoComplete' | 'mergeConflict' };

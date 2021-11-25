@@ -12,7 +12,7 @@ import {
   saveSettings,
   setRefreshDuration,
 } from '../state/actions';
-import './SettingsPanel.scss';
+import './SettingsPanel.css';
 import { useTypedSelector } from '../lib/utils';
 import { DefaultSettings, TabOptions, SortDirection, RefreshDuration, FilterOption, DaysAgo } from '../state/types';
 
