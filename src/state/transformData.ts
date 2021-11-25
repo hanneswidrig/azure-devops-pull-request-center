@@ -2,7 +2,7 @@ import { IUserContext } from 'azure-devops-extension-sdk';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
 import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
-import { FilterOptions, PR } from './types';
+import { FilterOption, FilterOptions, PR } from './types';
 import { ReviewerVoteNumber, ReviewerVoteLabel } from '../lib/enums';
 
 const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext: IUserContext) => {
@@ -69,11 +69,11 @@ export const deriveFilterOptions = (pullRequests: PR[]): FilterOptions => {
   };
 
   pullRequests.forEach((pr) => {
-    const repositoryItem = { label: pr.repository.name, value: pr.repositoryId };
-    const sourceBranchItem = { label: pr.sourceBranch.name, value: pr.sourceBranch.name };
-    const targetBranchItem = { label: pr.targetBranch.name, value: pr.targetBranch.name };
-    const authorItem = { label: pr.createdBy.displayName, value: pr.createdBy.id };
-    const reviewerItem = pr.reviewers.map((r) => ({ label: r.displayName, value: r.id }));
+    const repositoryItem: FilterOption = { label: pr.repository.name, value: pr.repositoryId };
+    const sourceBranchItem: FilterOption = { label: pr.sourceBranch.name, value: pr.sourceBranch.name };
+    const targetBranchItem: FilterOption = { label: pr.targetBranch.name, value: pr.targetBranch.name };
+    const authorItem: FilterOption = { label: pr.createdBy.displayName, value: pr.createdBy.id, href: pr.createdBy._links['avatar'].href };
+    const reviewerItem: FilterOption[] = pr.reviewers.map((r) => ({ label: r.displayName, value: r.id, href: r._links['avatar'].href }));
 
     if (!filterItems.repositories.find((i) => i.value === repositoryItem.value)) {
       filterItems.repositories.push(repositoryItem);

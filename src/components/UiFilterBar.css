@@ -1,3 +1,19 @@
+.vss-persona {
+  margin: 0;
+  padding: 0.125rem;
+}
+
+.reviewers {
+  display: flex;
+  align-items: center;
+}
+
+.approval-status {
+  display: flex;
+  align-items: center;
+  line-height: 22px;
+}
+
 .filter-bar {
   margin-bottom: 1rem;
   display: grid;

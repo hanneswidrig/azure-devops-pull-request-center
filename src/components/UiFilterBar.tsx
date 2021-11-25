@@ -1,14 +1,21 @@
 import React from 'react';
-import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 import { Button } from 'azure-devops-ui/Button';
+import Select, { components, GroupBase, MultiValueProps, MultiValueGenericProps, OptionProps, SelectComponentsConfig } from 'react-select';
 
 import './UiFilterBar.css';
 
 import { FilterOption } from '../state/types';
 import { useTypedSelector } from '../lib/utils';
 import { setFilterOptions } from '../state/actions';
+import { getReviewerVoteIconStatus } from './StatusIcon';
 import { deriveFilterOptions } from '../state/transformData';
+import { VssPersona } from 'azure-devops-ui/VssPersona';
+
+type CustomComponents = SelectComponentsConfig<FilterOption, true, GroupBase<FilterOption>> | undefined;
+type CustomOptionProps = OptionProps<FilterOption, true, GroupBase<FilterOption>>;
+type CustomMultiValueLabelProps = MultiValueProps<FilterOption, true, GroupBase<FilterOption>>;
+type CustomMultiValueLabelGenericProps = (props: MultiValueGenericProps<FilterOption, true, GroupBase<FilterOption>>) => JSX.Element;
 
 type SearchBoxProps = { placeholder: string; value: FilterOption[]; setter: React.Dispatch<React.SetStateAction<FilterOption[]>> };
 const SearchBox = ({ placeholder, value, setter }: SearchBoxProps) => {
@@ -23,13 +30,71 @@ const SearchBox = ({ placeholder, value, setter }: SearchBoxProps) => {
   );
 };
 
+const CodeOption = (props: CustomOptionProps) => {
+  return (
+    <components.Option {...props}>
+      <span style={{ fontFamily: `var(--font-family-monospace)` }}>{props.data.label}</span>
+    </components.Option>
+  );
+};
+
+const CodeMultiValueLabel = (props: CustomMultiValueLabelProps) => {
+  return <span style={{ fontSize: '0.75rem', fontFamily: `var(--font-family-monospace)`, margin: '0.25rem' }}>{props.data.label}</span>;
+};
+
+const codeComponents: CustomComponents = {
+  Option: CodeOption,
+  MultiValueLabel: CodeMultiValueLabel as CustomMultiValueLabelGenericProps,
+};
+
+const PersonaOption = (props: CustomOptionProps) => {
+  return (
+    <components.Option {...props}>
+      <div className="reviewers">
+        <VssPersona className="vss-persona" imageUrl={props.data.href} size={'small'} />
+        <span style={{ marginLeft: '0.25rem' }}>{props.data.label}</span>
+      </div>
+    </components.Option>
+  );
+};
+
+const PersonaMultiValueLabel = (props: CustomMultiValueLabelProps) => {
+  return <VssPersona className="vss-persona" imageUrl={props.data.href} size={'small'} />;
+};
+
+const personaComponents: CustomComponents = {
+  Option: PersonaOption,
+  MultiValueLabel: PersonaMultiValueLabel as CustomMultiValueLabelGenericProps,
+};
+
+const ApprovalStatusOption = (props: CustomOptionProps) => {
+  return (
+    <components.Option {...props}>
+      <div className="approval-status">
+        {getReviewerVoteIconStatus(props.data.value)}
+        <span style={{ marginLeft: '0.25rem' }}>{props.data.label}</span>
+      </div>
+    </components.Option>
+  );
+};
+
+const ApprovalStatusMultiValueLabel = (props: CustomMultiValueLabelProps) => {
+  return getReviewerVoteIconStatus(props.data.value);
+};
+
+const approvalStatusComponents: CustomComponents = {
+  Option: ApprovalStatusOption,
+  MultiValueLabel: ApprovalStatusMultiValueLabel as CustomMultiValueLabelGenericProps,
+};
+
 type UiSelectProps = {
   placeholder: string;
   options: FilterOption[];
   value: FilterOption[];
   setter: React.Dispatch<React.SetStateAction<FilterOption[]>>;
+  components: CustomComponents | undefined;
 };
-const UiMultiSelect = ({ placeholder, options, value, setter }: UiSelectProps) => {
+const UiMultiSelect = ({ placeholder, options, value, setter, components }: UiSelectProps) => {
   return (
     <Select
       className="filter-bar-item"
@@ -43,8 +108,9 @@ const UiMultiSelect = ({ placeholder, options, value, setter }: UiSelectProps) =
           marginBottom: '-50px',
           paddingBottom: '50px',
         }),
-        multiValue: (existing) => ({ ...existing, minWidth: 'auto' }),
+        multiValue: (existing) => ({ ...existing, minWidth: 'max-content' }),
       }}
+      components={components}
       placeholder={placeholder}
       onChange={(selectedValues) => setter([...selectedValues])}
       value={value}
@@ -104,16 +170,53 @@ export const UiFilterBar = () => {
         <Button iconProps={{ iconName: 'ClearFilter' }} subtle onClick={() => resetFilters()} />
         <SearchBox placeholder={'Search...'} value={searchString} setter={setSearchString} />
       </div>
-      <UiMultiSelect placeholder={'Repositories'} options={filterOptions.repositories} value={repositories} setter={setRepositories} />
-      <UiMultiSelect placeholder={'Source Branch'} options={filterOptions.sourceBranch} value={sourceBranch} setter={setSourceBranch} />
-      <UiMultiSelect placeholder={'Target Branch'} options={filterOptions.targetBranch} value={targetBranch} setter={setTargetBranch} />
-      <UiMultiSelect placeholder={'Author'} options={filterOptions.author} value={author} setter={setAuthor} />
-      <UiMultiSelect placeholder={'Reviewers'} options={filterOptions.reviewer} value={reviewer} setter={setReviewer} />
+
+      <UiMultiSelect
+        placeholder={'Repositories'}
+        options={filterOptions.repositories}
+        value={repositories}
+        setter={setRepositories}
+        components={codeComponents}
+      />
+
+      <UiMultiSelect
+        placeholder={'Source Branch'}
+        options={filterOptions.sourceBranch}
+        value={sourceBranch}
+        setter={setSourceBranch}
+        components={codeComponents}
+      />
+
+      <UiMultiSelect
+        placeholder={'Target Branch'}
+        options={filterOptions.targetBranch}
+        value={targetBranch}
+        setter={setTargetBranch}
+        components={codeComponents}
+      />
+
+      <UiMultiSelect
+        placeholder={'Author'}
+        options={filterOptions.author}
+        value={author}
+        setter={setAuthor}
+        components={personaComponents}
+      />
+
+      <UiMultiSelect
+        placeholder={'Reviewers'}
+        options={filterOptions.reviewer}
+        value={reviewer}
+        setter={setReviewer}
+        components={personaComponents}
+      />
+
       <UiMultiSelect
         placeholder={'Approval Status'}
         options={filterOptions.myApprovalStatus}
         value={myApprovalStatus}
         setter={setMyApprovalStatus}
+        components={approvalStatusComponents}
       />
     </div>
   );

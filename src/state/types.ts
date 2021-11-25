@@ -71,7 +71,7 @@ const reviewer = 'reviewer';
 const myApprovalStatus = 'myApprovalStatus';
 export const options = [searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus] as const;
 
-export type FilterOption = { label: string; value: string };
+export type FilterOption = { label: string; value: string; href?: string };
 export type FilterOptions = Record<typeof options[number], FilterOption[]>;
 
 export type Data = {
