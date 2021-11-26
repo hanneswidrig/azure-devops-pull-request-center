@@ -178,14 +178,14 @@ const setSettings = async (data: DefaultSettings): Promise<DefaultSettings> => {
   return context.setValue(dbKey, data);
 };
 
-async function fetchPullRequests(repo: GitRepository, criteria: GitPullRequestSearchCriteria, take: number): Promise<PR[]> {
+async function fetchPullRequests(repository: GitRepository, criteria: GitPullRequestSearchCriteria, take: number): Promise<PR[]> {
   let skip = 0;
   const userContext = getUser();
   const pullRequests: PR[] = [];
 
   do {
-    const prsPerRepo = await gitClient.getPullRequests(repo.id, criteria, undefined, undefined, skip, take);
-    const prs = prsPerRepo.map((pr) => toPr({ pr, workItems: [], userContext }));
+    const fetchedPullRequests = await gitClient.getPullRequests(repository.id, criteria, undefined, undefined, skip, take);
+    const prs = fetchedPullRequests.map((pullRequest) => toPr({ pr: { ...pullRequest, repository }, workItems: [], userContext }));
     pullRequests.push(...prs);
     skip = skip + take;
   } while (pullRequests.length !== 0 && pullRequests.length % take === 0);

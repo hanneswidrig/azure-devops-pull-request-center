@@ -1,5 +1,5 @@
 import React from 'react';
-import { DetailsList, Persona, IColumn, PersonaSize, SelectionMode } from '@fluentui/react';
+import { IconButton, DetailsList, Persona, Link, TooltipHost, IColumn, PersonaSize, SelectionMode, DirectionalHint } from '@fluentui/react';
 
 import './PrTable.css';
 
@@ -21,7 +21,9 @@ export const columns: IColumn[] = [
     onRender: (item: PR) => (
       <div className="pr-column">
         <b>#{item.pullRequestId}</b>
-        <span>{item.title}</span>
+        <Link href={item.href} target="_blank" rel="noreferrer">
+          {item.title}
+        </Link>
         {item.isDraft && <Tag title="Draft" type="draft"></Tag>}
         {item.isAutoComplete && <Tag title="Auto Complete" type="autoComplete"></Tag>}
         {item.hasMergeConflicts && <Tag title="Merge Conflict" type="mergeConflict"></Tag>}
@@ -45,37 +47,91 @@ export const columns: IColumn[] = [
     key: 'repository',
     name: 'Repository',
     minWidth: 80,
-    maxWidth: 128,
+    maxWidth: 192,
     isResizable: true,
-    onRender: (item: PR) => (
-      <div className="pr-column">
-        <span>{item.repository.name}</span>
-      </div>
-    ),
+    onRender: (item: PR) => {
+      const tooltipId = Math.random().toString(16);
+      return (
+        <div className="pr-column">
+          <TooltipHost
+            id={tooltipId}
+            content={
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ margin: '0 0.25rem' }}>{item.repository.name}</span>
+                <IconButton
+                  iconProps={{ iconName: 'Copy' }}
+                  onClick={async () => await window.navigator.clipboard.writeText(item.repository.name)}
+                />
+              </div>
+            }
+            directionalHint={DirectionalHint.leftCenter}>
+            <span className="repository-name" aria-describedby={tooltipId}>
+              {item.repository.name}
+            </span>
+          </TooltipHost>
+        </div>
+      );
+    },
   },
   {
     key: 'source-branch',
     name: 'Source Branch',
     minWidth: 92,
-    maxWidth: 128,
+    maxWidth: 192,
     isResizable: true,
-    onRender: (item: PR) => (
-      <div className="pr-column">
-        <span>{item.sourceBranch.name}</span>
-      </div>
-    ),
+    onRender: (item: PR) => {
+      const tooltipId = Math.random().toString(16);
+      return (
+        <div className="pr-column">
+          <TooltipHost
+            id={tooltipId}
+            content={
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ margin: '0 0.25rem' }}>{item.sourceBranch.name}</span>
+                <IconButton
+                  iconProps={{ iconName: 'Copy' }}
+                  onClick={async () => await window.navigator.clipboard.writeText(item.sourceBranch.name)}
+                />
+              </div>
+            }
+            directionalHint={DirectionalHint.leftCenter}>
+            <span className="branch-name" aria-describedby={tooltipId}>
+              {item.sourceBranch.name}
+            </span>
+          </TooltipHost>
+        </div>
+      );
+    },
   },
   {
     key: 'target-branch',
     name: 'Target Branch',
     minWidth: 92,
-    maxWidth: 128,
+    maxWidth: 192,
     isResizable: true,
-    onRender: (item: PR) => (
-      <div className="pr-column">
-        <span>{item.targetBranch.name}</span>
-      </div>
-    ),
+    onRender: (item: PR) => {
+      const tooltipId = Math.random().toString(16);
+      return (
+        <div className="pr-column">
+          <TooltipHost
+            id={tooltipId}
+            content={
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ margin: '0 0.25rem' }}>{item.targetBranch.name}</span>
+                <IconButton
+                  iconProps={{ iconName: 'Copy' }}
+                  onClick={async () => await window.navigator.clipboard.writeText(item.targetBranch.name)}
+                />
+              </div>
+            }
+            directionalHint={DirectionalHint.leftCenter}>
+            <span className="branch-name" aria-describedby={tooltipId}>
+              {item.targetBranch.name}
+            </span>
+          </TooltipHost>
+        </div>
+      );
+    },
   },
   {
     key: 'date-created',
