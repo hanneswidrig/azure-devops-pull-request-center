@@ -142,7 +142,7 @@ const updateState: SplitReducer = (state) => [
     () => {
       return produce(state, (draft) => {
         draft.ui.sortDirection = state.ui.sortDirection === 'desc' ? 'asc' : 'desc';
-        draft.data.pullRequests = [...state.data.pullRequests].sort((a, b) => sortByCreationDate(a, b, state.ui.sortDirection));
+        draft.data.pullRequests = [...state.data.pullRequests].sort((a, b) => sortByCreationDate(a, b, draft.ui.sortDirection));
       });
     },
   ],
