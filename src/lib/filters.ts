@@ -10,13 +10,14 @@ type IFilterSetup = {
 type Filter = (pullRequest: PR, values: FilterOption[]) => boolean;
 
 export const title: Filter = (pullRequest, values) => {
+  const searchValue = values[0].label.toLocaleLowerCase();
   return (
-    pullRequest.title.toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1 ||
-    pullRequest.pullRequestId.toString().toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1 ||
-    pullRequest.repository.name.toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1 ||
-    pullRequest.sourceBranch.name.toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1 ||
-    pullRequest.targetBranch.name.toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1 ||
-    pullRequest.createdBy.displayName.toLocaleLowerCase().indexOf(values[0].label.toLocaleLowerCase()) > -1
+    pullRequest.title.toLocaleLowerCase().indexOf(searchValue) > -1 ||
+    pullRequest.pullRequestId.toString().toLocaleLowerCase().indexOf(searchValue.replace(/#/g, '')) > -1 ||
+    pullRequest.repository.name.toLocaleLowerCase().indexOf(searchValue) > -1 ||
+    pullRequest.sourceBranch.name.toLocaleLowerCase().indexOf(searchValue) > -1 ||
+    pullRequest.targetBranch.name.toLocaleLowerCase().indexOf(searchValue) > -1 ||
+    pullRequest.createdBy.displayName.toLocaleLowerCase().indexOf(searchValue) > -1
   );
 };
 export const repositoryId: Filter = (pullRequest, values) => values.some(({ value }) => pullRequest.repositoryId === value);
