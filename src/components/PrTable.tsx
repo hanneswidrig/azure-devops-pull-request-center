@@ -92,8 +92,8 @@ export const columns: IColumn[] = [
   {
     key: 'approval-status',
     name: 'Approval Status',
-    minWidth: 104,
-    maxWidth: 128,
+    minWidth: 152,
+    maxWidth: 152,
     isResizable: true,
     onRender: (item: PR) => (
       <div className="pr-column">
