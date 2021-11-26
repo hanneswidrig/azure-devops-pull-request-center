@@ -172,6 +172,14 @@ export const UiFilterBar = () => {
       </div>
 
       <UiMultiSelect
+        placeholder={'Author'}
+        options={filterOptions.author}
+        value={author}
+        setter={setAuthor}
+        components={personaComponents}
+      />
+
+      <UiMultiSelect
         placeholder={'Repositories'}
         options={filterOptions.repositories}
         value={repositories}
@@ -196,11 +204,11 @@ export const UiFilterBar = () => {
       />
 
       <UiMultiSelect
-        placeholder={'Author'}
-        options={filterOptions.author}
-        value={author}
-        setter={setAuthor}
-        components={personaComponents}
+        placeholder={'Approval Status'}
+        options={filterOptions.myApprovalStatus}
+        value={myApprovalStatus}
+        setter={setMyApprovalStatus}
+        components={approvalStatusComponents}
       />
 
       <UiMultiSelect
@@ -209,14 +217,6 @@ export const UiFilterBar = () => {
         value={reviewer}
         setter={setReviewer}
         components={personaComponents}
-      />
-
-      <UiMultiSelect
-        placeholder={'Approval Status'}
-        options={filterOptions.myApprovalStatus}
-        value={myApprovalStatus}
-        setter={setMyApprovalStatus}
-        components={approvalStatusComponents}
       />
     </div>
   );

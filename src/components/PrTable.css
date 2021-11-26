@@ -1,0 +1,16 @@
+.display-block {
+  display: block;
+}
+
+.card-shadow {
+  background-color: #ffffff;
+  box-shadow: rgba(0, 0, 0, 0.05) 0 6px 24px 0, rgba(0, 0, 0, 0.08) 0 0 0 1px;
+}
+
+.pr-column {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
