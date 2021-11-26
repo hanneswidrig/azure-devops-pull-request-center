@@ -24,7 +24,9 @@ export const sourceBranchName: Filter = (pullRequest, values) => values.some(({ 
 export const targetBranchName: Filter = (pullRequest, values) => values.some(({ value }) => pullRequest.targetBranch.name === value);
 export const createdByUserId: Filter = (pullRequest, values) => values.some(({ value }) => pullRequest.createdBy.id === value);
 export const reviewers: Filter = (pullRequest, values) => values.some(({ value }) => pullRequest.reviewers.some((r) => r.id === value));
-export const approvalStatus: Filter = (pullRequest, values) => pullRequest.myApprovalStatus.toString() === values[0].toString();
+export const approvalStatus: Filter = (pullRequest, values) => {
+  return values.some(({ value }) => value.toString() === pullRequest.myApprovalStatus.toString());
+};
 export const draftStatus: Filter = (pullRequest) => pullRequest.isDraft;
 export const activeStatus: Filter = (pullRequest) => pullRequest.isActive && !pullRequest.isDraft;
 export const completedStatus: Filter = (pullRequest) => pullRequest.isCompleted;
