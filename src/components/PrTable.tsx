@@ -9,6 +9,7 @@ import { UiFilterBar } from './UiFilterBar';
 import { applyFilters } from '../lib/filters';
 import { EmptyDataVisual } from './EmptyDataVisual';
 import { getReviewerVoteIconStatus } from './StatusIcon';
+import { copyToClipboard } from 'azure-devops-ui/Clipboard';
 import { getVoteDescription, useTypedSelector } from '../lib/utils';
 
 export const columns: IColumn[] = [
@@ -58,10 +59,7 @@ export const columns: IColumn[] = [
             content={
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <span style={{ margin: '0 0.25rem' }}>{item.repository.name}</span>
-                <IconButton
-                  iconProps={{ iconName: 'Copy' }}
-                  onClick={async () => await window.navigator.clipboard.writeText(item.repository.name)}
-                />
+                <IconButton iconProps={{ iconName: 'Copy' }} onClick={() => copyToClipboard(item.repository.name)} />
               </div>
             }
             directionalHint={DirectionalHint.leftCenter}>
@@ -88,10 +86,7 @@ export const columns: IColumn[] = [
             content={
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <span style={{ margin: '0 0.25rem' }}>{item.sourceBranch.name}</span>
-                <IconButton
-                  iconProps={{ iconName: 'Copy' }}
-                  onClick={async () => await window.navigator.clipboard.writeText(item.sourceBranch.name)}
-                />
+                <IconButton iconProps={{ iconName: 'Copy' }} onClick={() => copyToClipboard(item.sourceBranch.name)} />
               </div>
             }
             directionalHint={DirectionalHint.leftCenter}>
@@ -118,10 +113,7 @@ export const columns: IColumn[] = [
             content={
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <span style={{ margin: '0 0.25rem' }}>{item.targetBranch.name}</span>
-                <IconButton
-                  iconProps={{ iconName: 'Copy' }}
-                  onClick={async () => await window.navigator.clipboard.writeText(item.targetBranch.name)}
-                />
+                <IconButton iconProps={{ iconName: 'Copy' }} onClick={() => copyToClipboard(item.targetBranch.name)} />
               </div>
             }
             directionalHint={DirectionalHint.leftCenter}>
