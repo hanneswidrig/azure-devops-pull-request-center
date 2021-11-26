@@ -1,5 +1,7 @@
 # 2.0.0 (TBD)
 
+✔ Redesigned table with increased readability and less wasted space
+
 ✔ Significantly faster PR fetching
 
 ✔ Date-ranged pull request viewing
