@@ -13,6 +13,7 @@
 🐛 Fixed: Resilient preservation of filtering options across sessions
 
 # 1.2.9 (May 29, 2020)
+
 # 1.2.8 (May 29, 2020)
 
 ✔ Accurate targeting of apiVersion/5.x
@@ -26,6 +27,7 @@
 🐛 Fixed: Crashes when switching tabs when dropdown options are selected.
 
 # 1.2.5 (March 30, 2020)
+
 # 1.2.4 (March 30, 2020)
 
 🐛 Critical settings fetch failure exploratory fix
@@ -55,8 +57,11 @@
 🐛 Active tab not filtering correctly.
 
 # 1.1.5 (December 28, 2019)
+
 # 1.1.4 (December 28, 2019)
+
 # 1.1.3 (December 28, 2019)
+
 # 1.1.2 (December 28, 2019)
 
 🐛 assorted bug fixes
@@ -76,8 +81,11 @@
 🐛 Reloading Pull Requests now preserving previously filtered values being applied.
 
 # 1.0.5 (December 17, 2019)
+
 # 1.0.4 (December 17, 2019)
+
 # 1.0.3 (December 17, 2019)
+
 # 1.0.2 (December 17, 2019)
 
 ✔ Fields including pull request id and target branch name are now searchable.
