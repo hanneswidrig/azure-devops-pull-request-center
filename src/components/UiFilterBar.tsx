@@ -94,16 +94,14 @@ export const UiFilterBar = () => {
   const [myApprovalStatus, setMyApprovalStatus] = React.useState<FilterOption[]>([]);
 
   React.useEffect(() => {
-    if (isSavingFilterOptions) {
-      setSearchString(selectedFilterOptions.searchString);
-      setRepositories(selectedFilterOptions.repositories);
-      setSourceBranch(selectedFilterOptions.sourceBranch);
-      setTargetBranch(selectedFilterOptions.targetBranch);
-      setAuthor(selectedFilterOptions.author);
-      setReviewer(selectedFilterOptions.reviewer);
-      setMyApprovalStatus(selectedFilterOptions.myApprovalStatus);
-    }
-  }, [isSavingFilterOptions, selectedFilterOptions]);
+    setSearchString(selectedFilterOptions.searchString);
+    setRepositories(selectedFilterOptions.repositories);
+    setSourceBranch(selectedFilterOptions.sourceBranch);
+    setTargetBranch(selectedFilterOptions.targetBranch);
+    setAuthor(selectedFilterOptions.author);
+    setReviewer(selectedFilterOptions.reviewer);
+    setMyApprovalStatus(selectedFilterOptions.myApprovalStatus);
+  }, [selectedFilterOptions]);
 
   React.useEffect(() => {
     dispatch(setFilterOptions({ searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus }));

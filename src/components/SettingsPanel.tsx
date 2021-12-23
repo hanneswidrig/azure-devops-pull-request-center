@@ -1,4 +1,5 @@
 import React from 'react';
+import produce from 'immer';
 import { Dispatch } from 'redux';
 import { useDispatch } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
@@ -139,7 +140,15 @@ const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingV
 };
 
 const isSavingFilterItemsChanged: CompoundButtonChanged = (decision, setSettingValues) => {
-  setSettingValues((values) => ({ ...values, isSavingFilterOptions: decision === 'save' }));
+  setSettingValues((values) =>
+    produce(values, (draft) => {
+      draft.isSavingFilterOptions = decision === 'save';
+
+      if (decision === 'clear') {
+        draft.selectedFilterOptions = defaults.selectedFilterOptions;
+      }
+    })
+  );
 };
 
 const selectedTabChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
@@ -171,14 +180,20 @@ const resetChanges: ResetChanges = (setSettingValues, dispatch) => {
 const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
   dispatch(setSelectedTab({ selectedTab: defaultSettings.selectedTab }));
   dispatch(setSortDirection({ sortDirection: defaultSettings.sortDirection }));
-  dispatch(saveSettings({ defaultSettings: defaultSettings }));
+  dispatch(
+    saveSettings({
+      defaultSettings: produce(defaultSettings, (draft) => {
+        draft.selectedFilterOptions = draft.isSavingFilterOptions ? draft.selectedFilterOptions : defaults.selectedFilterOptions;
+      }),
+    })
+  );
   dispatch(toggleSettingsPanel());
 };
 
 export const isNotEqual = (a: FilterOption[], b: FilterOption[]): boolean => {
   const aValues = a.map((v) => v.value.toLocaleLowerCase());
   const bValues = b.map((v) => v.value.toLocaleLowerCase());
-  return aValues.some((v) => !bValues.includes(v));
+  return aValues.some((v) => !bValues.includes(v)) || aValues.length !== bValues.length;
 };
 
 const defaultSettingsEquality = (a: DefaultSettings, b: DefaultSettings): boolean => {
@@ -225,7 +240,7 @@ const defaultSettingsEquality = (a: DefaultSettings, b: DefaultSettings): boolea
   return (
     isFullScreenModeCheck ||
     isSavingFilterOptionsCheck ||
-    selectedFilterOptionsCheck ||
+    (a.isSavingFilterOptions ? selectedFilterOptionsCheck : false) ||
     selectedTabCheck ||
     daysAgoCheck ||
     sortDirectionCheck ||
@@ -253,6 +268,14 @@ export const SettingsPanel = () => {
   React.useEffect(() => {
     setIsDirty(defaultSettingsEquality(settingValues, store.settings.defaults));
   }, [settingValues, store.settings.defaults]);
+
+  React.useEffect(() => {
+    setSettingValues((prevState) =>
+      produce(prevState, (draft) => {
+        draft.selectedFilterOptions = filterOptions;
+      })
+    );
+  }, [filterOptions]);
 
   return (
     <Panel
