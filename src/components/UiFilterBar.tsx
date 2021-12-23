@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { IconButton } from '@fluentui/react';
-import Select, { components, GroupBase, MultiValueProps, MultiValueGenericProps, OptionProps, SelectComponentsConfig } from 'react-select';
+import { VssPersona } from 'azure-devops-ui/VssPersona';
+import { ComboBox, IComboBoxOption, IconButton, IRenderFunction, ISelectableOption, SelectableOptionMenuItemType } from '@fluentui/react';
 
 import './UiFilterBar.css';
 
@@ -10,124 +10,75 @@ import { useTypedSelector } from '../lib/utils';
 import { setFilterOptions } from '../state/actions';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 import { deriveFilterOptions } from '../state/transformData';
-import { VssPersona } from 'azure-devops-ui/VssPersona';
 
-type CustomComponents = SelectComponentsConfig<FilterOption, true, GroupBase<FilterOption>> | undefined;
-type CustomOptionProps = OptionProps<FilterOption, true, GroupBase<FilterOption>>;
-type CustomMultiValueLabelProps = MultiValueProps<FilterOption, true, GroupBase<FilterOption>>;
-type CustomMultiValueLabelGenericProps = (props: MultiValueGenericProps<FilterOption, true, GroupBase<FilterOption>>) => JSX.Element;
+const selectAllOption: IComboBoxOption = { key: 'selectAll', text: 'Select All', itemType: SelectableOptionMenuItemType.SelectAll };
+const dividerOption: IComboBoxOption = { key: 'divider', text: '-', itemType: SelectableOptionMenuItemType.Divider };
 
-type SearchBoxProps = { placeholder: string; value: FilterOption[]; setter: React.Dispatch<React.SetStateAction<FilterOption[]>> };
-const SearchBox = ({ placeholder, value, setter }: SearchBoxProps) => {
+const personaComponents = (option: ISelectableOption<FilterOption | undefined> | undefined) => {
+  if (option?.itemType === SelectableOptionMenuItemType.SelectAll) {
+    return <span>{option?.text ?? ''}</span>;
+  }
+
   return (
-    <input
-      className="search-box"
-      type="search"
-      placeholder={placeholder}
-      value={value[0]?.value ?? ''}
-      onChange={(e) => setter([{ label: e.target.value, value: e.target.value }])}
-    />
+    <>
+      <VssPersona className="vss-persona" imageUrl={option?.data?.href ?? ''} size={'small'} />
+      <span style={{ marginLeft: '0.25rem' }}>{option?.data?.label ?? ''}</span>
+    </>
   );
 };
 
-const CodeOption = (props: CustomOptionProps) => {
+const approvalStatusComponents = (option: ISelectableOption<FilterOption | undefined> | undefined) => {
+  if (option?.itemType === SelectableOptionMenuItemType.SelectAll) {
+    return <span>{option?.text ?? ''}</span>;
+  }
+
   return (
-    <components.Option {...props}>
-      <span style={{ fontFamily: `var(--font-family-monospace)` }}>{props.data.label}</span>
-    </components.Option>
+    <div className="approval-status">
+      {getReviewerVoteIconStatus(option?.data?.value ?? '0')}
+      <span style={{ marginLeft: '0.25rem' }}>{option?.data?.label ?? ''}</span>
+    </div>
   );
-};
-
-const CodeMultiValueLabel = (props: CustomMultiValueLabelProps) => {
-  return <span style={{ fontSize: '0.75rem', fontFamily: `var(--font-family-monospace)`, margin: '0.25rem' }}>{props.data.label}</span>;
-};
-
-const codeComponents: CustomComponents = {
-  Option: CodeOption,
-  MultiValueLabel: CodeMultiValueLabel as CustomMultiValueLabelGenericProps,
-};
-
-const PersonaOption = (props: CustomOptionProps) => {
-  return (
-    <components.Option {...props}>
-      <div className="reviewers">
-        <VssPersona className="vss-persona" imageUrl={props.data.href} size={'small'} />
-        <span style={{ marginLeft: '0.25rem' }}>{props.data.label}</span>
-      </div>
-    </components.Option>
-  );
-};
-
-const PersonaMultiValueLabel = (props: CustomMultiValueLabelProps) => {
-  return <VssPersona className="vss-persona" imageUrl={props.data.href} size={'small'} />;
-};
-
-const personaComponents: CustomComponents = {
-  Option: PersonaOption,
-  MultiValueLabel: PersonaMultiValueLabel as CustomMultiValueLabelGenericProps,
-};
-
-const ApprovalStatusOption = (props: CustomOptionProps) => {
-  return (
-    <components.Option {...props}>
-      <div className="approval-status">
-        {getReviewerVoteIconStatus(props.data.value)}
-        <span style={{ marginLeft: '0.25rem' }}>{props.data.label}</span>
-      </div>
-    </components.Option>
-  );
-};
-
-const ApprovalStatusMultiValueLabel = (props: CustomMultiValueLabelProps) => {
-  return getReviewerVoteIconStatus(props.data.value);
-};
-
-const approvalStatusComponents: CustomComponents = {
-  Option: ApprovalStatusOption,
-  MultiValueLabel: ApprovalStatusMultiValueLabel as CustomMultiValueLabelGenericProps,
 };
 
 type UiSelectProps = {
   placeholder: string;
-  options: FilterOption[];
-  value: FilterOption[];
+  allOptions: FilterOption[];
+  selectedOptions: FilterOption[];
   setter: React.Dispatch<React.SetStateAction<FilterOption[]>>;
-  components: CustomComponents | undefined;
+  components?: IRenderFunction<ISelectableOption<FilterOption>>;
 };
-const UiMultiSelect = ({ placeholder, options, value, setter, components }: UiSelectProps) => {
+const UiMultiSelect = ({ placeholder, allOptions, selectedOptions, setter, components }: UiSelectProps) => {
+  const onChange = (option?: IComboBoxOption): void => {
+    if (!option) {
+      return;
+    }
+
+    if (option.itemType === SelectableOptionMenuItemType.SelectAll) {
+      setter(option.selected === true ? [...allOptions] : []);
+    } else {
+      const addOption = [...selectedOptions, option.data];
+      const removeOption = [...selectedOptions.filter(({ value }) => value !== option.key)];
+      setter(option.selected === true ? addOption : removeOption);
+    }
+  };
+
+  const derivedOptions = allOptions.map((option) => ({ key: option.value, text: option.label, data: option }));
   return (
-    <Select
-      className="filter-bar-item"
-      styles={{
-        placeholder: (existing) => ({ ...existing, fontSize: '0.8rem' }),
-        control: (existing) => ({ ...existing, overflow: 'hidden' }),
-        valueContainer: (existing) => ({
-          ...existing,
-          flexWrap: 'nowrap',
-          overflowX: 'scroll',
-          marginBottom: '-50px',
-          paddingBottom: '50px',
-        }),
-        multiValue: (existing) => ({ ...existing, minWidth: 'max-content' }),
-      }}
-      components={components}
+    <ComboBox
+      multiSelect={true}
+      useComboBoxAsMenuWidth={true}
+      onRenderOption={components}
       placeholder={placeholder}
-      onChange={(selectedValues) => setter([...selectedValues])}
-      value={value}
-      getOptionLabel={({ label }) => label}
-      getOptionValue={({ value }) => value}
-      options={options}
-      closeMenuOnSelect={false}
-      isDisabled={options.length === 0}
-      isMulti
+      onChange={(_, option) => onChange(option)}
+      options={[selectAllOption, dividerOption, ...derivedOptions]}
     />
   );
 };
 
 export const UiFilterBar = () => {
   const filterOptions = useTypedSelector(({ data }) => deriveFilterOptions(data.pullRequests));
-  const isSavingFilterOptions = useTypedSelector((store) => store.settings.defaults.isSavingFilterOptions);
-  const selectedFilterOptions = useTypedSelector((store) => store.settings.defaults.selectedFilterOptions);
+  const isSavingFilterOptions = useTypedSelector(({ settings }) => settings.defaults.isSavingFilterOptions);
+  const selectedFilterOptions = useTypedSelector(({ settings }) => settings.defaults.selectedFilterOptions);
   const dispatch = useDispatch();
 
   const [searchString, setSearchString] = React.useState<FilterOption[]>([]);
@@ -168,53 +119,56 @@ export const UiFilterBar = () => {
     <div className="filter-bar">
       <div className="search-box-container">
         <IconButton iconProps={{ iconName: 'ClearFilter' }} onClick={() => resetFilters()} />
-        <SearchBox placeholder={'Search...'} value={searchString} setter={setSearchString} />
+        <input
+          className="search-box"
+          type="search"
+          placeholder={'Search...'}
+          value={searchString[0]?.value ?? ''}
+          onChange={(e) => setSearchString([{ label: e?.target?.value ?? '', value: e?.target?.value ?? '' }])}
+        />
       </div>
 
       <UiMultiSelect
         placeholder={'Author'}
-        options={filterOptions.author}
-        value={author}
+        allOptions={filterOptions.author}
+        selectedOptions={author}
         setter={setAuthor}
         components={personaComponents}
       />
 
       <UiMultiSelect
         placeholder={'Repositories'}
-        options={filterOptions.repositories}
-        value={repositories}
+        allOptions={filterOptions.repositories}
+        selectedOptions={repositories}
         setter={setRepositories}
-        components={codeComponents}
       />
 
       <UiMultiSelect
         placeholder={'Source Branch'}
-        options={filterOptions.sourceBranch}
-        value={sourceBranch}
+        allOptions={filterOptions.sourceBranch}
+        selectedOptions={sourceBranch}
         setter={setSourceBranch}
-        components={codeComponents}
       />
 
       <UiMultiSelect
         placeholder={'Target Branch'}
-        options={filterOptions.targetBranch}
-        value={targetBranch}
+        allOptions={filterOptions.targetBranch}
+        selectedOptions={targetBranch}
         setter={setTargetBranch}
-        components={codeComponents}
       />
 
       <UiMultiSelect
         placeholder={'Approval Status'}
-        options={filterOptions.myApprovalStatus}
-        value={myApprovalStatus}
+        allOptions={filterOptions.myApprovalStatus}
+        selectedOptions={myApprovalStatus}
         setter={setMyApprovalStatus}
         components={approvalStatusComponents}
       />
 
       <UiMultiSelect
         placeholder={'Reviewers'}
-        options={filterOptions.reviewer}
-        value={reviewer}
+        allOptions={filterOptions.reviewer}
+        selectedOptions={reviewer}
         setter={setReviewer}
         components={personaComponents}
       />

@@ -1,12 +1,11 @@
 import React from 'react';
 import { Dispatch } from 'redux';
-import Select from 'react-select';
 import { useDispatch } from 'react-redux';
 
-import { Spinner } from '@fluentui/react';
 import { Page } from 'azure-devops-ui/Page';
 import { Surface } from 'azure-devops-ui/Surface';
 import { TabBar, Tab, TabSize } from 'azure-devops-ui/Tabs';
+import { ComboBox, IComboBoxOption, Spinner } from '@fluentui/react';
 import { IHeaderCommandBarItem, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
 
@@ -15,8 +14,8 @@ import './TabProvider.css';
 import { PrTable } from './PrTable';
 import { SettingsPanel } from './SettingsPanel';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
+import { PrHubState, PR, TabOptions, DaysAgo } from '../state/types';
 import { filterByCreationDate, useTypedSelector } from '../lib/utils';
-import { PrHubState, PR, TabOptions, FilterOption, DaysAgo } from '../state/types';
 import { setSelectedTab, setPullRequests, toggleSettingsPanel, toggleSortDirection, setDaysAgo } from '../state/actions';
 
 const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: string): IHeaderCommandBarItem[] => {
@@ -93,14 +92,14 @@ const Heading = ({ items }: { items: IHeaderCommandBarItem[] }) => {
   );
 };
 
-const daysAgoOptions: FilterOption[] = [
-  { label: '7 Days', value: '7' },
-  { label: '14 Days', value: '14' },
-  { label: '1 Month', value: '30' },
-  { label: '3 Months', value: '90' },
-  { label: '6 Months', value: '180' },
-  { label: '12 Months', value: '365' },
-  { label: 'All Time', value: '-1' },
+const daysAgoOptions: IComboBoxOption[] = [
+  { key: '7', text: '7 Days' },
+  { key: '14', text: '14 Days' },
+  { key: '30', text: '1 Month' },
+  { key: '90', text: '3 Months' },
+  { key: '180', text: '6 Months' },
+  { key: '365', text: '12 Months' },
+  { key: '-1', text: 'All Time' },
 ];
 
 export const TabProvider = () => {
@@ -134,12 +133,11 @@ export const TabProvider = () => {
               <Tab name="Recently Completed" id="completed" badgeCount={badgeCount(pullRequests, 'completed')} />
               <div className="days-ago">
                 <i className="days-ago-label">Displaying PRs more recent than</i>
-                <Select
-                  onChange={(selectedOption) => dispatch(setDaysAgo({ daysAgo: selectedOption?.value as DaysAgo }))}
-                  value={daysAgoOptions.find(({ value }) => value === daysAgo)}
-                  getOptionLabel={({ label }) => label}
-                  getOptionValue={({ value }) => value}
+                <ComboBox
+                  styles={{ root: { width: '8rem' } }}
                   options={daysAgoOptions}
+                  selectedKey={daysAgoOptions.find(({ key }) => key === daysAgo)?.key}
+                  onChange={(_, selectedOption) => dispatch(setDaysAgo({ daysAgo: selectedOption?.key as DaysAgo }))}
                 />
               </div>
             </TabBar>
