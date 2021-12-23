@@ -2,7 +2,17 @@ import React from 'react';
 import { Dispatch } from 'redux';
 import { useDispatch } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
-import { ChoiceGroup, IChoiceGroupOption, Stack, Label, CompoundButton, DefaultButton, IContextualMenuProps } from '@fluentui/react';
+import {
+  Label,
+  Stack,
+  ComboBox,
+  ChoiceGroup,
+  DefaultButton,
+  CompoundButton,
+  IComboBoxOption,
+  IChoiceGroupOption,
+  IContextualMenuProps,
+} from '@fluentui/react';
 
 import {
   toggleSettingsPanel,
@@ -52,7 +62,7 @@ const sortDirectionItems: IChoiceGroupOption[] = [
   { key: 'asc', text: 'Oldest First', iconProps: { iconName: 'SortUp' } },
 ];
 
-const daysAgoItems: IChoiceGroupOption[] = [
+const daysAgoItems: IComboBoxOption[] = [
   { key: '7', text: '7 Days' },
   { key: '14', text: '14 Days' },
   { key: '30', text: '1 Month' },
@@ -110,7 +120,7 @@ const autoRefreshMenuItems: (
 });
 
 type ChoiceGroupChanged = (
-  selectedOption: IChoiceGroupOption | undefined,
+  selectedOption: IComboBoxOption | IChoiceGroupOption | undefined,
   setSettingValues: SetSettingValuesCallback,
   dispatch?: Dispatch<any>
 ) => void;
@@ -311,11 +321,7 @@ export const SettingsPanel = () => {
         </div>
         <div>
           <Label className="light-dark-toggle">Days Ago</Label>
-          <ChoiceGroup
-            selectedKey={settingValues.daysAgo}
-            options={daysAgoItems}
-            onChange={(_, o) => daysAgoChanged(o, setSettingValues)}
-          />
+          <ComboBox selectedKey={settingValues.daysAgo} options={daysAgoItems} onChange={(_, o) => daysAgoChanged(o, setSettingValues)} />
         </div>
       </Stack>
     </Panel>
