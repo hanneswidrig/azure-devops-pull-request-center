@@ -62,13 +62,17 @@ const UiMultiSelect = ({ placeholder, allOptions, selectedOptions, setter, compo
     }
   };
 
+  const selectedKeys = selectedOptions.map(({ value }) => value);
   const derivedOptions = allOptions.map((option) => ({ key: option.value, text: option.label, data: option }));
+  const isSelectAll = selectedOptions.length === allOptions.length;
+
   return (
     <ComboBox
       multiSelect={true}
       useComboBoxAsMenuWidth={true}
       onRenderOption={components}
       placeholder={placeholder}
+      selectedKey={isSelectAll ? [selectAllOption.key as string, ...selectedKeys] : selectedKeys}
       onChange={(_, option) => onChange(option)}
       options={[selectAllOption, dividerOption, ...derivedOptions]}
     />
@@ -107,12 +111,12 @@ export const UiFilterBar = () => {
 
   const resetFilters = () => {
     setSearchString([]);
+    setAuthor([]);
     setRepositories([]);
     setSourceBranch([]);
     setTargetBranch([]);
-    setAuthor([]);
-    setReviewer([]);
     setMyApprovalStatus([]);
+    setReviewer([]);
   };
 
   return (
