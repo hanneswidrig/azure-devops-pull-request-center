@@ -1,5 +1,6 @@
 import React from 'react';
-import { IconButton, DetailsList, Persona, Link, TooltipHost, IColumn, PersonaSize, SelectionMode, DirectionalHint } from '@fluentui/react';
+import { copyToClipboard } from 'azure-devops-ui/Clipboard';
+import { DetailsList, DirectionalHint, IColumn, IconButton, Link, Persona, PersonaSize, SelectionMode, TooltipHost } from '@fluentui/react';
 
 import './PrTable.css';
 
@@ -9,7 +10,6 @@ import { UiFilterBar } from './UiFilterBar';
 import { applyFilters } from '../lib/filters';
 import { EmptyDataVisual } from './EmptyDataVisual';
 import { getReviewerVoteIconStatus } from './StatusIcon';
-import { copyToClipboard } from 'azure-devops-ui/Clipboard';
 import { getVoteDescription, useTypedSelector } from '../lib/utils';
 
 export const columns: IColumn[] = [
