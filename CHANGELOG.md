@@ -12,6 +12,8 @@
 
 🐛 Fixed: Resilient preservation of filtering options across sessions
 
+🐛 Fixed: Pull requests that user is not assigned to are now shown as such
+
 # 1.2.9 (May 29, 2020)
 
 # 1.2.8 (May 29, 2020)
