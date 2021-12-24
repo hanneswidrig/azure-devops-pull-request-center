@@ -40,7 +40,7 @@ export const columns: IColumn[] = [
     onRender: (item: PR) => (
       <div className="pr-column">
         <Persona className="display-block" imageUrl={item.createdBy._links['avatar'].href} size={PersonaSize.size24} />
-        <span>{item.createdBy.displayName}</span>
+        <div className="text-ellipsis">{item.createdBy.displayName}</div>
       </div>
     ),
   },
@@ -53,21 +53,20 @@ export const columns: IColumn[] = [
     onRender: (item: PR) => {
       const tooltipId = Math.random().toString(16);
       return (
-        <div className="pr-column">
-          <TooltipHost
-            id={tooltipId}
-            content={
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ margin: '0 0.25rem' }}>{item.repository.name}</span>
-                <IconButton iconProps={{ iconName: 'Copy' }} onClick={() => copyToClipboard(item.repository.name)} />
-              </div>
-            }
-            directionalHint={DirectionalHint.leftCenter}>
-            <span className="repository-name" aria-describedby={tooltipId}>
-              {item.repository.name}
-            </span>
-          </TooltipHost>
-        </div>
+        <TooltipHost
+          id={tooltipId}
+          hostClassName="pr-column"
+          content={
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ margin: '0 0.25rem' }}>{item.repository.name}</span>
+              <IconButton iconProps={{ iconName: 'Copy' }} onClick={() => copyToClipboard(item.repository.name)} />
+            </div>
+          }
+          directionalHint={DirectionalHint.leftCenter}>
+          <div className="text-ellipsis" aria-describedby={tooltipId}>
+            {item.repository.name}
+          </div>
+        </TooltipHost>
       );
     },
   },
@@ -80,21 +79,20 @@ export const columns: IColumn[] = [
     onRender: (item: PR) => {
       const tooltipId = Math.random().toString(16);
       return (
-        <div className="pr-column">
-          <TooltipHost
-            id={tooltipId}
-            content={
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ margin: '0 0.25rem' }}>{item.sourceBranch.name}</span>
-                <IconButton iconProps={{ iconName: 'Copy' }} onClick={() => copyToClipboard(item.sourceBranch.name)} />
-              </div>
-            }
-            directionalHint={DirectionalHint.leftCenter}>
-            <span className="branch-name" aria-describedby={tooltipId}>
-              {item.sourceBranch.name}
-            </span>
-          </TooltipHost>
-        </div>
+        <TooltipHost
+          id={tooltipId}
+          hostClassName="pr-column"
+          content={
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ margin: '0 0.25rem' }}>{item.sourceBranch.name}</span>
+              <IconButton iconProps={{ iconName: 'Copy' }} onClick={() => copyToClipboard(item.sourceBranch.name)} />
+            </div>
+          }
+          directionalHint={DirectionalHint.leftCenter}>
+          <div className="text-ellipsis" aria-describedby={tooltipId}>
+            {item.sourceBranch.name}
+          </div>
+        </TooltipHost>
       );
     },
   },
@@ -107,21 +105,20 @@ export const columns: IColumn[] = [
     onRender: (item: PR) => {
       const tooltipId = Math.random().toString(16);
       return (
-        <div className="pr-column">
-          <TooltipHost
-            id={tooltipId}
-            content={
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ margin: '0 0.25rem' }}>{item.targetBranch.name}</span>
-                <IconButton iconProps={{ iconName: 'Copy' }} onClick={() => copyToClipboard(item.targetBranch.name)} />
-              </div>
-            }
-            directionalHint={DirectionalHint.leftCenter}>
-            <span className="branch-name" aria-describedby={tooltipId}>
-              {item.targetBranch.name}
-            </span>
-          </TooltipHost>
-        </div>
+        <TooltipHost
+          id={tooltipId}
+          hostClassName="pr-column"
+          content={
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ margin: '0 0.25rem' }}>{item.targetBranch.name}</span>
+              <IconButton iconProps={{ iconName: 'Copy' }} onClick={() => copyToClipboard(item.targetBranch.name)} />
+            </div>
+          }
+          directionalHint={DirectionalHint.leftCenter}>
+          <div className="text-ellipsis" aria-describedby={tooltipId}>
+            {item.targetBranch.name}
+          </div>
+        </TooltipHost>
       );
     },
   },

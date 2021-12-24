@@ -6,8 +6,8 @@ import { FilterOption, FilterOptions, PR } from './types';
 import { ReviewerVoteNumber, ReviewerVoteLabel } from '../lib/enums';
 
 const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext: IUserContext) => {
-  let voteResult: ReviewerVoteNumber = ReviewerVoteNumber.NoVote;
-  if (reviewers && reviewers.length > 0) {
+  let voteResult: ReviewerVoteNumber = ReviewerVoteNumber.Unassigned;
+  if (reviewers?.length > 0) {
     const currentUserReviewer = reviewers.filter((r) => r.id === userContext.id);
     if (currentUserReviewer.length > 0) {
       voteResult = currentUserReviewer[0].vote.toString() as ReviewerVoteNumber;
@@ -60,6 +60,7 @@ export const deriveFilterOptions = (pullRequests: PR[]): FilterOptions => {
     author: [],
     reviewer: [],
     myApprovalStatus: [
+      { label: ReviewerVoteLabel.Unassigned, value: ReviewerVoteNumber.Unassigned },
       { label: ReviewerVoteLabel.Approved, value: ReviewerVoteNumber.Approved },
       { label: ReviewerVoteLabel.ApprovedWithSuggestions, value: ReviewerVoteNumber.ApprovedWithSuggestions },
       { label: ReviewerVoteLabel.NoVote, value: ReviewerVoteNumber.NoVote },

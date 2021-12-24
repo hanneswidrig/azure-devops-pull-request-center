@@ -31,3 +31,7 @@
 .rejected {
   fill: rgb(218, 30, 40);
 }
+
+.unassigned {
+  fill: rgb(63, 74, 88);
+}

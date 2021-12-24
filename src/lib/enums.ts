@@ -6,6 +6,7 @@ export const ReviewerVoteNumber = {
   NoVote: '0',
   WaitingForAuthor: '-5',
   Rejected: '-10',
+  Unassigned: '-1',
 } as const;
 export type ReviewerVoteNumber = Enum<typeof ReviewerVoteNumber>;
 
@@ -15,5 +16,6 @@ export const ReviewerVoteLabel = {
   NoVote: 'Assigned',
   WaitingForAuthor: 'Waiting For Author',
   Rejected: 'Rejected',
+  Unassigned: 'Unassigned',
 } as const;
 export type ReviewerVoteLabel = Enum<typeof ReviewerVoteLabel>;

@@ -46,6 +46,7 @@ export const getVoteDescription = (vote: number): string => {
     [ReviewerVoteNumber.NoVote]: ReviewerVoteLabel.NoVote,
     [ReviewerVoteNumber.WaitingForAuthor]: ReviewerVoteLabel.WaitingForAuthor,
     [ReviewerVoteNumber.Rejected]: ReviewerVoteLabel.Rejected,
+    [ReviewerVoteNumber.Unassigned]: ReviewerVoteLabel.Unassigned,
   };
   return votes[vote.toString()];
 };

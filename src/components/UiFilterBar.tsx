@@ -34,7 +34,7 @@ const approvalStatusComponents = (option: ISelectableOption<FilterOption | undef
 
   return (
     <div className="approval-status">
-      {getReviewerVoteIconStatus(option?.data?.value ?? '0')}
+      {getReviewerVoteIconStatus(option?.data?.value ?? '-1')}
       <span style={{ marginLeft: '0.25rem' }}>{option?.data?.label ?? ''}</span>
     </div>
   );

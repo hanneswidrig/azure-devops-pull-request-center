@@ -11,14 +11,11 @@
   height: 100%;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.repository-name,
-.branch-name {
-  white-space: nowrap;
+.text-ellipsis {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 256px;
 }
