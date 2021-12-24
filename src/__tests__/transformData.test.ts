@@ -5,7 +5,7 @@ import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/
 import { toPr } from '../state/transformData';
 
 describe('transformData', () => {
-  test('fromPullRequestToPR()', () => {
+  test('toPr()', () => {
     const pullRequest: GitPullRequest = {
       pullRequestId: 1,
       repository: {
@@ -54,7 +54,7 @@ describe('transformData', () => {
     expect(transformedPR.targetBranch.href).toBe('https://repository.com?version=GBtargetBranch');
     expect(transformedPR.repository.name).toBe('repository');
     expect(transformedPR.repository.href).toBe('https://repository.com');
-    expect(transformedPR.myApprovalStatus).toBe('0');
+    expect(transformedPR.myApprovalStatus).toBe('-1');
     expect(transformedPR.workItems.length).toBe(0);
     expect(transformedPR.reviewers.length).toBe(0);
   });

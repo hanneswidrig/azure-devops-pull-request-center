@@ -10,24 +10,34 @@ describe('<StatusIcon />', () => {
     expect(container).toMatchSnapshot();
     expect(container.querySelector('.vote-status')).toHaveClass('approved');
   });
+
   test('render <ApprovedWithSuggestions /> SVG', () => {
     const { container } = render(getReviewerVoteIconStatus(5));
     expect(container).toMatchSnapshot();
     expect(container.querySelector('.vote-status')).toHaveClass('approved-with-suggestions');
   });
+
   test('render <NoVote /> SVG', () => {
     const { container } = render(getReviewerVoteIconStatus(0));
     expect(container).toMatchSnapshot();
     expect(container.querySelector('.vote-status')).toHaveClass('no-vote');
   });
+
   test('render <WaitingOnAuthor /> SVG', () => {
     const { container } = render(getReviewerVoteIconStatus(-5));
     expect(container).toMatchSnapshot();
     expect(container.querySelector('.vote-status')).toHaveClass('waiting');
   });
+
   test('render <Rejected /> SVG', () => {
     const { container } = render(getReviewerVoteIconStatus(-10));
     expect(container).toMatchSnapshot();
     expect(container.querySelector('.vote-status')).toHaveClass('rejected');
+  });
+
+  test('render <Unassigned /> SVG', () => {
+    const { container } = render(getReviewerVoteIconStatus(-1));
+    expect(container).toMatchSnapshot();
+    expect(container.querySelector('.vote-status')).toHaveClass('unassigned');
   });
 });
