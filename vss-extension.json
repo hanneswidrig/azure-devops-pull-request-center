@@ -30,11 +30,7 @@
       "path": "LICENSE"
     }
   },
-  "screenshots": [
-    { "path": "marketplace/screenshot-1.png" },
-    { "path": "marketplace/screenshot-2.png" },
-    { "path": "marketplace/screenshot-3.png" }
-  ],
+  "screenshots": [{ "path": "marketplace/screenshot-1.png" }],
   "contributions": [
     {
       "id": "pull-request-center",
