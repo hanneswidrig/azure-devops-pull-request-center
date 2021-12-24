@@ -1,5 +1,4 @@
 import React from 'react';
-import produce from 'immer';
 import { Dispatch } from 'redux';
 import { useDispatch } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
@@ -28,6 +27,12 @@ import { useTypedSelector } from '../lib/utils';
 import { DefaultSettings, TabOptions, SortDirection, RefreshDuration, FilterOption, DaysAgo } from '../state/types';
 
 type SetSettingValuesCallback = React.Dispatch<React.SetStateAction<DefaultSettings>>;
+
+type ChoiceGroupChanged = (
+  selectedOption: IComboBoxOption | IChoiceGroupOption | undefined,
+  setSettingValues: SetSettingValuesCallback,
+  dispatch?: Dispatch<any>
+) => void;
 
 export const defaults: DefaultSettings = {
   isFullScreenMode: false,
@@ -120,17 +125,6 @@ const autoRefreshMenuItems: (
   ],
 });
 
-type ChoiceGroupChanged = (
-  selectedOption: IComboBoxOption | IChoiceGroupOption | undefined,
-  setSettingValues: SetSettingValuesCallback,
-  dispatch?: Dispatch<any>
-) => void;
-
-type CompoundButtonChanged = (decision: 'save' | 'clear', setSettingValues: SetSettingValuesCallback) => void;
-type AutoRefreshDurationChanged = (duration: RefreshDuration, setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
-type ResetChanges = (setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>) => void;
-type ApplyChanges = (defaultSettings: DefaultSettings, dispatch: Dispatch<any>) => void;
-
 const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingValues, dispatch) => {
   const isFullScreenMode = selectedOption?.key === 'true' ?? false;
   setSettingValues((values) => ({ ...values, isFullScreenMode: isFullScreenMode }));
@@ -139,16 +133,8 @@ const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingV
   }
 };
 
-const isSavingFilterItemsChanged: CompoundButtonChanged = (decision, setSettingValues) => {
-  setSettingValues((values) =>
-    produce(values, (draft) => {
-      draft.isSavingFilterOptions = decision === 'save';
-
-      if (decision === 'clear') {
-        draft.selectedFilterOptions = defaults.selectedFilterOptions;
-      }
-    })
-  );
+const isSavingFilterItemsChanged = (decision: 'save' | 'clear', setSettingValues: SetSettingValuesCallback): void => {
+  setSettingValues((values) => ({ ...values, isSavingFilterOptions: decision === 'save' }));
 };
 
 const selectedTabChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) => {
@@ -166,31 +152,29 @@ const daysAgoChanged: ChoiceGroupChanged = (selectedOption, setSettingValues) =>
   setSettingValues((values) => ({ ...values, daysAgo: option.key as DaysAgo }));
 };
 
-const autoRefreshDurationChanged: AutoRefreshDurationChanged = (duration, setSettingValues, dispatch) => {
+const autoRefreshDurationChanged = (
+  duration: RefreshDuration,
+  setSettingValues: SetSettingValuesCallback,
+  dispatch: Dispatch<any>
+): void => {
   setSettingValues((values) => ({ ...values, autoRefreshDuration: duration }));
   dispatch(setRefreshDuration({ refreshDuration: duration }));
 };
 
-const resetChanges: ResetChanges = (setSettingValues, dispatch) => {
+const resetChanges = (setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>): void => {
   setSettingValues(defaults);
   dispatch(setRefreshDuration({ refreshDuration: 'off' }));
   dispatch(setFullScreenMode({ isFullScreenMode: defaults.isFullScreenMode }));
 };
 
-const applyChanges: ApplyChanges = (defaultSettings, dispatch) => {
+const applyChanges = (defaultSettings: DefaultSettings, dispatch: Dispatch<any>): void => {
   dispatch(setSelectedTab({ selectedTab: defaultSettings.selectedTab }));
   dispatch(setSortDirection({ sortDirection: defaultSettings.sortDirection }));
-  dispatch(
-    saveSettings({
-      defaultSettings: produce(defaultSettings, (draft) => {
-        draft.selectedFilterOptions = draft.isSavingFilterOptions ? draft.selectedFilterOptions : defaults.selectedFilterOptions;
-      }),
-    })
-  );
+  dispatch(saveSettings({ defaultSettings: defaultSettings }));
   dispatch(toggleSettingsPanel());
 };
 
-export const isNotEqual = (a: FilterOption[], b: FilterOption[]): boolean => {
+const isNotEqual = (a: FilterOption[], b: FilterOption[]): boolean => {
   const aValues = a.map((v) => v.value.toLocaleLowerCase());
   const bValues = b.map((v) => v.value.toLocaleLowerCase());
   return aValues.some((v) => !bValues.includes(v)) || aValues.length !== bValues.length;
@@ -260,7 +244,7 @@ export const SettingsPanel = () => {
     sortDirection: store.settings.defaults.sortDirection,
     daysAgo: store.settings.defaults.daysAgo,
     isSavingFilterOptions: store.settings.defaults.isSavingFilterOptions,
-    selectedFilterOptions: store.settings.defaults.isSavingFilterOptions ? filterOptions : store.settings.defaults.selectedFilterOptions,
+    selectedFilterOptions: filterOptions,
     autoRefreshDuration: defaultDuration !== 'off' ? defaultDuration : store.settings.autoRefreshDuration,
   });
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
@@ -268,14 +252,6 @@ export const SettingsPanel = () => {
   React.useEffect(() => {
     setIsDirty(defaultSettingsEquality(settingValues, store.settings.defaults));
   }, [settingValues, store.settings.defaults]);
-
-  React.useEffect(() => {
-    setSettingValues((prevState) =>
-      produce(prevState, (draft) => {
-        draft.selectedFilterOptions = filterOptions;
-      })
-    );
-  }, [filterOptions]);
 
   return (
     <Panel

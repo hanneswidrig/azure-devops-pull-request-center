@@ -3,11 +3,6 @@
   padding: 0.125rem;
 }
 
-.reviewers {
-  display: flex;
-  align-items: center;
-}
-
 .approval-status {
   display: flex;
   align-items: center;

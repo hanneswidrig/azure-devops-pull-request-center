@@ -17,6 +17,7 @@ import { toPr } from './transformData';
 import { sortByRepositoryName } from '../lib/utils';
 import { defaults } from '../components/SettingsPanel';
 import { ActionTypes, DaysAgo, DefaultSettings, FilterOptions, PR, RefreshDuration, SortDirection } from './types';
+import produce from 'immer';
 
 interface GitRepository extends Git.GitRepository {
   isDisabled: boolean;
@@ -147,8 +148,8 @@ export const restoreSettings: Task = () => async (dispatch) => {
 export const saveSettings: Task<{ defaultSettings: DefaultSettings }> =
   ({ defaultSettings }) =>
   async (dispatch) => {
-    const settings = await setSettings(defaultSettings);
-    dispatch({ type: ActionTypes.RESTORE_SETTINGS, payload: settings });
+    await setSettings(defaultSettings);
+    dispatch({ type: ActionTypes.RESTORE_SETTINGS, defaultSettings });
   };
 
 export const onInitialLoad: Task = () => {
@@ -172,10 +173,14 @@ const getSettings = async (): Promise<DefaultSettings> => {
   return context.getValue(dbKey, { defaultValue: null });
 };
 
-const setSettings = async (data: DefaultSettings): Promise<DefaultSettings> => {
-  const dbKey = `prc-ext-data-default`;
+const setSettings = async (defaultSettings: DefaultSettings): Promise<DefaultSettings> => {
+  const key = `prc-ext-data-default`;
+  const value = produce(defaultSettings, (draft) => {
+    draft.selectedFilterOptions = draft.isSavingFilterOptions ? draft.selectedFilterOptions : defaults.selectedFilterOptions;
+  });
+
   const context = await getDataManagementContext();
-  return context.setValue(dbKey, data);
+  return context.setValue(key, value);
 };
 
 async function fetchPullRequests(repository: GitRepository, criteria: GitPullRequestSearchCriteria, take: number): Promise<PR[]> {
