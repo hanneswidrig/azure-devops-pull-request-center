@@ -39,7 +39,7 @@
   border-color: rgb(50, 49, 48);
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .filter-bar {
     grid-template-columns: repeat(7, minmax(0, 1fr));
     grid-template-rows: 1fr;
