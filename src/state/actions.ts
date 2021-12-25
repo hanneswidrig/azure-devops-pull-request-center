@@ -36,7 +36,7 @@ const criteria = (status: PullRequestStatus): GitPullRequestSearchCriteria => {
   };
 };
 
-const apiErrorMessage = 'An error occurred while fetching pull requests. Please reload or refresh the page.';
+export const apiErrorMessage = 'An error occurred while fetching pull requests. Please reload or refresh the page.';
 
 export const coreClient = getClient<CoreRestClient>(CoreRestClient);
 export const gitClient = getClient<GitRestClient>(GitRestClient);
@@ -53,7 +53,7 @@ const getLayoutService = async (): Promise<IHostPageLayoutService> => {
   return await getService<IHostPageLayoutService>('ms.vss-features.host-page-layout-service');
 };
 
-const setFullScreenModeState = async (isFullScreenMode: boolean): Promise<boolean> => {
+export const setFullScreenModeState = async (isFullScreenMode: boolean): Promise<boolean> => {
   const layoutService = await getLayoutService();
   layoutService.setFullScreenMode(isFullScreenMode);
   return isFullScreenMode;
@@ -168,20 +168,21 @@ const getDataManagementContext = async (): Promise<IExtensionDataManager> => {
   return extensionDataService.getExtensionDataManager(extensionId, accessToken);
 };
 
-const getSettings = async (): Promise<DefaultSettings> => {
-  const dbKey = `prc-ext-data-default`;
+export const getSettings = async (): Promise<DefaultSettings | null> => {
+  const key = `prc-ext-data-default`;
   const context = await getDataManagementContext();
-  return context.getValue(dbKey, { defaultValue: null });
+  return context.getValue(key, { defaultValue: null });
 };
 
-const setSettings = async (defaultSettings: DefaultSettings): Promise<DefaultSettings> => {
+export const setSettings = async (defaultSettings: DefaultSettings): Promise<DefaultSettings> => {
   const key = `prc-ext-data-default`;
   const value = produce(defaultSettings, (draft) => {
     draft.selectedFilterOptions = draft.isSavingFilterOptions ? draft.selectedFilterOptions : defaults.selectedFilterOptions;
   });
 
   const context = await getDataManagementContext();
-  return context.setValue(key, value);
+  await context.setValue(key, value);
+  return value;
 };
 
 async function fetchPullRequests(repository: GitRepository, criteria: GitPullRequestSearchCriteria, take: number): Promise<PR[]> {
