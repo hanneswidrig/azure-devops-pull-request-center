@@ -18,18 +18,17 @@ const App = () => {
     store.dispatch(actions.removeAsyncTask());
   }, []);
 
-  return <TabProvider />;
+  return (
+    <Provider store={store}>
+      <TabProvider />
+    </Provider>
+  );
 };
 
 initializeIcons();
 
 init().then(() =>
   ready().then(() => {
-    ReactDOM.render(
-      <Provider store={store}>
-        <App />
-      </Provider>,
-      document.getElementById('root')
-    );
+    ReactDOM.render(<App />, document.getElementById('root'));
   })
 );
