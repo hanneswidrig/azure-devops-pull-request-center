@@ -7,8 +7,10 @@ import { initialState } from '../state/initialState';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
 import { TestingWrapper, WrapperType } from '../components/TestingWrapper';
 
-jest.mock('../state/actions', () => ({
-  setPullRequests: () => ({ type: 'setPullRequests' }),
+jest.mock('../state/store', () => ({
+  asyncActions: {
+    getPullRequests: () => ({ type: 'root/getPullRequests' }),
+  },
 }));
 
 const store = createMockStore([])(initialState);

@@ -2,38 +2,34 @@ import 'react-app-polyfill/stable';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { initializeIcons } from '@fluentui/font-icons-mdl2';
-import { createStore, applyMiddleware } from 'redux';
-import { init, ready } from 'azure-devops-extension-sdk';
-import { composeWithDevTools } from 'remote-redux-devtools';
+import { getUser, init, ready } from 'azure-devops-extension-sdk';
 
 import './index.css';
-import { reducer } from './state/store';
-import { onInitialLoad } from './state/actions';
 import { TabProvider } from './components/TabProvider';
+import { store, actions, asyncActions } from './state/store';
 
 const App = () => {
   React.useEffect(() => {
-    store.dispatch(onInitialLoad());
+    store.dispatch(asyncActions.restoreSettings());
+    store.dispatch(actions.setCurrentUser(getUser()));
+    store.dispatch(asyncActions.getPullRequests());
+    store.dispatch(actions.removeAsyncTask());
   }, []);
 
-  return (
-    <Provider store={store}>
-      <TabProvider />
-    </Provider>
-  );
+  return <TabProvider />;
 };
 
-const enhancer = applyMiddleware(thunk);
-const enhancerWithDevTools = composeWithDevTools({ name: 'PRC', realtime: true, port: 8000 })(applyMiddleware(thunk));
-export const store = createStore(reducer, process.env.NODE_ENV === 'development' ? enhancerWithDevTools : enhancer);
 initializeIcons();
 
 init().then(() =>
   ready().then(() => {
-    ReactDOM.render(<App />, document.getElementById('root'));
+    ReactDOM.render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      document.getElementById('root')
+    );
   })
 );

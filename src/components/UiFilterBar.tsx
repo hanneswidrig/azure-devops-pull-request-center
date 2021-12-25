@@ -6,10 +6,9 @@ import { ComboBox, IComboBoxOption, IconButton, IRenderFunction, ISelectableOpti
 import './UiFilterBar.css';
 
 import { FilterOption } from '../state/types';
-import { useTypedSelector } from '../lib/utils';
-import { setFilterOptions } from '../state/actions';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 import { deriveFilterOptions } from '../state/transformData';
+import { actions, useAppSelector } from '../state/store';
 
 const selectAllOption: IComboBoxOption = { key: 'selectAll', text: 'Select All', itemType: SelectableOptionMenuItemType.SelectAll };
 const dividerOption: IComboBoxOption = { key: 'divider', text: '-', itemType: SelectableOptionMenuItemType.Divider };
@@ -80,9 +79,9 @@ const UiMultiSelect = ({ placeholder, allOptions, selectedOptions, setter, compo
 };
 
 export const UiFilterBar = () => {
-  const filterOptions = useTypedSelector(({ data }) => deriveFilterOptions(data.pullRequests));
-  const isSavingFilterOptions = useTypedSelector(({ settings }) => settings.defaults.isSavingFilterOptions);
-  const selectedFilterOptions = useTypedSelector(({ settings }) => settings.defaults.selectedFilterOptions);
+  const filterOptions = useAppSelector(({ data }) => deriveFilterOptions(data.pullRequests));
+  const isSavingFilterOptions = useAppSelector(({ settings }) => settings.defaults.isSavingFilterOptions);
+  const selectedFilterOptions = useAppSelector(({ settings }) => settings.defaults.selectedFilterOptions);
   const dispatch = useDispatch();
 
   const [searchString, setSearchString] = React.useState<FilterOption[]>([]);
@@ -104,7 +103,7 @@ export const UiFilterBar = () => {
   }, [selectedFilterOptions]);
 
   React.useEffect(() => {
-    dispatch(setFilterOptions({ searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus }));
+    dispatch(actions.setFilterOptions({ searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus }));
   }, [dispatch, searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus, isSavingFilterOptions]);
 
   const resetFilters = () => {

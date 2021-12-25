@@ -1,9 +1,8 @@
 import { compareAsc, compareDesc, isAfter, subDays } from 'date-fns';
-import { TypedUseSelectorHook, useSelector } from 'react-redux';
 import { GitRepository } from 'azure-devops-extension-api/Git/Git';
 import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 
-import { DaysAgo, PR, PrHubState, SortDirection } from '../state/types';
+import { DaysAgo, PR, SortDirection } from '../state/types';
 import { ReviewerVoteLabel, ReviewerVoteNumber } from './enums';
 
 export const sortByRepositoryName = (a: GitRepository, b: GitRepository): number => {
@@ -50,5 +49,3 @@ export const getVoteDescription = (vote: number): string => {
   };
   return votes[vote.toString()];
 };
-
-export const useTypedSelector: TypedUseSelectorHook<PrHubState> = useSelector;

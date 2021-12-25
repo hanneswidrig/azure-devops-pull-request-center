@@ -1,4 +1,4 @@
-import { Enum } from './typings';
+type Enum<T extends Record<string, unknown>> = T[keyof T];
 
 export const ReviewerVoteNumber = {
   Approved: '10',

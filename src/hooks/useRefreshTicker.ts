@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 
+import { asyncActions } from '../state/store';
 import { RefreshDuration } from '../state/types';
-import { setPullRequests } from '../state/actions';
 
 export const useRefreshTicker = (refreshDuration: RefreshDuration) => {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ export const useRefreshTicker = (refreshDuration: RefreshDuration) => {
   useEffect(() => {
     if (ticker === 0) {
       setTicker(Number(refreshDuration));
-      dispatch(setPullRequests());
+      dispatch(asyncActions.getPullRequests());
     }
   }, [ticker, refreshDuration, dispatch]);
 

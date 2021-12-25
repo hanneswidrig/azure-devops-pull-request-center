@@ -1,6 +1,5 @@
 import React from 'react';
 import { Dispatch } from 'redux';
-import { useDispatch } from 'react-redux';
 import { Panel } from 'azure-devops-ui/Panel';
 import {
   Label,
@@ -14,16 +13,8 @@ import {
   IContextualMenuProps,
 } from '@fluentui/react';
 
-import {
-  toggleSettingsPanel,
-  setFullScreenMode,
-  setSelectedTab,
-  setSortDirection,
-  saveSettings,
-  setRefreshDuration,
-} from '../state/actions';
 import './SettingsPanel.css';
-import { useTypedSelector } from '../lib/utils';
+import { asyncActions, actions, useAppDispatch, useAppSelector } from '../state/store';
 import { DefaultSettings, TabOptions, SortDirection, RefreshDuration, FilterOption, DaysAgo } from '../state/types';
 
 type SetSettingValuesCallback = React.Dispatch<React.SetStateAction<DefaultSettings>>;
@@ -127,9 +118,9 @@ const autoRefreshMenuItems: (
 
 const isFullScreenModeChanged: ChoiceGroupChanged = (selectedOption, setSettingValues, dispatch) => {
   const isFullScreenMode = selectedOption?.key === 'true' ?? false;
-  setSettingValues((values) => ({ ...values, isFullScreenMode: isFullScreenMode }));
+  setSettingValues((values) => ({ ...values, isFullScreenMode }));
   if (dispatch) {
-    dispatch(setFullScreenMode({ isFullScreenMode: isFullScreenMode }));
+    dispatch(asyncActions.setFullScreenMode(isFullScreenMode));
   }
 };
 
@@ -158,20 +149,20 @@ const autoRefreshDurationChanged = (
   dispatch: Dispatch<any>
 ): void => {
   setSettingValues((values) => ({ ...values, autoRefreshDuration: duration }));
-  dispatch(setRefreshDuration({ refreshDuration: duration }));
+  dispatch(actions.setRefreshDuration(duration));
 };
 
 const resetChanges = (setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>): void => {
   setSettingValues(defaults);
-  dispatch(setRefreshDuration({ refreshDuration: 'off' }));
-  dispatch(setFullScreenMode({ isFullScreenMode: defaults.isFullScreenMode }));
+  dispatch(actions.setRefreshDuration('off'));
+  dispatch(asyncActions.setFullScreenMode(defaults.isFullScreenMode));
 };
 
 const applyChanges = (defaultSettings: DefaultSettings, dispatch: Dispatch<any>): void => {
-  dispatch(setSelectedTab({ selectedTab: defaultSettings.selectedTab }));
-  dispatch(setSortDirection({ sortDirection: defaultSettings.sortDirection }));
-  dispatch(saveSettings({ defaultSettings: defaultSettings }));
-  dispatch(toggleSettingsPanel());
+  dispatch(actions.setSelectedTab(defaultSettings.selectedTab));
+  dispatch(actions.setSortDirection(defaultSettings.sortDirection));
+  dispatch(asyncActions.saveSettings(defaultSettings));
+  dispatch(actions.toggleSettingsPanel());
 };
 
 const isNotEqual = (a: FilterOption[], b: FilterOption[]): boolean => {
@@ -233,10 +224,10 @@ const defaultSettingsEquality = (a: DefaultSettings, b: DefaultSettings): boolea
 };
 
 export const SettingsPanel = () => {
-  const store = useTypedSelector((store) => store);
-  const filterOptions = useTypedSelector((store) => store.data.filterOptions);
-  const defaultDuration = useTypedSelector((store) => store.settings.defaults.autoRefreshDuration);
-  const dispatch = useDispatch();
+  const store = useAppSelector((store) => store);
+  const filterOptions = useAppSelector((store) => store.data.filterOptions);
+  const defaultDuration = useAppSelector((store) => store.settings.defaults.autoRefreshDuration);
+  const dispatch = useAppDispatch();
 
   const [settingValues, setSettingValues] = React.useState<DefaultSettings>({
     isFullScreenMode: store.settings.defaults.isFullScreenMode || store.ui.isFullScreenMode,
@@ -256,7 +247,7 @@ export const SettingsPanel = () => {
   return (
     <Panel
       size={0}
-      onDismiss={() => dispatch(toggleSettingsPanel())}
+      onDismiss={() => dispatch(actions.toggleSettingsPanel())}
       titleProps={{ text: 'Extension Preferences' }}
       description={'Pull Requests Center 2.0.0'}
       footerButtonProps={[

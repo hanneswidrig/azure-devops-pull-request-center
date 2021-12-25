@@ -1,6 +1,5 @@
 import React from 'react';
 import { Dispatch } from 'redux';
-import { useDispatch } from 'react-redux';
 
 import { Page } from 'azure-devops-ui/Page';
 import { Surface } from 'azure-devops-ui/Surface';
@@ -10,13 +9,12 @@ import { IHeaderCommandBarItem, HeaderCommandBar } from 'azure-devops-ui/HeaderC
 import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
 
 import './TabProvider.css';
-
 import { PrTable } from './PrTable';
 import { SettingsPanel } from './SettingsPanel';
+import { filterByCreationDate } from '../lib/utils';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
 import { PrHubState, PR, TabOptions, DaysAgo } from '../state/types';
-import { filterByCreationDate, useTypedSelector } from '../lib/utils';
-import { setSelectedTab, setPullRequests, toggleSettingsPanel, toggleSortDirection, setDaysAgo } from '../state/actions';
+import { actions, asyncActions, useAppDispatch, useAppSelector } from '../state/store';
 
 const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: string): IHeaderCommandBarItem[] => {
   return [
@@ -30,7 +28,7 @@ const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: 
       important: true,
       subtle: true,
       onActivate: () => {
-        dispatch(toggleSortDirection());
+        dispatch(actions.toggleSortDirection());
       },
       iconProps: {
         iconName: store.ui.sortDirection === 'desc' ? 'SortDown' : 'SortUp',
@@ -42,7 +40,7 @@ const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: 
       isPrimary: true,
       important: true,
       onActivate: () => {
-        dispatch(setPullRequests());
+        dispatch(asyncActions.getPullRequests());
       },
       iconProps: { iconName: 'Refresh' },
     },
@@ -51,7 +49,7 @@ const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: 
       important: true,
       subtle: true,
       onActivate: () => {
-        dispatch(toggleSettingsPanel());
+        dispatch(actions.toggleSettingsPanel());
       },
       iconProps: { iconName: 'Settings' },
     },
@@ -103,18 +101,18 @@ const daysAgoOptions: IComboBoxOption[] = [
 ];
 
 export const TabProvider = () => {
-  const store = useTypedSelector((store) => store);
-  const daysAgo = useTypedSelector((store) => store.ui.daysAgo);
-  const selectedTab = useTypedSelector((store) => store.ui.selectedTab);
-  const asyncTaskCount = useTypedSelector((store) => store.data.asyncTaskCount);
-  const pullRequests = useTypedSelector((store) =>
+  const store = useAppSelector((store) => store);
+  const daysAgo = useAppSelector((store) => store.ui.daysAgo);
+  const selectedTab = useAppSelector((store) => store.ui.selectedTab);
+  const asyncTaskCount = useAppSelector((store) => store.data.asyncTaskCount);
+  const pullRequests = useAppSelector((store) =>
     store.data.pullRequests.filter((pullRequest) => filterByCreationDate(pullRequest, store.ui.daysAgo))
   );
-  const settingsPanelOpen = useTypedSelector((store) => store.settings.settingsPanelOpen);
-  const autoRefreshDuration = useTypedSelector((store) => store.settings.autoRefreshDuration);
+  const settingsPanelOpen = useAppSelector((store) => store.settings.settingsPanelOpen);
+  const autoRefreshDuration = useAppSelector((store) => store.settings.autoRefreshDuration);
 
   const { timeUntil } = useRefreshTicker(autoRefreshDuration);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   return (
     <Surface background={1}>
@@ -126,7 +124,7 @@ export const TabProvider = () => {
             <TabBar
               tabsClassName="tab-bar"
               selectedTabId={selectedTab}
-              onSelectedTabChanged={(selectedTab) => dispatch(setSelectedTab({ selectedTab }))}
+              onSelectedTabChanged={(selectedTab) => dispatch(actions.setSelectedTab(selectedTab as TabOptions))}
               tabSize={'compact' as TabSize}>
               <Tab name="Active" id="active" badgeCount={badgeCount(pullRequests, 'active')} />
               <Tab name="Draft" id="draft" badgeCount={badgeCount(pullRequests, 'draft')} />
@@ -137,7 +135,7 @@ export const TabProvider = () => {
                   styles={{ root: { width: '8rem' } }}
                   options={daysAgoOptions}
                   selectedKey={daysAgoOptions.find(({ key }) => key === daysAgo)?.key}
-                  onChange={(_, selectedOption) => dispatch(setDaysAgo({ daysAgo: selectedOption?.key as DaysAgo }))}
+                  onChange={(_, selectedOption) => dispatch(actions.setDaysAgo(selectedOption?.key as DaysAgo))}
                 />
               </div>
             </TabBar>

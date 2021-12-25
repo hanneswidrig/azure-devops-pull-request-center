@@ -8,9 +8,10 @@ import { Tag } from './Tag';
 import { PR } from '../state/types';
 import { UiFilterBar } from './UiFilterBar';
 import { applyFilters } from '../lib/filters';
+import { useAppSelector } from '../state/store';
+import { getVoteDescription } from '../lib/utils';
 import { EmptyDataVisual } from './EmptyDataVisual';
 import { getReviewerVoteIconStatus } from './StatusIcon';
-import { getVoteDescription, useTypedSelector } from '../lib/utils';
 
 export const columns: IColumn[] = [
   {
@@ -161,7 +162,7 @@ const List = ({ pullRequests }: { pullRequests: PR[] }) => {
 };
 
 export const PrTable = () => {
-  const pullRequests = useTypedSelector((store) =>
+  const pullRequests = useAppSelector((store) =>
     applyFilters(store.data.pullRequests, store.data.filterOptions, store.ui.selectedTab, store.ui.daysAgo)
   );
 
