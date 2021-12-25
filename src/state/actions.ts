@@ -157,6 +157,7 @@ export const onInitialLoad: Task = () => {
     dispatch(restoreSettings());
     dispatch(setCurrentUser());
     dispatch(setPullRequests());
+    dispatch({ type: ActionTypes.REMOVE_ASYNC_TASK });
   };
 };
 

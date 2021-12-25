@@ -125,7 +125,7 @@ const updateState: SplitReducer = (state) => [
     ActionTypes.ADD_ASYNC_TASK,
     () => {
       return produce(state, (draft) => {
-        draft.data.asyncTaskCount = state.data.asyncTaskCount === -1 ? 1 : state.data.asyncTaskCount + 1;
+        draft.data.asyncTaskCount = state.data.asyncTaskCount + 1;
       });
     },
   ],

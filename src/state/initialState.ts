@@ -13,7 +13,7 @@ export const initialState: PrHubState = {
       myApprovalStatus: [],
     },
     currentUser: { id: '', name: '', displayName: '', descriptor: '', imageUrl: '' },
-    asyncTaskCount: -1,
+    asyncTaskCount: 1,
   },
   ui: {
     isFullScreenMode: false,
