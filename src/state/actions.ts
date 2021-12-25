@@ -1,3 +1,4 @@
+import produce from 'immer';
 import {
   getClient,
   IExtensionDataManager,
@@ -17,7 +18,6 @@ import { toPr } from './transformData';
 import { sortByRepositoryName } from '../lib/utils';
 import { defaults } from '../components/SettingsPanel';
 import { ActionTypes, DaysAgo, DefaultSettings, FilterOptions, PR, RefreshDuration, SortDirection } from './types';
-import produce from 'immer';
 
 interface GitRepository extends Git.GitRepository {
   isDisabled: boolean;
