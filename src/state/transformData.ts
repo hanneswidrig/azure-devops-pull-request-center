@@ -98,5 +98,13 @@ export const deriveFilterOptions = (pullRequests: PR[]): FilterOptions => {
     }
   });
 
-  return filterItems;
+  return {
+    searchString: filterItems.searchString,
+    repositories: filterItems.repositories.sort(),
+    sourceBranch: filterItems.sourceBranch.sort(),
+    targetBranch: filterItems.targetBranch.sort(),
+    author: filterItems.author.sort(),
+    reviewer: filterItems.reviewer.sort(),
+    myApprovalStatus: filterItems.myApprovalStatus,
+  };
 };
