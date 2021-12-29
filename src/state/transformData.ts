@@ -100,11 +100,11 @@ export const deriveFilterOptions = (pullRequests: PR[]): FilterOptions => {
 
   return {
     searchString: filterItems.searchString,
-    repositories: filterItems.repositories.sort(),
-    sourceBranch: filterItems.sourceBranch.sort(),
-    targetBranch: filterItems.targetBranch.sort(),
-    author: filterItems.author.sort(),
-    reviewer: filterItems.reviewer.sort(),
+    repositories: filterItems.repositories.sort((a, b) => a.label.localeCompare(b.label)),
+    sourceBranch: filterItems.sourceBranch.sort((a, b) => a.label.localeCompare(b.label)),
+    targetBranch: filterItems.targetBranch.sort((a, b) => a.label.localeCompare(b.label)),
+    author: filterItems.author.sort((a, b) => a.label.localeCompare(b.label)),
+    reviewer: filterItems.reviewer.sort((a, b) => a.label.localeCompare(b.label)),
     myApprovalStatus: filterItems.myApprovalStatus,
   };
 };
