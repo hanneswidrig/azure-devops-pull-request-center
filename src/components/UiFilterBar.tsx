@@ -6,9 +6,10 @@ import { ComboBox, IComboBoxOption, IconButton, IRenderFunction, ISelectableOpti
 import './UiFilterBar.css';
 
 import { FilterOption } from '../state/types';
+import { applyPreciseFilters } from '../lib/filters';
+import { actions, useAppSelector } from '../state/store';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 import { deriveFilterOptions } from '../state/transformData';
-import { actions, useAppSelector } from '../state/store';
 
 const selectAllOption: IComboBoxOption = { key: 'selectAll', text: 'Select All', itemType: SelectableOptionMenuItemType.SelectAll };
 const dividerOption: IComboBoxOption = { key: 'divider', text: '-', itemType: SelectableOptionMenuItemType.Divider };
@@ -79,7 +80,10 @@ const UiMultiSelect = ({ placeholder, allOptions, selectedOptions, setter, compo
 };
 
 export const UiFilterBar = () => {
-  const filterOptions = useAppSelector(({ data }) => deriveFilterOptions(data.pullRequests));
+  const selectedTab = useAppSelector(({ ui }) => ui.selectedTab);
+  const filterOptions = useAppSelector(({ data, ui }) =>
+    deriveFilterOptions(applyPreciseFilters(data.pullRequests, ui.selectedTab, ui.daysAgo))
+  );
   const isSavingFilterOptions = useAppSelector(({ settings }) => settings.defaults.isSavingFilterOptions);
   const selectedFilterOptions = useAppSelector(({ settings }) => settings.defaults.selectedFilterOptions);
   const dispatch = useDispatch();
@@ -91,6 +95,8 @@ export const UiFilterBar = () => {
   const [author, setAuthor] = React.useState<FilterOption[]>([]);
   const [reviewer, setReviewer] = React.useState<FilterOption[]>([]);
   const [myApprovalStatus, setMyApprovalStatus] = React.useState<FilterOption[]>([]);
+
+  React.useEffect(() => resetFilters(), [selectedTab]);
 
   React.useEffect(() => {
     setSearchString(selectedFilterOptions.searchString);
