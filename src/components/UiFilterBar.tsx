@@ -129,7 +129,6 @@ export const UiFilterBar = () => {
     setAuthor(selectedFilterOptions.author);
     setReviewer(selectedFilterOptions.reviewer);
     setMyApprovalStatus(selectedFilterOptions.myApprovalStatus);
-    dispatch(actions.setSelectedFilterOptions(selectedFilterOptions));
   }, [dispatch, selectedFilterOptions]);
 
   React.useEffect(() => {

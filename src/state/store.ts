@@ -82,16 +82,6 @@ export const rootSlice = createSlice({
       state.data.filterOptions.reviewer = filterOptions.reviewer;
       state.data.filterOptions.myApprovalStatus = filterOptions.myApprovalStatus;
     },
-    setSelectedFilterOptions: (state, action: PayloadAction<FilterOptions>) => {
-      const filterOptions = action.payload;
-      state.settings.defaults.selectedFilterOptions.searchString = filterOptions.searchString;
-      state.settings.defaults.selectedFilterOptions.repositories = filterOptions.repositories;
-      state.settings.defaults.selectedFilterOptions.sourceBranch = filterOptions.sourceBranch;
-      state.settings.defaults.selectedFilterOptions.targetBranch = filterOptions.targetBranch;
-      state.settings.defaults.selectedFilterOptions.author = filterOptions.author;
-      state.settings.defaults.selectedFilterOptions.reviewer = filterOptions.reviewer;
-      state.settings.defaults.selectedFilterOptions.myApprovalStatus = filterOptions.myApprovalStatus;
-    },
     removeAsyncTask: (state) => void (state.data.asyncTaskCount -= 1),
     toggleSettingsPanel: (state) => void (state.settings.settingsPanelOpen = !state.settings.settingsPanelOpen),
     toggleSortDirection: (state) => {
