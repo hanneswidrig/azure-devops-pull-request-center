@@ -1,4 +1,5 @@
 import React from 'react';
+import { deepEqual } from 'fast-equals';
 import { copyToClipboard } from 'azure-devops-ui/Clipboard';
 import { DetailsList, DirectionalHint, IColumn, IconButton, Link, Persona, PersonaSize, SelectionMode, TooltipHost } from '@fluentui/react';
 
@@ -162,16 +163,18 @@ const List = ({ pullRequests }: { pullRequests: PR[] }) => {
 };
 
 export const PrTable = () => {
-  const pullRequests = useAppSelector((store) =>
-    applyFilters(store.data.pullRequests, store.data.filterOptions, store.ui.selectedTab, store.ui.daysAgo)
-  );
+  const pullRequests = useAppSelector((store) => store.data.pullRequests);
+  const filterOptions = useAppSelector((store) => store.data.filterOptions, deepEqual);
+  const selectedTab = useAppSelector((store) => store.ui.selectedTab);
+  const daysAgo = useAppSelector((store) => store.ui.daysAgo);
+  const visiblePullRequests = applyFilters(pullRequests, filterOptions, selectedTab, daysAgo);
 
   return (
     <div className="flex-column">
       <UiFilterBar />
       <div className="card-shadow">
-        {pullRequests.length > 0 && <List pullRequests={pullRequests} />}
-        {pullRequests.length === 0 && <EmptyDataVisual />}
+        {visiblePullRequests.length > 0 && <List pullRequests={visiblePullRequests} />}
+        {visiblePullRequests.length === 0 && <EmptyDataVisual />}
       </div>
     </div>
   );

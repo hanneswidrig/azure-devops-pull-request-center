@@ -1,15 +1,38 @@
 import React from 'react';
+import { deepEqual } from 'fast-equals';
 import { useDispatch } from 'react-redux';
 import { VssPersona } from 'azure-devops-ui/VssPersona';
 import { ComboBox, IComboBoxOption, IconButton, IRenderFunction, ISelectableOption, SelectableOptionMenuItemType } from '@fluentui/react';
 
 import './UiFilterBar.css';
 
-import { FilterOption } from '../state/types';
 import { applyPreciseFilters } from '../lib/filters';
 import { actions, useAppSelector } from '../state/store';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 import { deriveFilterOptions } from '../state/transformData';
+import { FilterOption, FilterOptions } from '../state/types';
+
+const refineFilterOptions = (derivedFilterOptions: FilterOptions, selectedFilterOptions: FilterOptions): FilterOptions => {
+  return {
+    searchString: selectedFilterOptions.searchString,
+    author: selectedFilterOptions.author.filter((selected) =>
+      derivedFilterOptions.author.find((derived) => derived.value === selected.value)
+    ),
+    repositories: selectedFilterOptions.repositories.filter((selected) =>
+      derivedFilterOptions.repositories.find((derived) => derived.value === selected.value)
+    ),
+    sourceBranch: selectedFilterOptions.sourceBranch.filter((selected) =>
+      derivedFilterOptions.sourceBranch.find((derived) => derived.value === selected.value)
+    ),
+    targetBranch: selectedFilterOptions.targetBranch.filter((selected) =>
+      derivedFilterOptions.targetBranch.find((derived) => derived.value === selected.value)
+    ),
+    myApprovalStatus: selectedFilterOptions.myApprovalStatus,
+    reviewer: selectedFilterOptions.reviewer.filter((selected) =>
+      derivedFilterOptions.reviewer.find((derived) => derived.value === selected.value)
+    ),
+  };
+};
 
 const selectAllOption: IComboBoxOption = { key: 'selectAll', text: 'Select All', itemType: SelectableOptionMenuItemType.SelectAll };
 const dividerOption: IComboBoxOption = { key: 'divider', text: '-', itemType: SelectableOptionMenuItemType.Divider };
@@ -80,12 +103,14 @@ const UiMultiSelect = ({ placeholder, allOptions, selectedOptions, setter, compo
 };
 
 export const UiFilterBar = () => {
-  const selectedTab = useAppSelector(({ ui }) => ui.selectedTab);
   const filterOptions = useAppSelector(({ data, ui }) =>
     deriveFilterOptions(applyPreciseFilters(data.pullRequests, ui.selectedTab, ui.daysAgo))
   );
   const isSavingFilterOptions = useAppSelector(({ settings }) => settings.defaults.isSavingFilterOptions);
-  const selectedFilterOptions = useAppSelector(({ settings }) => settings.defaults.selectedFilterOptions);
+  const selectedFilterOptions = useAppSelector(
+    ({ settings }) => refineFilterOptions(filterOptions, settings.defaults.selectedFilterOptions),
+    deepEqual
+  );
   const dispatch = useDispatch();
 
   const [searchString, setSearchString] = React.useState<FilterOption[]>([]);
@@ -96,8 +121,6 @@ export const UiFilterBar = () => {
   const [reviewer, setReviewer] = React.useState<FilterOption[]>([]);
   const [myApprovalStatus, setMyApprovalStatus] = React.useState<FilterOption[]>([]);
 
-  React.useEffect(() => resetFilters(), [selectedTab]);
-
   React.useEffect(() => {
     setSearchString(selectedFilterOptions.searchString);
     setRepositories(selectedFilterOptions.repositories);
@@ -106,7 +129,8 @@ export const UiFilterBar = () => {
     setAuthor(selectedFilterOptions.author);
     setReviewer(selectedFilterOptions.reviewer);
     setMyApprovalStatus(selectedFilterOptions.myApprovalStatus);
-  }, [selectedFilterOptions]);
+    dispatch(actions.setSelectedFilterOptions(selectedFilterOptions));
+  }, [dispatch, selectedFilterOptions]);
 
   React.useEffect(() => {
     dispatch(actions.setFilterOptions({ searchString, repositories, sourceBranch, targetBranch, author, reviewer, myApprovalStatus }));
