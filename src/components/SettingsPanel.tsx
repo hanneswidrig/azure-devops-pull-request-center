@@ -14,6 +14,7 @@ import {
 } from '@fluentui/react';
 
 import './SettingsPanel.css';
+import { defaults } from '../state/transformData';
 import { asyncActions, actions, useAppDispatch, useAppSelector } from '../state/store';
 import { DefaultSettings, TabOptions, SortDirection, RefreshDuration, FilterOption, DaysAgo } from '../state/types';
 
@@ -24,24 +25,6 @@ type ChoiceGroupChanged = (
   setSettingValues: SetSettingValuesCallback,
   dispatch?: Dispatch<any>
 ) => void;
-
-export const defaults: DefaultSettings = {
-  isFullScreenMode: false,
-  selectedTab: 'active',
-  sortDirection: 'desc',
-  daysAgo: '14',
-  isSavingFilterOptions: false,
-  selectedFilterOptions: {
-    searchString: [],
-    repositories: [],
-    sourceBranch: [],
-    targetBranch: [],
-    author: [],
-    reviewer: [],
-    myApprovalStatus: [],
-  },
-  autoRefreshDuration: 'off',
-};
 
 const isFullScreenModeItems: IChoiceGroupOption[] = [
   { key: 'false', text: 'Disabled', iconProps: { iconName: 'SidePanel', title: 'Show Azure DevOps UI Shell' } },
@@ -153,9 +136,9 @@ const autoRefreshDurationChanged = (
 };
 
 const resetChanges = (setSettingValues: SetSettingValuesCallback, dispatch: Dispatch<any>): void => {
-  setSettingValues(defaults);
+  setSettingValues(defaults());
   dispatch(actions.setRefreshDuration('off'));
-  dispatch(asyncActions.setFullScreenMode(defaults.isFullScreenMode));
+  dispatch(asyncActions.setFullScreenMode(defaults().isFullScreenMode));
 };
 
 const applyChanges = (defaultSettings: DefaultSettings, dispatch: Dispatch<any>): void => {
@@ -173,7 +156,7 @@ const isNotEqual = (a: FilterOption[], b: FilterOption[]): boolean => {
 
 const defaultSettingsEquality = (a: DefaultSettings, b: DefaultSettings): boolean => {
   const { isFullScreenMode, selectedTab, sortDirection, daysAgo, isSavingFilterOptions, selectedFilterOptions, autoRefreshDuration } =
-    defaults;
+    defaults();
 
   const isFullScreenModeCheck = (a.isFullScreenMode ?? isFullScreenMode) !== (b.isFullScreenMode ?? isFullScreenMode);
   const isSavingFilterOptionsCheck =

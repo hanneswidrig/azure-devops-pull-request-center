@@ -2,8 +2,43 @@ import { IUserContext } from 'azure-devops-extension-sdk';
 import { WorkItem } from 'azure-devops-extension-api/WorkItemTracking/WorkItemTracking';
 import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
-import { FilterOption, FilterOptions, PR } from './types';
+import { DefaultSettings, FilterOption, FilterOptions, PR } from './types';
 import { ReviewerVoteNumber, ReviewerVoteLabel } from '../lib/enums';
+
+export const defaultFilterOptions = (): FilterOptions => ({
+  searchString: [],
+  repositories: [],
+  sourceBranch: [],
+  targetBranch: [],
+  author: [],
+  reviewer: [],
+  myApprovalStatus: [
+    { label: ReviewerVoteLabel.Unassigned, value: ReviewerVoteNumber.Unassigned },
+    { label: ReviewerVoteLabel.Approved, value: ReviewerVoteNumber.Approved },
+    { label: ReviewerVoteLabel.ApprovedWithSuggestions, value: ReviewerVoteNumber.ApprovedWithSuggestions },
+    { label: ReviewerVoteLabel.NoVote, value: ReviewerVoteNumber.NoVote },
+    { label: ReviewerVoteLabel.WaitingForAuthor, value: ReviewerVoteNumber.WaitingForAuthor },
+    { label: ReviewerVoteLabel.Rejected, value: ReviewerVoteNumber.Rejected },
+  ],
+});
+
+export const defaults = (): DefaultSettings => ({
+  isFullScreenMode: false,
+  selectedTab: 'active',
+  sortDirection: 'desc',
+  daysAgo: '14',
+  isSavingFilterOptions: false,
+  selectedFilterOptions: {
+    searchString: [],
+    repositories: [],
+    sourceBranch: [],
+    targetBranch: [],
+    author: [],
+    reviewer: [],
+    myApprovalStatus: [],
+  },
+  autoRefreshDuration: 'off',
+});
 
 const getCurrentUserVoteStatus = (reviewers: IdentityRefWithVote[], userContext: IUserContext) => {
   let voteResult: ReviewerVoteNumber = ReviewerVoteNumber.Unassigned;
@@ -52,22 +87,7 @@ export const toPr = ({ pr, workItems, userContext }: { pr: GitPullRequest; workI
 };
 
 export const deriveFilterOptions = (pullRequests: PR[]): FilterOptions => {
-  const filterItems: FilterOptions = {
-    searchString: [],
-    repositories: [],
-    sourceBranch: [],
-    targetBranch: [],
-    author: [],
-    reviewer: [],
-    myApprovalStatus: [
-      { label: ReviewerVoteLabel.Unassigned, value: ReviewerVoteNumber.Unassigned },
-      { label: ReviewerVoteLabel.Approved, value: ReviewerVoteNumber.Approved },
-      { label: ReviewerVoteLabel.ApprovedWithSuggestions, value: ReviewerVoteNumber.ApprovedWithSuggestions },
-      { label: ReviewerVoteLabel.NoVote, value: ReviewerVoteNumber.NoVote },
-      { label: ReviewerVoteLabel.WaitingForAuthor, value: ReviewerVoteNumber.WaitingForAuthor },
-      { label: ReviewerVoteLabel.Rejected, value: ReviewerVoteNumber.Rejected },
-    ],
-  };
+  const filterItems: FilterOptions = defaultFilterOptions();
 
   pullRequests.forEach((pr) => {
     const repositoryItem: FilterOption = { label: pr.repository.name, value: pr.repositoryId };

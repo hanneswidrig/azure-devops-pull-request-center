@@ -11,10 +11,9 @@ import { CoreRestClient } from 'azure-devops-extension-api/Core/CoreClient';
 import { getAccessToken, getExtensionContext, getService, getUser } from 'azure-devops-extension-sdk';
 import Git, { GitPullRequestSearchCriteria, PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 
-import { toPr } from './transformData';
 import { DefaultSettings, PR } from './types';
+import { defaults, toPr } from './transformData';
 import { sortByRepositoryName } from '../lib/utils';
-import { defaults } from '../components/SettingsPanel';
 
 interface GitRepository extends Git.GitRepository {
   isDisabled: boolean;
@@ -76,7 +75,7 @@ export const setSettings = async (defaultSettings: DefaultSettings): Promise<Def
   const key = `prc-ext-data-default`;
   const value: DefaultSettings = {
     ...defaultSettings,
-    selectedFilterOptions: defaultSettings.isSavingFilterOptions ? defaultSettings.selectedFilterOptions : defaults.selectedFilterOptions,
+    selectedFilterOptions: defaultSettings.isSavingFilterOptions ? defaultSettings.selectedFilterOptions : defaults().selectedFilterOptions,
   };
 
   const context = await getDataManagementContext();

@@ -15,7 +15,7 @@ import {
 } from './actions';
 import { initialState } from './initialState';
 import { sortByCreationDate } from '../lib/utils';
-import { defaults } from '../components/SettingsPanel';
+import { defaultFilterOptions, defaults } from './transformData';
 import { DaysAgo, DefaultSettings, FilterOptions, RefreshDuration, SortDirection, TabOptions } from './types';
 
 const getPullRequests = createAsyncThunk('root/getPullRequests', async (_, thunkAPI) => {
@@ -40,10 +40,10 @@ const restoreSettings = createAsyncThunk('root/restoreSettings', async (_, thunk
       return settings;
     }
 
-    return setSettings(defaults);
+    return setSettings(defaults());
   } catch {
     await displayErrorMessage();
-    return thunkAPI.rejectWithValue(defaults);
+    return thunkAPI.rejectWithValue(defaults());
   }
 });
 
@@ -70,7 +70,10 @@ export const rootSlice = createSlice({
       state.ui.daysAgo = action.payload;
       state.data.pullRequests = [...state.data.pullRequests].sort((a, b) => sortByCreationDate(a, b, state.ui.sortDirection));
     },
-    setSelectedTab: (state, action: PayloadAction<TabOptions>) => void (state.ui.selectedTab = action.payload),
+    setSelectedTab: (state, action: PayloadAction<TabOptions>) => {
+      state.ui.selectedTab = action.payload;
+      state.data.filterOptions = defaultFilterOptions();
+    },
     setRefreshDuration: (state, action: PayloadAction<RefreshDuration>) => void (state.settings.autoRefreshDuration = action.payload),
     setFilterOptions: (state, action: PayloadAction<FilterOptions>) => {
       const filterOptions = action.payload;
@@ -103,19 +106,19 @@ export const rootSlice = createSlice({
 
     builder.addMatcher(isAnyOf(restoreSettings.fulfilled, saveSettings.fulfilled), (state, action) => {
       const savedSettings = action.payload;
-      state.ui.isFullScreenMode = savedSettings.isFullScreenMode ?? defaults.isFullScreenMode;
-      state.ui.selectedTab = savedSettings.selectedTab ?? defaults.selectedTab;
-      state.ui.sortDirection = savedSettings.sortDirection ?? defaults.sortDirection;
-      state.ui.daysAgo = savedSettings.daysAgo ?? defaults.daysAgo;
+      state.ui.isFullScreenMode = savedSettings.isFullScreenMode ?? defaults().isFullScreenMode;
+      state.ui.selectedTab = savedSettings.selectedTab ?? defaults().selectedTab;
+      state.ui.sortDirection = savedSettings.sortDirection ?? defaults().sortDirection;
+      state.ui.daysAgo = savedSettings.daysAgo ?? defaults().daysAgo;
 
-      state.settings.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaults.autoRefreshDuration;
-      state.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode ?? defaults.isFullScreenMode;
-      state.settings.defaults.selectedTab = savedSettings.selectedTab ?? defaults.selectedTab;
-      state.settings.defaults.sortDirection = savedSettings.sortDirection ?? defaults.sortDirection;
-      state.settings.defaults.daysAgo = savedSettings.daysAgo ?? defaults.daysAgo;
-      state.settings.defaults.isSavingFilterOptions = savedSettings.isSavingFilterOptions ?? defaults.isSavingFilterOptions;
-      state.settings.defaults.selectedFilterOptions = savedSettings.selectedFilterOptions ?? defaults.selectedFilterOptions;
-      state.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaults.autoRefreshDuration;
+      state.settings.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaults().autoRefreshDuration;
+      state.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode ?? defaults().isFullScreenMode;
+      state.settings.defaults.selectedTab = savedSettings.selectedTab ?? defaults().selectedTab;
+      state.settings.defaults.sortDirection = savedSettings.sortDirection ?? defaults().sortDirection;
+      state.settings.defaults.daysAgo = savedSettings.daysAgo ?? defaults().daysAgo;
+      state.settings.defaults.isSavingFilterOptions = savedSettings.isSavingFilterOptions ?? defaults().isSavingFilterOptions;
+      state.settings.defaults.selectedFilterOptions = savedSettings.selectedFilterOptions ?? defaults().selectedFilterOptions;
+      state.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaults().autoRefreshDuration;
       state.data.asyncTaskCount -= 1;
     });
   },

@@ -11,6 +11,7 @@ import { UiFilterBar } from './UiFilterBar';
 import { applyFilters } from '../lib/filters';
 import { useAppSelector } from '../state/store';
 import { getVoteDescription } from '../lib/utils';
+import { EmptyDataVisual } from './EmptyDataVisual';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 
 export const columns: IColumn[] = [
@@ -153,7 +154,7 @@ export const columns: IColumn[] = [
 const List = ({ pullRequests }: { pullRequests: PR[] }) => {
   return (
     <DetailsList
-      styles={{ headerWrapper: { marginTop: '-16px' }, contentWrapper: { display: pullRequests.length > 0 ? 'initial' : 'none' } }}
+      styles={{ headerWrapper: { marginTop: '-16px' } }}
       items={pullRequests}
       columns={columns}
       selectionMode={SelectionMode.none}
@@ -172,7 +173,8 @@ export const PrTable = () => {
     <div className="flex-column">
       <UiFilterBar />
       <div className="card-shadow">
-        <List pullRequests={visiblePullRequests} />
+        {visiblePullRequests.length > 0 && <List pullRequests={visiblePullRequests} />}
+        {visiblePullRequests.length === 0 && <EmptyDataVisual />}
       </div>
     </div>
   );
