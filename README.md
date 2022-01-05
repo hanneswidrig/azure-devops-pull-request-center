@@ -1,5 +1,5 @@
 <div style="text-align: center">
-  <img alt="image" src="https://raw.githubusercontent.com/hanneswidrig/azure-devops-pull-request-center/master/marketplace/logo.png?raw=true" />
+  <img alt="image" src="https://raw.githubusercontent.com/hanneswidrig/azure-devops-pull-request-center/main/marketplace/logo.png?raw=true" />
 </div>
 
 # Pull Request Center 📦
@@ -7,7 +7,7 @@
 A centralized location for your Azure DevOps Pull Requests.
 
 <div style="text-align: center">
-  <img alt="image" src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-1.png?raw=true" />
+  <img alt="image" src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/main/marketplace/screenshot-1.png?raw=true" />
 </div>
 
 ## 📐 Features
@@ -26,7 +26,7 @@ This extension is designed for Azure DevOps Services 2019, Azure DevOps Server, 
 
 ## 📣 Changelog
 
-[View recent changes to my extension here.](https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/CHANGELOG.md)
+[View recent changes to my extension here.](https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/main/CHANGELOG.md)
 
 ## 👥 Contribution Guide
 
