@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "pull-request-center",
   "publisher": "hannes-widrig",
-  "version": "1.2.10",
+  "version": "2.0.0",
   "name": "Pull Requests Center",
   "description": "Manage your team's pull requests across all repositories.",
   "public": true,
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hanneswidrig/azure-devops-pull-request-center"
+    "uri": "https://github.com/hanneswidrig/azure-devops-pull-request-center"
   },
   "content": {
     "details": {
@@ -30,12 +30,7 @@
       "path": "LICENSE"
     }
   },
-  "screenshots": [
-    { "path": "marketplace/screenshot-1.png" },
-    { "path": "marketplace/screenshot-2.png" },
-    { "path": "marketplace/screenshot-3.png" }
-  ],
-  "tags": [],
+  "screenshots": [{ "path": "marketplace/screenshot-1.png" }],
   "contributions": [
     {
       "id": "pull-request-center",

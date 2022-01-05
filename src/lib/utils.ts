@@ -1,13 +1,11 @@
-import { useEffect, useRef } from 'react';
-import { TypedUseSelectorHook, useSelector } from 'react-redux';
+import { compareAsc, compareDesc, isAfter, subDays } from 'date-fns';
 import { GitRepository } from 'azure-devops-extension-api/Git/Git';
 import { IdentityRef } from 'azure-devops-extension-api/WebApi/WebApi';
 
-import { ActiveItemProvider } from '../tabs/TabTypes';
-import { PrHubState, PR, SortDirection } from '../state/types';
-import { ReviewerVoteNumber, ReviewerVoteLabel } from './enums';
+import { DaysAgo, PR, SortDirection } from '../state/types';
+import { ReviewerVoteLabel, ReviewerVoteNumber } from './enums';
 
-export const sortByRepositoryName = (a: GitRepository, b: GitRepository) => {
+export const sortByRepositoryName = (a: GitRepository, b: GitRepository): number => {
   if (a.name < b.name) {
     return -1;
   }
@@ -17,7 +15,7 @@ export const sortByRepositoryName = (a: GitRepository, b: GitRepository) => {
   return 0;
 };
 
-export const sortByDisplayName = (a: IdentityRef, b: IdentityRef) => {
+export const sortByDisplayName = (a: IdentityRef, b: IdentityRef): number => {
   if (a.displayName < b.displayName) {
     return -1;
   }
@@ -27,8 +25,17 @@ export const sortByDisplayName = (a: IdentityRef, b: IdentityRef) => {
   return 0;
 };
 
-export const sortByPullRequestId = (a: ActiveItemProvider, b: ActiveItemProvider, sortDirection: SortDirection) => {
-  return sortDirection === 'desc' ? (b as PR).pullRequestId - (a as PR).pullRequestId : (a as PR).pullRequestId - (b as PR).pullRequestId;
+export const sortByCreationDate = (a: PR, b: PR, sortDirection: SortDirection): number => {
+  return sortDirection === 'desc' ? compareDesc(a.creationDate, b.creationDate) : compareAsc(a.creationDate, b.creationDate);
+};
+
+export const filterByCreationDate = (pullRequest: PR, daysAgo: DaysAgo): boolean => {
+  if (daysAgo === '-1') {
+    return true;
+  }
+
+  const minimumDate = subDays(new Date(), Number(daysAgo));
+  return isAfter(pullRequest.creationDate, minimumDate);
 };
 
 export const getVoteDescription = (vote: number): string => {
@@ -38,14 +45,7 @@ export const getVoteDescription = (vote: number): string => {
     [ReviewerVoteNumber.NoVote]: ReviewerVoteLabel.NoVote,
     [ReviewerVoteNumber.WaitingForAuthor]: ReviewerVoteLabel.WaitingForAuthor,
     [ReviewerVoteNumber.Rejected]: ReviewerVoteLabel.Rejected,
+    [ReviewerVoteNumber.Unassigned]: ReviewerVoteLabel.Unassigned,
   };
   return votes[vote.toString()];
-};
-
-export const useTypedSelector: TypedUseSelectorHook<PrHubState> = useSelector;
-
-export const useUnmount = (fn: () => any): void => {
-  const fnRef = useRef(fn);
-  fnRef.current = fn;
-  useEffect(() => fnRef.current(), []);
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './EmptyDataVisual.scss';
+import './EmptyDataVisual.css';
 import Void from './resources/empty.png';
 
 export const EmptyDataVisual = () => {

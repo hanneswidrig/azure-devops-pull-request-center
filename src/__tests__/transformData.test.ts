@@ -2,10 +2,10 @@ import '@testing-library/jest-dom/extend-expect';
 import { IUserContext } from 'azure-devops-extension-sdk';
 import { GitPullRequest, IdentityRefWithVote } from 'azure-devops-extension-api/Git/Git';
 
-import { fromPullRequestToPR } from '../state/transformData';
+import { toPr } from '../state/transformData';
 
 describe('transformData', () => {
-  test('fromPullRequestToPR()', () => {
+  test('toPr()', () => {
     const pullRequest: GitPullRequest = {
       pullRequestId: 1,
       repository: {
@@ -31,7 +31,7 @@ describe('transformData', () => {
       name: 'Name',
       imageUrl: 'https://image.com',
     };
-    const transformedPR = fromPullRequestToPR({
+    const transformedPR = toPr({
       pr: pullRequest,
       workItems: [],
       userContext: userContext,
@@ -54,7 +54,7 @@ describe('transformData', () => {
     expect(transformedPR.targetBranch.href).toBe('https://repository.com?version=GBtargetBranch');
     expect(transformedPR.repository.name).toBe('repository');
     expect(transformedPR.repository.href).toBe('https://repository.com');
-    expect(transformedPR.myApprovalStatus).toBe('0');
+    expect(transformedPR.myApprovalStatus).toBe('-1');
     expect(transformedPR.workItems.length).toBe(0);
     expect(transformedPR.reviewers.length).toBe(0);
   });

@@ -1,31 +1,21 @@
 import 'react-app-polyfill/stable';
 
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-
-import thunk from 'redux-thunk';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import { init, ready } from 'azure-devops-extension-sdk';
+import { initializeIcons } from '@fluentui/font-icons-mdl2';
+import { getUser, init, ready } from 'azure-devops-extension-sdk';
 
-import { initializeIcons } from '@uifabric/icons';
-import { Filter } from 'azure-devops-ui/Utilities/Filter';
-import { composeWithDevTools } from 'remote-redux-devtools';
-
-import './index.scss';
-import { reducer } from './state/store';
-import { onInitialLoad } from './state/actions';
-import { TabProvider } from './tabs/TabProvider';
-
-const enhancer = applyMiddleware(thunk);
-const enhancerWithDevTools = composeWithDevTools({ name: 'PRC', realtime: true, port: 8000 })(applyMiddleware(thunk));
-export const store = createStore(reducer, process.env.NODE_ENV === 'development' ? enhancerWithDevTools : enhancer);
-export const filter: Filter = new Filter();
-initializeIcons();
+import './index.css';
+import { TabProvider } from './components/TabProvider';
+import { store, actions, asyncActions } from './state/store';
 
 const App = () => {
   React.useEffect(() => {
-    store.dispatch(onInitialLoad());
+    store.dispatch(asyncActions.restoreSettings());
+    store.dispatch(actions.setCurrentUser(getUser()));
+    store.dispatch(asyncActions.getPullRequests());
+    store.dispatch(actions.removeAsyncTask());
   }, []);
 
   return (
@@ -34,6 +24,8 @@ const App = () => {
     </Provider>
   );
 };
+
+initializeIcons();
 
 init().then(() =>
   ready().then(() => {

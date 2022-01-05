@@ -1,22 +1,14 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/hanneswidrig/azure-devops-pull-request-center/master/marketplace/logo.png?raw=true" />
-</p>
+<div style="text-align: center">
+  <img alt="image" src="https://raw.githubusercontent.com/hanneswidrig/azure-devops-pull-request-center/master/marketplace/logo.png?raw=true" />
+</div>
 
 # Pull Request Center 📦
 
 A centralized location for your Azure DevOps Pull Requests.
 
-<p align="center">
-  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-1.png?raw=true" />
-</p>
-
-<p align="center">
-  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-2.png?raw=true" />
-</p>
-
-<p align="center">
-  <img src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-3.png?raw=true" />
-</p>
+<div style="text-align: center">
+  <img alt="image" src="https://github.com/hanneswidrig/azure-devops-pull-request-center/blob/master/marketplace/screenshot-1.png?raw=true" />
+</div>
 
 ## 📐 Features
 
@@ -30,11 +22,7 @@ A centralized location for your Azure DevOps Pull Requests.
 
 ## 🧩 Compatibility
 
-I built this extension for Azure DevOps Services 2019. If someone wanted to explore/test older versions of DevOps with source code modifications, I might be able to add support.
-
-## 🛣 Roadmap
-
-✖ View work items/comments associated with PR.
+This extension is designed for Azure DevOps Services 2019, Azure DevOps Server, and later.
 
 ## 📣 Changelog
 
@@ -44,8 +32,4 @@ I built this extension for Azure DevOps Services 2019. If someone wanted to expl
 
 Help make this extension better by reporting bugs you find. 😊
 
-Reporting bugs is the best way you can help improve my extension at this time. I am not accepting pull requests while I work on stablizing the codebase and feature set.
-
-## ⛅ Inspiration
-
-[Pull Request Hub](https://github.com/cribeiro84/azure-devops-pull-request-hub) by [@cribeiro84](https://github.com/cribeiro84)
+Reporting bugs is the best way you can help improve my extension at this time.

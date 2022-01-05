@@ -1,0 +1,24 @@
+.page {
+  min-width: 768px;
+  flex-grow: 1;
+}
+
+.center-spinner {
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.tab-bar {
+  margin-top: 1rem;
+}
+
+.days-ago {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.days-ago-label {
+  margin-right: 0.5rem;
+}
