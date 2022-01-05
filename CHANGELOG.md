@@ -1,4 +1,4 @@
-# 2.0.0 (TBD)
+# 2.0.0 (January 5, 2022)
 
 ✔ Redesigned table with increased readability and less wasted space
 
