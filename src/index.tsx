@@ -1,3 +1,4 @@
+import 'azure-devops-ui/Core/override.css';
 import 'react-app-polyfill/stable';
 
 import React from 'react';

@@ -15,6 +15,7 @@ import { filterByCreationDate } from '../lib/utils';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
 import { PrHubState, PR, TabOptions, DaysAgo } from '../state/types';
 import { actions, asyncActions, useAppDispatch, useAppSelector } from '../state/store';
+import { daysAgoCaretDownButtonStyles, daysAgoComboBoxOptionStyles, daysAgoStyles } from './TabProvider.styles';
 
 const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: string): IHeaderCommandBarItem[] => {
   return [
@@ -132,7 +133,9 @@ export const TabProvider = () => {
               <div className="days-ago">
                 <i className="days-ago-label">Displaying PRs more recent than</i>
                 <ComboBox
-                  styles={{ root: { width: '8rem' } }}
+                  styles={daysAgoStyles}
+                  caretDownButtonStyles={daysAgoCaretDownButtonStyles}
+                  comboBoxOptionStyles={daysAgoComboBoxOptionStyles}
                   options={daysAgoOptions}
                   selectedKey={daysAgoOptions.find(({ key }) => key === daysAgo)?.key}
                   onChange={(_, selectedOption) => dispatch(actions.setDaysAgo(selectedOption?.key as DaysAgo))}

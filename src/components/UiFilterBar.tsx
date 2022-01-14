@@ -4,13 +4,14 @@ import { useDispatch } from 'react-redux';
 import { VssPersona } from 'azure-devops-ui/VssPersona';
 import { ComboBox, IComboBoxOption, IconButton, IRenderFunction, ISelectableOption, SelectableOptionMenuItemType } from '@fluentui/react';
 
-import './UiFilterBar.css';
+import './UiFilterBar.scss';
 
 import { applyPreciseFilters } from '../lib/filters';
 import { actions, useAppSelector } from '../state/store';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 import { deriveFilterOptions } from '../state/transformData';
 import { FilterOption, FilterOptions } from '../state/types';
+import { multiSelectCaretDownButtonStyles, multiSelectComboBoxOptionStyles, multiSelectStyles } from './UiFilterBar.styles';
 
 const refineFilterOptions = (derivedFilterOptions: FilterOptions, selectedFilterOptions: FilterOptions): FilterOptions => {
   return {
@@ -91,6 +92,9 @@ const UiMultiSelect = ({ placeholder, allOptions, selectedOptions, setter, compo
 
   return (
     <ComboBox
+      styles={multiSelectStyles}
+      caretDownButtonStyles={multiSelectCaretDownButtonStyles}
+      comboBoxOptionStyles={multiSelectComboBoxOptionStyles}
       multiSelect={true}
       useComboBoxAsMenuWidth={true}
       onRenderOption={components}
