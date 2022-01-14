@@ -12,6 +12,7 @@ import { applyFilters } from '../lib/filters';
 import { useAppSelector } from '../state/store';
 import { getVoteDescription } from '../lib/utils';
 import { EmptyDataVisual } from './EmptyDataVisual';
+import { detailsListStyles } from './PrTable.styles';
 import { getReviewerVoteIconStatus } from './StatusIcon';
 
 export const columns: IColumn[] = [
@@ -152,14 +153,7 @@ export const columns: IColumn[] = [
 ];
 
 const List = ({ pullRequests }: { pullRequests: PR[] }) => {
-  return (
-    <DetailsList
-      styles={{ headerWrapper: { marginTop: '-16px' } }}
-      items={pullRequests}
-      columns={columns}
-      selectionMode={SelectionMode.none}
-    />
-  );
+  return <DetailsList styles={detailsListStyles} items={pullRequests} columns={columns} selectionMode={SelectionMode.none} />;
 };
 
 export const PrTable = () => {
