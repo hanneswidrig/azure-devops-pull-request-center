@@ -4,23 +4,23 @@ export const detailsListStyles: Partial<IStyleFunctionOrObject<IDetailsListStyle
   headerWrapper: {
     marginTop: '-16px',
     '& > .ms-DetailsHeader': {
-      borderColor: `rgb(var(--palette-neutral-20))`,
-      backgroundColor: `var(--background-color)`,
+      borderColor: `rgb(var(--palette-neutral-10))`,
+      backgroundColor: `rgb(var(--palette-neutral-2))`,
     },
     '& > .ms-DetailsHeader > .ms-DetailsHeader-cell': {
       color: `var(--text-primary-color)`,
     },
     '&:hover > .ms-DetailsHeader > .ms-DetailsHeader-cell': {
-      backgroundColor: `var(--background-color)`,
+      backgroundColor: `rgb(var(--palette-neutral-4))`,
     },
   },
   focusZone: {
     '.ms-List > .ms-List-surface > .ms-List-page > .ms-List-cell > .ms-DetailsRow': {
-      borderColor: `rgb(var(--palette-neutral-20))`,
-      backgroundColor: `rgb(var(--palette-neutral-2))`,
+      borderColor: `rgb(var(--palette-neutral-10))`,
+      backgroundColor: `rgb(var(--palette-neutral-4))`,
     },
     '.ms-List > .ms-List-surface > .ms-List-page > .ms-List-cell > .ms-DetailsRow:hover': {
-      backgroundColor: `rgb(var(--palette-neutral-0))`,
+      backgroundColor: `rgb(var(--palette-neutral-4))`,
     },
     '.ms-List > .ms-List-surface > .ms-List-page > .ms-List-cell > .ms-DetailsRow > .ms-DetailsRow-fields > .ms-DetailsRow-cell': {
       color: `var(--text-primary-color)`,

@@ -3,7 +3,7 @@ import { deepEqual } from 'fast-equals';
 import { copyToClipboard } from 'azure-devops-ui/Clipboard';
 import { DetailsList, DirectionalHint, IColumn, IconButton, Link, Persona, PersonaSize, SelectionMode, TooltipHost } from '@fluentui/react';
 
-import './PrTable.css';
+import './PrTable.scss';
 
 import { Tag } from './Tag';
 import { PR } from '../state/types';

@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "pull-request-center",
   "publisher": "hannes-widrig",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "name": "Pull Requests Center",
   "description": "Manage your team's pull requests across all repositories.",
   "public": true,

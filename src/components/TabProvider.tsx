@@ -8,7 +8,7 @@ import { ComboBox, IComboBoxOption, Spinner } from '@fluentui/react';
 import { IHeaderCommandBarItem, HeaderCommandBar } from 'azure-devops-ui/HeaderCommandBar';
 import { CustomHeader, HeaderTitleArea, HeaderTitleRow, HeaderTitle } from 'azure-devops-ui/Header';
 
-import './TabProvider.css';
+import './TabProvider.scss';
 import { PrTable } from './PrTable';
 import { SettingsPanel } from './SettingsPanel';
 import { filterByCreationDate } from '../lib/utils';

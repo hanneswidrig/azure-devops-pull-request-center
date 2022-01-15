@@ -11,12 +11,23 @@ import {
   IComboBoxOption,
   IChoiceGroupOption,
   IContextualMenuProps,
+  IStyleFunctionOrObject,
+  IChoiceGroupStyles,
+  IChoiceGroupStyleProps,
 } from '@fluentui/react';
 
-import './SettingsPanel.css';
+import './SettingsPanel.scss';
 import { defaults } from '../state/transformData';
 import { asyncActions, actions, useAppDispatch, useAppSelector } from '../state/store';
 import { DefaultSettings, TabOptions, SortDirection, RefreshDuration, FilterOption, DaysAgo } from '../state/types';
+
+const radioButtonStyles: Partial<IStyleFunctionOrObject<IChoiceGroupStyleProps, IChoiceGroupStyles>> = {
+  flexContainer: {
+    '& > .ms-ChoiceField': {
+      color: `var(--text-primary-color)`,
+    },
+  },
+};
 
 type SetSettingValuesCallback = React.Dispatch<React.SetStateAction<DefaultSettings>>;
 
@@ -232,7 +243,7 @@ export const SettingsPanel = () => {
       size={0}
       onDismiss={() => dispatch(actions.toggleSettingsPanel())}
       titleProps={{ text: 'Extension Preferences' }}
-      description={'Pull Requests Center 2.0.0'}
+      description={'Pull Requests Center 2.1.0'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => resetChanges(setSettingValues, dispatch) },
         {
@@ -279,6 +290,7 @@ export const SettingsPanel = () => {
         <div>
           <Label className="light-dark-toggle">Default Selected Tab</Label>
           <ChoiceGroup
+            styles={radioButtonStyles}
             selectedKey={settingValues.selectedTab}
             options={selectedTabItems}
             onChange={(_, o) => selectedTabChanged(o, setSettingValues)}

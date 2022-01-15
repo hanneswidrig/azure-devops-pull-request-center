@@ -1,5 +1,5 @@
 import React from 'react';
-import './StatusIcon.css';
+import './StatusIcon.scss';
 
 type Props = { className: string };
 export const Approved = ({ className }: Props) => (
