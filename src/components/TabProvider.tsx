@@ -42,6 +42,7 @@ const commandBarItems = (dispatch: Dispatch<any>, store: PrHubState, timeUntil: 
       important: true,
       onActivate: () => {
         dispatch(asyncActions.getPullRequests());
+        dispatch(asyncActions.getCompletedPullRequests());
       },
       iconProps: { iconName: 'Refresh' },
     },

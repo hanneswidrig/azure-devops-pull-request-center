@@ -1,3 +1,7 @@
+# 2.2.3 (January 17, 2022)
+
+✔ Improve loading speed and log redux action success/failure
+
 # 2.2.0 (January 17, 2022)
 
 ✔ Change request handling scheme

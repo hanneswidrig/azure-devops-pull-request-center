@@ -20,6 +20,7 @@ export const useRefreshTicker = (refreshDuration: RefreshDuration) => {
     if (ticker === 0) {
       setTicker(Number(refreshDuration));
       dispatch(asyncActions.getPullRequests());
+      dispatch(asyncActions.getCompletedPullRequests());
     }
   }, [ticker, refreshDuration, dispatch]);
 
