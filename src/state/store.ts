@@ -104,21 +104,25 @@ export const rootSlice = createSlice({
       state.data.asyncTaskCount += 1;
     });
 
+    builder.addMatcher(isAnyOf(getPullRequests.rejected, restoreSettings.rejected, saveSettings.rejected), (state) => {
+      state.data.asyncTaskCount -= 1;
+    });
+
     builder.addMatcher(isAnyOf(restoreSettings.fulfilled, saveSettings.fulfilled), (state, action) => {
       const savedSettings = action.payload;
-      state.ui.isFullScreenMode = savedSettings.isFullScreenMode ?? defaults().isFullScreenMode;
-      state.ui.selectedTab = savedSettings.selectedTab ?? defaults().selectedTab;
-      state.ui.sortDirection = savedSettings.sortDirection ?? defaults().sortDirection;
-      state.ui.daysAgo = savedSettings.daysAgo ?? defaults().daysAgo;
+      state.ui.isFullScreenMode = savedSettings?.isFullScreenMode ?? defaults().isFullScreenMode;
+      state.ui.selectedTab = savedSettings?.selectedTab ?? defaults().selectedTab;
+      state.ui.sortDirection = savedSettings?.sortDirection ?? defaults().sortDirection;
+      state.ui.daysAgo = savedSettings?.daysAgo ?? defaults().daysAgo;
 
-      state.settings.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaults().autoRefreshDuration;
-      state.settings.defaults.isFullScreenMode = savedSettings.isFullScreenMode ?? defaults().isFullScreenMode;
-      state.settings.defaults.selectedTab = savedSettings.selectedTab ?? defaults().selectedTab;
-      state.settings.defaults.sortDirection = savedSettings.sortDirection ?? defaults().sortDirection;
-      state.settings.defaults.daysAgo = savedSettings.daysAgo ?? defaults().daysAgo;
-      state.settings.defaults.isSavingFilterOptions = savedSettings.isSavingFilterOptions ?? defaults().isSavingFilterOptions;
-      state.settings.defaults.selectedFilterOptions = savedSettings.selectedFilterOptions ?? defaults().selectedFilterOptions;
-      state.settings.defaults.autoRefreshDuration = savedSettings.autoRefreshDuration ?? defaults().autoRefreshDuration;
+      state.settings.autoRefreshDuration = savedSettings?.autoRefreshDuration ?? defaults().autoRefreshDuration;
+      state.settings.defaults.isFullScreenMode = savedSettings?.isFullScreenMode ?? defaults().isFullScreenMode;
+      state.settings.defaults.selectedTab = savedSettings?.selectedTab ?? defaults().selectedTab;
+      state.settings.defaults.sortDirection = savedSettings?.sortDirection ?? defaults().sortDirection;
+      state.settings.defaults.daysAgo = savedSettings?.daysAgo ?? defaults().daysAgo;
+      state.settings.defaults.isSavingFilterOptions = savedSettings?.isSavingFilterOptions ?? defaults().isSavingFilterOptions;
+      state.settings.defaults.selectedFilterOptions = savedSettings?.selectedFilterOptions ?? defaults().selectedFilterOptions;
+      state.settings.defaults.autoRefreshDuration = savedSettings?.autoRefreshDuration ?? defaults().autoRefreshDuration;
       state.data.asyncTaskCount -= 1;
     });
   },

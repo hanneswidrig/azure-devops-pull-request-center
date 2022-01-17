@@ -13,8 +13,8 @@ import { store, actions, asyncActions } from './state/store';
 
 const App = () => {
   React.useEffect(() => {
-    store.dispatch(asyncActions.restoreSettings());
     store.dispatch(actions.setCurrentUser(getUser()));
+    store.dispatch(asyncActions.restoreSettings());
     store.dispatch(asyncActions.getPullRequests());
     store.dispatch(actions.removeAsyncTask());
   }, []);

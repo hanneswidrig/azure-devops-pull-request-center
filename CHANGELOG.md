@@ -1,3 +1,7 @@
+# 2.1.2 (January 17, 2022)
+
+Attempt to fix loading issues
+
 # 2.1.1 (January 15, 2022)
 
 🐛 Fixed: Dark Mode
