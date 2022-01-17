@@ -74,13 +74,21 @@ export const options = [searchString, repositories, sourceBranch, targetBranch, 
 export type FilterOption = { label: string; value: string; href?: string };
 export type FilterOptions = Record<typeof options[number], FilterOption[]>;
 
+export type RequestLoading = {
+  getPullRequests: LoadState;
+  getCompletedPullRequests: LoadState;
+  restoreSettings: LoadState;
+  saveSettings: LoadState;
+};
+
 export type Data = {
   pullRequests: PR[];
   filterOptions: FilterOptions;
   currentUser: IUserContext;
-  asyncTaskCount: number;
+  requestLoading: RequestLoading;
 };
 
+export type LoadState = 'init' | 'loading' | 'rejected' | 'fulfilled';
 export type TabOptions = 'active' | 'draft' | 'completed';
 export type SortDirection = 'desc' | 'asc';
 export type DaysAgo = '7' | '14' | '30' | '90' | '180' | '365' | '-1';

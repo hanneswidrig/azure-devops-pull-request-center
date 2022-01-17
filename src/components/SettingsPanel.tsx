@@ -243,7 +243,7 @@ export const SettingsPanel = () => {
       size={0}
       onDismiss={() => dispatch(actions.toggleSettingsPanel())}
       titleProps={{ text: 'Extension Preferences' }}
-      description={'Pull Requests Center 2.1.2'}
+      description={'Pull Requests Center 2.2.0'}
       footerButtonProps={[
         { text: 'Reset', subtle: true, onClick: () => resetChanges(setSettingValues, dispatch) },
         {

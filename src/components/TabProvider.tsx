@@ -13,7 +13,7 @@ import { PrTable } from './PrTable';
 import { SettingsPanel } from './SettingsPanel';
 import { filterByCreationDate } from '../lib/utils';
 import { useRefreshTicker } from '../hooks/useRefreshTicker';
-import { PrHubState, PR, TabOptions, DaysAgo } from '../state/types';
+import { PrHubState, PR, TabOptions, DaysAgo, RequestLoading } from '../state/types';
 import { actions, asyncActions, useAppDispatch, useAppSelector } from '../state/store';
 import { daysAgoCaretDownButtonStyles, daysAgoComboBoxOptionStyles, daysAgoStyles } from './TabProvider.styles';
 
@@ -101,11 +101,37 @@ const daysAgoOptions: IComboBoxOption[] = [
   { key: '-1', text: 'All Time' },
 ];
 
+const isCompleted = (selectedTab: TabOptions, requestLoading: RequestLoading): boolean => {
+  const { getPullRequests, getCompletedPullRequests, restoreSettings, saveSettings } = requestLoading;
+
+  if (saveSettings === 'loading') {
+    return false;
+  }
+
+  if (saveSettings === 'fulfilled') {
+    return true;
+  }
+
+  if (selectedTab === 'active') {
+    return getPullRequests === 'fulfilled' && restoreSettings === 'fulfilled';
+  }
+
+  if (selectedTab === 'draft') {
+    return getPullRequests === 'fulfilled' && restoreSettings === 'fulfilled';
+  }
+
+  if (selectedTab === 'completed') {
+    return getCompletedPullRequests === 'fulfilled' && restoreSettings === 'fulfilled';
+  }
+
+  return false;
+};
+
 export const TabProvider = () => {
   const store = useAppSelector((store) => store);
   const daysAgo = useAppSelector((store) => store.ui.daysAgo);
   const selectedTab = useAppSelector((store) => store.ui.selectedTab);
-  const asyncTaskCount = useAppSelector((store) => store.data.asyncTaskCount);
+  const requestLoading = useAppSelector((store) => store.data.requestLoading);
   const pullRequests = useAppSelector((store) =>
     store.data.pullRequests.filter((pullRequest) => filterByCreationDate(pullRequest, store.ui.daysAgo))
   );
@@ -119,8 +145,8 @@ export const TabProvider = () => {
     <Surface background={1}>
       <Page className="page">
         <Heading items={commandBarItems(dispatch, store, timeUntil)} />
-        {asyncTaskCount > 0 && <Spinner label="fetching pull requests..." size={3} className="center-spinner" />}
-        {asyncTaskCount === 0 && (
+        {!isCompleted(selectedTab, requestLoading) && <Spinner label="fetching pull requests..." size={3} className="center-spinner" />}
+        {isCompleted(selectedTab, requestLoading) && (
           <React.Fragment>
             <TabBar
               tabsClassName="tab-bar"

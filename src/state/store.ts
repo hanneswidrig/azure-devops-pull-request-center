@@ -32,6 +32,17 @@ const getPullRequests = createAsyncThunk('root/getPullRequests', async (_, thunk
   }
 });
 
+const getCompletedPullRequests = createAsyncThunk('root/getCompletedPullRequests', async (_, thunkAPI) => {
+  try {
+    const repos = await getRepositories();
+    const allCompletedPrs = await Promise.all(repos.flatMap((repo) => fetchPullRequests(repo, criteria(PullRequestStatus.Completed), 25)));
+    return allCompletedPrs.reduce((prev, curr) => [...prev, ...curr], []);
+  } catch {
+    await displayErrorMessage();
+    return thunkAPI.rejectWithValue([]);
+  }
+});
+
 const restoreSettings = createAsyncThunk('root/restoreSettings', async (_, thunkAPI) => {
   try {
     const settings = await getSettings();
@@ -47,12 +58,12 @@ const restoreSettings = createAsyncThunk('root/restoreSettings', async (_, thunk
   }
 });
 
-const setFullScreenMode = createAsyncThunk('root/setFullScreenMode', async (isFullScreenMode: boolean) => {
-  return setFullScreenModeState(isFullScreenMode);
-});
-
 const saveSettings = createAsyncThunk('root/saveSettings', async (defaultSettings: DefaultSettings) => {
   return setSettings(defaultSettings);
+});
+
+const setFullScreenMode = createAsyncThunk('root/setFullScreenMode', async (isFullScreenMode: boolean) => {
+  return setFullScreenModeState(isFullScreenMode);
 });
 
 export const rootSlice = createSlice({
@@ -85,7 +96,6 @@ export const rootSlice = createSlice({
       state.data.filterOptions.reviewer = filterOptions.reviewer;
       state.data.filterOptions.myApprovalStatus = filterOptions.myApprovalStatus;
     },
-    removeAsyncTask: (state) => void (state.data.asyncTaskCount -= 1),
     toggleSettingsPanel: (state) => void (state.settings.settingsPanelOpen = !state.settings.settingsPanelOpen),
     toggleSortDirection: (state) => {
       state.ui.sortDirection = state.ui.sortDirection === 'desc' ? 'asc' : 'desc';
@@ -95,18 +105,61 @@ export const rootSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getPullRequests.fulfilled, (state, action) => {
       state.data.pullRequests = action.payload.sort((a, b) => sortByCreationDate(a, b, state.ui.sortDirection));
-      state.data.asyncTaskCount -= 1;
+      state.data.requestLoading.getPullRequests = 'fulfilled';
+    });
+
+    builder.addCase(getCompletedPullRequests.fulfilled, (state, action) => {
+      const activePullRequests = state.data.pullRequests.filter(({ isActive }) => isActive);
+      const completedPullRequests = action.payload.sort((a, b) => sortByCreationDate(a, b, state.ui.sortDirection));
+      state.data.pullRequests = [...activePullRequests, ...completedPullRequests];
+      state.data.requestLoading.getCompletedPullRequests = 'fulfilled';
     });
 
     builder.addCase(setFullScreenMode.fulfilled, (state, action) => void (state.ui.isFullScreenMode = action.payload));
 
-    builder.addMatcher(isAnyOf(getPullRequests.pending, restoreSettings.pending, saveSettings.pending), (state) => {
-      state.data.asyncTaskCount += 1;
-    });
+    builder.addMatcher(
+      isAnyOf(getPullRequests.pending, getCompletedPullRequests.pending, restoreSettings.pending, saveSettings.pending),
+      (state, action) => {
+        if (`${getPullRequests.typePrefix}/${action.meta.requestStatus}` === action.type) {
+          state.data.requestLoading.getPullRequests = 'loading';
+        }
 
-    builder.addMatcher(isAnyOf(getPullRequests.rejected, restoreSettings.rejected, saveSettings.rejected), (state) => {
-      state.data.asyncTaskCount -= 1;
-    });
+        if (`${getCompletedPullRequests.typePrefix}/${action.meta.requestStatus}` === action.type) {
+          state.data.requestLoading.getCompletedPullRequests = 'loading';
+        }
+
+        if (`${restoreSettings.typePrefix}/${action.meta.requestStatus}` === action.type) {
+          state.data.requestLoading.restoreSettings = 'loading';
+        }
+
+        if (`${saveSettings.typePrefix}/${action.meta.requestStatus}` === action.type) {
+          state.data.requestLoading.saveSettings = 'loading';
+        }
+      }
+    );
+
+    builder.addMatcher(
+      isAnyOf(getPullRequests.rejected, getCompletedPullRequests.rejected, restoreSettings.rejected, saveSettings.rejected),
+      (state, action) => {
+        if (`${getPullRequests.typePrefix}/${action.meta.requestStatus}` === action.type) {
+          state.data.requestLoading.getPullRequests = 'rejected';
+        }
+
+        if (`${getCompletedPullRequests.typePrefix}/${action.meta.requestStatus}` === action.type) {
+          state.data.requestLoading.getCompletedPullRequests = 'rejected';
+        }
+
+        if (`${restoreSettings.typePrefix}/${action.meta.requestStatus}` === action.type) {
+          state.data.requestLoading.restoreSettings = 'rejected';
+        }
+
+        if (`${saveSettings.typePrefix}/${action.meta.requestStatus}` === action.type) {
+          state.data.requestLoading.saveSettings = 'rejected';
+        }
+
+        console.error(`${action.type}: did not complete successfully`);
+      }
+    );
 
     builder.addMatcher(isAnyOf(restoreSettings.fulfilled, saveSettings.fulfilled), (state, action) => {
       const savedSettings = action.payload;
@@ -123,13 +176,20 @@ export const rootSlice = createSlice({
       state.settings.defaults.isSavingFilterOptions = savedSettings?.isSavingFilterOptions ?? defaults().isSavingFilterOptions;
       state.settings.defaults.selectedFilterOptions = savedSettings?.selectedFilterOptions ?? defaults().selectedFilterOptions;
       state.settings.defaults.autoRefreshDuration = savedSettings?.autoRefreshDuration ?? defaults().autoRefreshDuration;
-      state.data.asyncTaskCount -= 1;
+
+      if (`${restoreSettings.typePrefix}/${action.meta.requestStatus}` === action.type) {
+        state.data.requestLoading.restoreSettings = 'fulfilled';
+      }
+
+      if (`${saveSettings.typePrefix}/${action.meta.requestStatus}` === action.type) {
+        state.data.requestLoading.saveSettings = 'fulfilled';
+      }
     });
   },
 });
 
 export const { actions } = rootSlice;
-export const asyncActions = { getPullRequests, restoreSettings, setFullScreenMode, saveSettings };
+export const asyncActions = { getPullRequests, getCompletedPullRequests, restoreSettings, setFullScreenMode, saveSettings };
 
 export const store = configureStore({
   reducer: rootSlice.reducer,

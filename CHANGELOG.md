@@ -1,3 +1,7 @@
+# 2.2.0 (January 17, 2022)
+
+✔ Change request handling scheme
+
 # 2.1.2 (January 17, 2022)
 
 Attempt to fix loading issues

@@ -16,7 +16,7 @@ const App = () => {
     store.dispatch(actions.setCurrentUser(getUser()));
     store.dispatch(asyncActions.restoreSettings());
     store.dispatch(asyncActions.getPullRequests());
-    store.dispatch(actions.removeAsyncTask());
+    store.dispatch(asyncActions.getCompletedPullRequests());
   }, []);
 
   return (
