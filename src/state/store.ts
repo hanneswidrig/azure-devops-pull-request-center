@@ -22,10 +22,7 @@ const getPullRequests = createAsyncThunk('root/getPullRequests', async (_, thunk
   try {
     const repos = await getRepositories();
     const allActivePrs = await Promise.all(repos.flatMap((repo) => fetchPullRequests(repo, criteria(PullRequestStatus.Active), 25)));
-    const allCompletedPrs = await Promise.all(repos.flatMap((repo) => fetchPullRequests(repo, criteria(PullRequestStatus.Completed), 25)));
-    const activePullRequests = allActivePrs.reduce((prev, curr) => [...prev, ...curr], []);
-    const completedPullRequests = allCompletedPrs.reduce((prev, curr) => [...prev, ...curr], []);
-    return [...activePullRequests, ...completedPullRequests];
+    return allActivePrs.reduce((prev, curr) => [...prev, ...curr], []);
   } catch {
     await displayErrorMessage();
     return thunkAPI.rejectWithValue([]);
@@ -135,6 +132,8 @@ export const rootSlice = createSlice({
         if (`${saveSettings.typePrefix}/${action.meta.requestStatus}` === action.type) {
           state.data.requestLoading.saveSettings = 'loading';
         }
+
+        console.log(`${action.type}: completed successfully`);
       }
     );
 
