@@ -103,6 +103,7 @@ export const rootSlice = createSlice({
     builder.addCase(getPullRequests.fulfilled, (state, action) => {
       state.data.pullRequests = action.payload.sort((a, b) => sortByCreationDate(a, b, state.ui.sortDirection));
       state.data.requestLoading.getPullRequests = 'fulfilled';
+      console.log(`${action.type}: completed successfully`);
     });
 
     builder.addCase(getCompletedPullRequests.fulfilled, (state, action) => {
@@ -110,6 +111,7 @@ export const rootSlice = createSlice({
       const completedPullRequests = action.payload.sort((a, b) => sortByCreationDate(a, b, state.ui.sortDirection));
       state.data.pullRequests = [...activePullRequests, ...completedPullRequests];
       state.data.requestLoading.getCompletedPullRequests = 'fulfilled';
+      console.log(`${action.type}: completed successfully`);
     });
 
     builder.addCase(setFullScreenMode.fulfilled, (state, action) => void (state.ui.isFullScreenMode = action.payload));
@@ -132,8 +134,6 @@ export const rootSlice = createSlice({
         if (`${saveSettings.typePrefix}/${action.meta.requestStatus}` === action.type) {
           state.data.requestLoading.saveSettings = 'loading';
         }
-
-        console.log(`${action.type}: completed successfully`);
       }
     );
 
@@ -183,6 +183,8 @@ export const rootSlice = createSlice({
       if (`${saveSettings.typePrefix}/${action.meta.requestStatus}` === action.type) {
         state.data.requestLoading.saveSettings = 'fulfilled';
       }
+
+      console.log(`${action.type}: completed successfully`);
     });
   },
 });
