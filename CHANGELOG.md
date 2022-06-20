@@ -1,3 +1,7 @@
+# 3.0.0 (June 20, 2022)
+
+🐛 [BREAKING CHANGE]: Preferences now set by user not project/organization, user preferences will be reset
+
 # 2.2.3 (January 17, 2022)
 
 ✔ Improve loading speed and log redux action success/failure

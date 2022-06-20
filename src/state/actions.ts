@@ -66,13 +66,15 @@ export const getRepositories = async () => {
 };
 
 export const getSettings = async (): Promise<DefaultSettings | null> => {
-  const key = `prc-ext-data-default`;
+  const userContext = getUser();
+  const key = `prc-ext-data-default-${userContext.id}`;
   const context = await getDataManagementContext();
   return context.getValue(key, { defaultValue: null });
 };
 
 export const setSettings = async (defaultSettings: DefaultSettings): Promise<DefaultSettings> => {
-  const key = `prc-ext-data-default`;
+  const userContext = getUser();
+  const key = `prc-ext-data-default-${userContext.id}`;
   const value: DefaultSettings = {
     ...defaultSettings,
     selectedFilterOptions: defaultSettings.isSavingFilterOptions ? defaultSettings.selectedFilterOptions : defaults().selectedFilterOptions,
