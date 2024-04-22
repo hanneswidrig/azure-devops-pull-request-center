@@ -10,6 +10,7 @@ import { TestingWrapper, WrapperType } from '../components/TestingWrapper';
 jest.mock('../state/store', () => ({
   asyncActions: {
     getPullRequests: () => ({ type: 'root/getPullRequests' }),
+    getCompletedPullRequests: () => ({ type: 'root/getCompletedPullRequests' }),
   },
 }));
 
