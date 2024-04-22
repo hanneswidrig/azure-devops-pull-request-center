@@ -1,3 +1,7 @@
+# 3.1.0 (April 22, 2024)
+
+🐛 Fixed: Infinite loading loop
+
 # 3.0.0 (June 20, 2022)
 
 🐛 [BREAKING CHANGE]: Preferences now set by user not project/organization, user preferences will be reset

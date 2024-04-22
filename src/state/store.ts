@@ -1,4 +1,3 @@
-import { createLogger } from 'redux-logger';
 import { IUserContext } from 'azure-devops-extension-sdk';
 import { PullRequestStatus } from 'azure-devops-extension-api/Git/Git';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
@@ -197,7 +196,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) => {
     const isDevelopment = process.env.NODE_ENV !== 'production';
     if (isDevelopment) {
-      return getDefaultMiddleware({ serializableCheck: false }).concat(createLogger({ duration: true, collapsed: true, diff: true }));
+      return getDefaultMiddleware({ serializableCheck: false });
     }
 
     return getDefaultMiddleware({ serializableCheck: false });
