@@ -86,16 +86,21 @@ export const setSettings = async (defaultSettings: DefaultSettings): Promise<Def
 };
 
 export async function fetchPullRequests(repository: GitRepository, criteria: GitPullRequestSearchCriteria, take: number): Promise<PR[]> {
+  if (take <= 0) {
+    return [];
+  }
+
   let skip = 0;
   const userContext = getUser();
   const pullRequests: PR[] = [];
 
-  do {
-    const fetchedPullRequests = await gitClient.getPullRequests(repository.id, criteria, undefined, undefined, skip, take);
-    const prs = fetchedPullRequests.map((pullRequest) => toPr({ pr: { ...pullRequest, repository }, workItems: [], userContext }));
-    pullRequests.push(...prs);
-    skip = skip + take;
-  } while (pullRequests.length !== 0 && pullRequests.length % take === 0);
+  while (true) {
+    const data = await gitClient.getPullRequests(repository.id, criteria, undefined, undefined, skip, take);
+    pullRequests.push(...data.map((pr) => toPr({ pr: { ...pr, repository }, workItems: [], userContext })));
+    skip += take;
 
-  return pullRequests;
+    if (data.length < take) {
+      return pullRequests;
+    }
+  }
 }
